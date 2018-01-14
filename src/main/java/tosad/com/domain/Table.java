@@ -10,6 +10,10 @@ public class Table {
 		name = na;
 	}
 	
+	public String getName(){
+		return name;
+	}
+	
 	public ArrayList<TableColumn> getAllcolumns() {
 		return allcolumns;
 	}

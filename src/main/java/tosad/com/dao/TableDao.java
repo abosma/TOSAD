@@ -10,16 +10,17 @@ import tosad.com.persistency.SqLiteConnection;
 
 public class TableDao {
 	Connection dbconnection;
+	
 
 	Statement stmt = null;
 
 	String queryGetTables = "select table_name from all_tables  where TABLE_NAME like 'TOSAD_%'";
 
-	public TableDao() throws SQLException {
-		dbconnection = new SqLiteConnection().CreateConnection();
+	public TableDao()  {
 	}
 
-	public ArrayList<Table> getAllTables() {
+	public ArrayList<Table> getAllTables() throws SQLException {
+		dbconnection = new SqLiteConnection().CreateConnection();
 
 		ArrayList<Table> alltables = new ArrayList<Table>();
 
@@ -27,6 +28,7 @@ public class TableDao {
 			stmt = dbconnection.createStatement();
 			ResultSet rs = stmt.executeQuery(queryGetTables);
 			while (rs.next()) {
+				System.out.println("hier");
 				String tableName = rs.getString("TABLE_NAME");
 				Table table = new Table(tableName);
 
@@ -36,12 +38,13 @@ public class TableDao {
 				while (columns.next()) {
 					TableColumn tc = new TableColumn(columns.getString("TYPE_NAME"), columns.getString("COLUMN_NAME"));
 					table.addColumns(tc);
-					alltables.add(table);
+				
 				}
-
-				dbconnection.close();
+				
+				alltables.add(table);
 
 			}
+			dbconnection.close();
 		} catch (SQLException e) {
 		}
 		return alltables;
