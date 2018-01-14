@@ -16,14 +16,6 @@
 	<maven.compiler.target>1.8</maven.compiler.target> 
   </properties>
 
-	<repositories>  
-   		<repository>
-     		<id>external</id>
-     		<name>External Project Repo</name>
-     		<url>file:///${project.basedir}/lib</url>
-   		</repository>
-	</repositories>
-
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -31,6 +23,13 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+     	<groupId>com</groupId>
+     	<artifactId>ojdbc6</artifactId>
+     	<version>11.2.0</version>
+     	<scope>system</scope>
+    	<systemPath>${project.basedir}/lib/ojdbc6.jar</systemPath>
+  	</dependency>
 	<dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -51,11 +50,6 @@
       <groupId>com.thetransactioncompany</groupId>
       <artifactId>cors-filter</artifactId>
       <version>2.6</version>
-    </dependency>
-    <dependency>
-       <groupId>com.oracle</groupId>
-       <artifactId>ojdbc6</artifactId>
-       <version>11.2.0</version>
     </dependency>
   </dependencies>
   	<build>
