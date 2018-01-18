@@ -10,6 +10,11 @@ private static final SessionFactory sessionFactory;
     static {
         try {
             sessionFactory = new Configuration()
+            		.addAnnotatedClass(BusinessRule.class)
+            		.addAnnotatedClass(BusinessRuleType.class)
+            		.addAnnotatedClass(CompareValues.class)
+            		.addAnnotatedClass(GeneratedCode.class)
+            		.addAnnotatedClass(Operator.class)
             		.addAnnotatedClass(TargetDatabase.class)
                     .configure().buildSessionFactory();
         } catch (Exception ex) {
