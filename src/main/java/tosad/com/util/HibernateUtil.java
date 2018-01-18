@@ -2,7 +2,7 @@ package tosad.com.util;
 
 import org.hibernate.*;
 import org.hibernate.cfg.*;
-import tosad.com.persistency.Test;
+import tosad.com.persistency.*;
 
 public class HibernateUtil {
 
@@ -10,7 +10,8 @@ private static final SessionFactory sessionFactory;
     static {
         try {
             sessionFactory = new Configuration()
-            		.addAnnotatedClass(Test.class)
+            		.addAnnotatedClass(Targets.class)
+            		.addAnnotatedClass(ValidationType.class)
                     .configure().buildSessionFactory();
         } catch (Exception ex) {
             // Log exception!
