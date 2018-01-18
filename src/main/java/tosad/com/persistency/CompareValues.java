@@ -15,7 +15,7 @@ import javax.persistence.Table;
 public class CompareValues implements Serializable {
 	
 	private int id;
-	private int bRuleId;
+	private int businessrule_id;
 	private String column;
 	private String table;
 	private String attribute;
@@ -24,7 +24,7 @@ public class CompareValues implements Serializable {
 	private String max_value;
 	
 	@Id
-	@Column(updatable = false, name = "id", nullable = false)
+	@Column(updatable = false, name = "comparevalues_id", nullable = false, unique = true)
 	public int getId() {
 		return id;
 	}
@@ -35,15 +35,15 @@ public class CompareValues implements Serializable {
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "businessrule_id")
-	public int getbRuleId() {
-		return bRuleId;
+	public int getBussinessruleId() {
+		return businessrule_id;
 	}
 	
-	public void setbRuleId(int bRuleId) {
-		this.bRuleId = bRuleId;
+	public void setBussinessruleId(int businessrule_id) {
+		this.businessrule_id = businessrule_id;
 	}
 	
-	@Column(updatable = true, name = "column", nullable = false)
+	@Column(updatable = true, name = "column", nullable = false, length = 250)
 	public String getColumn() {
 		return column;
 	}
@@ -52,7 +52,7 @@ public class CompareValues implements Serializable {
 		this.column = column;
 	}
 	
-	@Column(updatable = true, name = "table", nullable = false)
+	@Column(updatable = true, name = "table", nullable = false, length = 250)
 	public String getTable() {
 		return table;
 	}
@@ -61,7 +61,7 @@ public class CompareValues implements Serializable {
 		this.table = table;
 	}
 	
-	@Column(updatable = true, name = "attribute", nullable = false)
+	@Column(updatable = true, name = "attribute", nullable = false, length = 250)
 	public String getAttribute() {
 		return attribute;
 	}
@@ -70,7 +70,7 @@ public class CompareValues implements Serializable {
 		this.attribute = attribute;
 	}
 	
-	@Column(updatable = true, name = "single_value", nullable = false)
+	@Column(updatable = true, name = "single_value", nullable = false, length = 250)
 	public String getSingle_value() {
 		return single_value;
 	}
@@ -79,7 +79,7 @@ public class CompareValues implements Serializable {
 		this.single_value = single_value;
 	}
 	
-	@Column(updatable = true, name = "min_value", nullable = false)
+	@Column(updatable = true, name = "min_value", nullable = false, length = 250)
 	public String getMin_value() {
 		return min_value;
 	}
@@ -88,7 +88,7 @@ public class CompareValues implements Serializable {
 		this.min_value = min_value;
 	}
 	
-	@Column(updatable = true, name = "max_value", nullable = false)
+	@Column(updatable = true, name = "max_value", nullable = false, length = 250)
 	public String getMax_value() {
 		return max_value;
 	}

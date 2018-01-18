@@ -10,8 +10,7 @@ private static final SessionFactory sessionFactory;
     static {
         try {
             sessionFactory = new Configuration()
-            		.addAnnotatedClass(Targets.class)
-            		.addAnnotatedClass(ValidationType.class)
+            		.addAnnotatedClass(TargetDatabase.class)
                     .configure().buildSessionFactory();
         } catch (Exception ex) {
             // Log exception!

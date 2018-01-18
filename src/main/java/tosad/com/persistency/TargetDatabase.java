@@ -4,8 +4,8 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 @Entity
-@Table(name="targets")
-public class Targets implements Serializable {
+@Table(name="target_database")
+public class TargetDatabase implements Serializable {
 	
 	private int id;
 	private String name;
@@ -15,7 +15,7 @@ public class Targets implements Serializable {
 	private String type;
 	
 	@Id
-	@Column(updatable = false, name = "id", nullable = false)
+	@Column(updatable = false, name = "target_id", nullable = false, unique = true)
 	public int getId() {
 		return id;
 	}
@@ -24,7 +24,7 @@ public class Targets implements Serializable {
 		this.id = id;
 	}
 	
-	@Column(updatable = true, name = "name", nullable = true, length = 200)
+	@Column(updatable = true, name = "name", nullable = true, length = 250)
 	public String getName() {
 		return name;
 	}
@@ -33,7 +33,7 @@ public class Targets implements Serializable {
 		this.name = name;
 	}
 
-	@Column(updatable = true, name = "username", nullable = true, length = 200)
+	@Column(updatable = true, name = "username", nullable = true, length = 250)
 	public String getUsername() {
 		return username;
 	}
@@ -42,7 +42,7 @@ public class Targets implements Serializable {
 		this.username = username;
 	}
 
-	@Column(updatable = true, name = "password", nullable = true, length = 200)
+	@Column(updatable = true, name = "password", nullable = true, length = 250)
 	public String getPassword() {
 		return password;
 	}
@@ -51,7 +51,7 @@ public class Targets implements Serializable {
 		this.password = password;
 	}
 
-	@Column(updatable = true, name = "connection", nullable = true, length = 200)
+	@Column(updatable = true, name = "connection", nullable = true, length = 250)
 	public String getConnection() {
 		return connection;
 	}
@@ -60,7 +60,7 @@ public class Targets implements Serializable {
 		this.connection = connection;
 	}
 
-	@Column(updatable = true, name = "type", nullable = true, length = 200)
+	@Column(updatable = true, name = "type", nullable = true, length = 250)
 	public String getType() {
 		return type;
 	}

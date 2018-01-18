@@ -17,7 +17,7 @@ public class Operator implements Serializable {
 	private String number_of_values;
 	
 	@Id
-	@Column(updatable = false, name = "id", nullable = false)
+	@Column(updatable = false, name = "operator_id", nullable = false, unique = true)
 	public int getId() {
 		return id;
 	}
