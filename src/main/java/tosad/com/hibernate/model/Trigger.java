@@ -39,7 +39,7 @@ public class Trigger implements Serializable {
 
 	@Column(name = "execution_level_translations", nullable = false, length = 4000)
 	private String executionLevelTranslations;
-
+	
 	public int getId() {
 		return id;
 	}

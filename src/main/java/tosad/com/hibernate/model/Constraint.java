@@ -26,4 +26,8 @@ public class Constraint implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "id")
 	private ValidationType validationType;
+	
+	@ManyToOne
+	@JoinColumn(name = "id")
+	private TargetDatabaseType databaseType;
 }
