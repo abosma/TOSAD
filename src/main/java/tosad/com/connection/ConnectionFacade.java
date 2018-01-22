@@ -9,4 +9,8 @@ public class ConnectionFacade {
 	public List<String> GetTableNames(int targetDBID){
 		return cc.GetTableNames(targetDBID);
 	}
+	
+	public List<String> GetColumnNames(int targetDBID, String tableName){
+		return cc.GetColumnNames(targetDBID, tableName);
+	}
 }

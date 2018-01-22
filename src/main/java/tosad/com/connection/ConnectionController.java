@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +51,39 @@ public class ConnectionController {
 			ses.close();
 		}
 		
+	}
+	
+	public List<String> GetColumnNames(int targetDBID, String tableName){
+		Session ses = HibernateUtil.getSession();
+		Transaction t = null;
+		List<String> columnNames = new ArrayList<String>();
+		
+		try {
+			t = ses.beginTransaction();
+			TargetDatabase td = (TargetDatabase)ses.get(TargetDatabase.class, targetDBID);
+			Connection c = GetTargetConnection(td.getDBType(), td.getConnection(), td.getPassword(), td.getUsername());
+			Statement stmt = c.createStatement();
+			
+			DatabaseMetaData meta = c.getMetaData();
+			ResultSet rs = meta.getColumns(null, null, tableName, null);
+
+		    while (rs.next()) {
+		      String columnName = rs.getString("COLUMN_NAME");
+		      columnNames.add(columnName);
+		    }
+		    
+		    c.close();
+		    
+		    return columnNames;
+			
+		}catch(HibernateException he) {
+			if(t != null) {
+				t.rollback();
+			}
+			he.printStackTrace();
+		} finally {
+			ses.close();
+		}
 	}
 	
 	public Connection GetTargetConnection(String type, String conString, String ww, String user) throws SQLException {
