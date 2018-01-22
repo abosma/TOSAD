@@ -3,12 +3,16 @@ package tosad.com.hibernate.model;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
+@Entity
+@Table( name = "rule_templates" )
 public class RuleTemplate implements Serializable {
 
 	/**
@@ -17,26 +21,26 @@ public class RuleTemplate implements Serializable {
 	private static final long serialVersionUID = -6054864025894349903L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
-	
-	@Column(name="template", nullable=false, length=4000)
+
+	@Column(name = "template", nullable = false, length = 4000)
 	private String template;
-	
+
 	@ManyToOne
-	@JoinColumn(name="id")
+	@JoinColumn(name = "id")
 	private TargetDatabaseType targetDatabaseType;
-	
+
 	@ManyToOne
-	@JoinColumn(name="id")
+	@JoinColumn(name = "id")
 	private BusinessRuleType businessRuleType;
-	
+
 	@ManyToOne
-	@JoinColumn(name="id")
+	@JoinColumn(name = "id")
 	private ValidationType validationType;
-	
+
 	@ManyToOne
-	@JoinColumn(name="id")
+	@JoinColumn(name = "id")
 	private Operator operator;
 
 	public int getId() {

@@ -7,29 +7,31 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
-public class ValidationType implements Serializable{
+@Table( name = "validation_types" )
+public class ValidationType implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4492094324932546120L;
-	
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
-	
-	@Column(name="validation_type")
+
+	@Column(name = "validation_type")
 	private String validationType;
-	
-	@Column(name="execution_type")
+
+	@Column(name = "execution_type")
 	private String executionType;
-	
-	@Column(name="execution_level")
+
+	@Column(name = "execution_level")
 	private String executionLevel;
-	
-	@Column(name="trigger_level")
+
+	@Column(name = "trigger_level")
 	private String triggerLevel;
 
 	public int getId() {

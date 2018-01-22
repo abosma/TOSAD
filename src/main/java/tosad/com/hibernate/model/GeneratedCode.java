@@ -13,7 +13,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "generated_code")
+@Table(name = "generated_codes")
 public class GeneratedCode implements Serializable {
 
 	/**

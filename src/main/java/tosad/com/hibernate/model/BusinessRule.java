@@ -13,54 +13,54 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="business_rules")
+@Table(name = "business_rules")
 public class BusinessRule implements Serializable {
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1293391282912092618L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
-	
-	@Column( name = "name", nullable = false, length = 255)
+
+	@Column(name = "name", nullable = false, length = 255)
 	private String name;
-	
-	@Column( name = "error_message", nullable = true, length = 4000 )
+
+	@Column(name = "error_message", nullable = true, length = 4000)
 	private String errorMessage;
-	
-	@Column( name = "example", nullable = true, length = 4000 )
+
+	@Column(name = "example", nullable = true, length = 4000)
 	private String example;
-	
-	@Column( name = "explanation", nullable = false, length = 4000 )
+
+	@Column(name = "explanation", nullable = false, length = 4000)
 	private String explanation;
-	
-	@Column( name = "referenced_column", nullable = false, length = 255 )
+
+	@Column(name = "referenced_column", nullable = false, length = 255)
 	private String referencedColumn;
-	
-	@Column( name = "referenced_table", nullable = false, length = 255 )
+
+	@Column(name = "referenced_table", nullable = false, length = 255)
 	private String referencedTable;
-	
+
 	@ManyToOne
-	@JoinColumn(name="id")
+	@JoinColumn(name = "id")
 	private Trigger trigger;
-	
-	@ManyToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="id")
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "id")
 	private ValidationType validationType;
-	
-	@ManyToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="id")
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "id")
 	private Operator operator;
-	
-	@ManyToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="id")
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "id")
 	private BusinessRuleType businessRuleType;
-	
-	@ManyToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="id")
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "id")
 	private TargetDatabase targetDatabase;
 
 	public int getId() {

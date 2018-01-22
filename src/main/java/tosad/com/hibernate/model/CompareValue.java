@@ -11,9 +11,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="compare_values")
+@Table(name = "compare_values")
 public class CompareValue implements Serializable {
-	
+
 	/**
 	 * 
 	 */
@@ -22,18 +22,18 @@ public class CompareValue implements Serializable {
 	@Id
 	@GeneratedValue
 	private int id;
-	
+
 	@Column(name = "table", nullable = true, length = 255)
 	private String table;
-	
+
 	@Column(name = "column", nullable = true, length = 255)
 	private String column;
-	
+
 	@Column(name = "value", nullable = true, length = 255)
 	private String value;
 
 	@ManyToOne
-	@JoinColumn(name="id")
+	@JoinColumn(name = "id")
 	private BusinessRule businessRule;
 
 	public int getId() {

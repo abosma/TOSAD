@@ -16,27 +16,24 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="business_rule_types")
+@Table(name = "business_rule_types")
 public class BusinessRuleType implements Serializable {
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 9157483833030449230L;
-	
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 
 	@Column(name = "name", nullable = false, length = 250)
 	private String name;
-	
+
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(
-		name = "business_rule_type_operator",
-		joinColumns = { @JoinColumn(name = "id") },
-		inverseJoinColumns = { @JoinColumn(name="id") } 
-	)
+	@JoinTable(name = "business_rule_type_operator", joinColumns = { @JoinColumn(name = "id") }, inverseJoinColumns = {
+			@JoinColumn(name = "id") })
 	private Set<Operator> operators = new HashSet<>();
 
 	public int getId() {
