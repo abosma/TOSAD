@@ -1,13 +1,12 @@
 package tosad.com.connection;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.List;
 
 public class ConnectionFacade {
 	
 	private ConnectionController cc;
 	
-	public Connection GetToolConnection() throws SQLException {
-		return cc.GetToolConnection();
+	public List<String> GetTableNames(int targetDBID){
+		return cc.GetTableNames(targetDBID);
 	}
 }
