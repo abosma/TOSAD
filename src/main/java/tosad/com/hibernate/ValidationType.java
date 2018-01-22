@@ -1,4 +1,4 @@
-package tosad.com.persistency.model;
+package tosad.com.hibernate;
 
 import javax.persistence.Entity;
 

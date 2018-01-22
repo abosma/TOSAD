@@ -12,14 +12,13 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import tosad.com.persistency.*;
-import tosad.com.util.HibernateUtil;
+import tosad.com.hibernate.*;
 
 public class ConnectionController {
 
 	private ConnectionTemplate ct;
 	
-	public List<String> GetTableNames(int targetDBID){
+	public List<String> GetTableNames(int targetDBID) throws SQLException{
 		Session ses = HibernateUtil.getSession();
 		Transaction t = null;
 		List<String> tableNames = new ArrayList<String>();
@@ -27,7 +26,8 @@ public class ConnectionController {
 		try {
 			t = ses.beginTransaction();
 			TargetDatabase td = (TargetDatabase)ses.get(TargetDatabase.class, targetDBID);
-			Connection c = GetTargetConnection(td.getDBType(), td.getConnection(), td.getPassword(), td.getUsername());
+			TargetDatabaseType tdt = td.getTargetDatabaseType();
+			Connection c = GetTargetConnection(tdt.getName(), td.getConnection(), td.getPassword(), td.getUsername());
 			
 			ResultSet rs = null;
 		    DatabaseMetaData meta = c.getMetaData();
@@ -39,9 +39,6 @@ public class ConnectionController {
 		    }
 		    
 		    c.close();
-		    
-		    return tableNames;
-			
 		}catch(HibernateException he) {
 			if(t != null) {
 				t.rollback();
@@ -51,9 +48,11 @@ public class ConnectionController {
 			ses.close();
 		}
 		
+		return tableNames;
+		
 	}
 	
-	public List<String> GetColumnNames(int targetDBID, String tableName){
+	public List<String> GetColumnNames(int targetDBID, String tableName) throws SQLException{
 		Session ses = HibernateUtil.getSession();
 		Transaction t = null;
 		List<String> columnNames = new ArrayList<String>();
@@ -61,7 +60,8 @@ public class ConnectionController {
 		try {
 			t = ses.beginTransaction();
 			TargetDatabase td = (TargetDatabase)ses.get(TargetDatabase.class, targetDBID);
-			Connection c = GetTargetConnection(td.getDBType(), td.getConnection(), td.getPassword(), td.getUsername());
+			TargetDatabaseType tdt = td.getTargetDatabaseType();
+			Connection c = GetTargetConnection(tdt.getName(), td.getConnection(), td.getPassword(), td.getUsername());
 			Statement stmt = c.createStatement();
 			
 			DatabaseMetaData meta = c.getMetaData();
@@ -73,9 +73,6 @@ public class ConnectionController {
 		    }
 		    
 		    c.close();
-		    
-		    return columnNames;
-			
 		}catch(HibernateException he) {
 			if(t != null) {
 				t.rollback();
@@ -84,6 +81,7 @@ public class ConnectionController {
 		} finally {
 			ses.close();
 		}
+		return columnNames;
 	}
 	
 	public Connection GetTargetConnection(String type, String conString, String ww, String user) throws SQLException {
