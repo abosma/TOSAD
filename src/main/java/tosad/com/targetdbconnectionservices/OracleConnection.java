@@ -1,15 +1,15 @@
-package tosad.com.connection;
+package tosad.com.targetdbconnectionservices;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class MySQLConnection extends ConnectionTemplate{
+public class OracleConnection extends ConnectionTemplate {
 
 	Connection connection = null;
 
 	public String GetConnectionString(String conString) {
-		return "jdbc:mysql://" + conString;
+		return "jdbc:oracle:thin:@//" + conString;
 	}
 
 	@Override
