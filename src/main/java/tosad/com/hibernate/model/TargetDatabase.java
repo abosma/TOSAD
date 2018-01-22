@@ -1,10 +1,10 @@
-package tosad.com.hibernate;
+package tosad.com.hibernate.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "target_database")
+@Table(name = "target_databases")
 public class TargetDatabase implements Serializable {
 
 	/**
@@ -13,7 +13,7 @@ public class TargetDatabase implements Serializable {
 	private static final long serialVersionUID = -9141646972166988519L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 
 	@Column(name = "name", nullable = false, length = 255)

@@ -1,4 +1,4 @@
-package tosad.com.hibernate;
+package tosad.com.hibernate.model;
 
 import java.io.Serializable;
 
@@ -13,7 +13,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "generated_code")
+@Table(name = "generated_codes")
 public class GeneratedCode implements Serializable {
 
 	/**
