@@ -1,4 +1,4 @@
-package tosad.com.connection;
+package tosad.com.targetdbconnectionservices;
 
 import java.util.List;
 

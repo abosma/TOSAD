@@ -1,4 +1,4 @@
-package tosad.com.connection;
+package tosad.com.targetdbconnectionservices;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
