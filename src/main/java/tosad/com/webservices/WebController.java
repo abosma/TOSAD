@@ -21,7 +21,7 @@ public class WebController {
 	@Produces("application/json")
 	public String GetTables(@PathParam("dbid") int targetDBID) throws SQLException {
 		ConnectionFacade cf = new ConnectionFacade();
-		List<String> tableNames = cf.GetTableNames(targetDBID);
+		List<String> tableNames = cf.getTableNames(targetDBID);
 		
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 		JsonObjectBuilder objectBuilder = Json.createObjectBuilder().add("tables", arrayBuilder);
@@ -37,7 +37,7 @@ public class WebController {
 	public String GetColumns(@PathParam("dbid") int targetDBID,
 							  @PathParam("tablename") String tableName) throws SQLException {
 		ConnectionFacade cf = new ConnectionFacade();
-		List<String> columnNames = cf.GetColumnNames(targetDBID, tableName);
+		List<String> columnNames = cf.getColumnNames(targetDBID, tableName);
 		
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 		JsonObjectBuilder objectBuilder = Json.createObjectBuilder().add("columns", arrayBuilder);

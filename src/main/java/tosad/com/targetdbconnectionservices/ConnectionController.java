@@ -16,9 +16,9 @@ import tosad.com.hibernate.*;
 
 public class ConnectionController {
 
-	private ConnectionTemplate ct;
+	private ConnectionTemplate connectionTemplate;
 	
-	public List<String> GetTableNames(int targetDBID) throws SQLException{
+	public List<String> getTableNames(int targetDBID) throws SQLException{
 		Session ses = HibernateUtil.getSession();
 		Transaction t = null;
 		List<String> tableNames = new ArrayList<String>();
@@ -27,7 +27,7 @@ public class ConnectionController {
 			t = ses.beginTransaction();
 			TargetDatabase td = (TargetDatabase)ses.get(TargetDatabase.class, targetDBID);
 			TargetDatabaseType tdt = td.getTargetDatabaseType();
-			Connection c = GetTargetConnection(tdt.getName(), td.getConnection(), td.getPassword(), td.getUsername());
+			Connection c = getTargetConnection(tdt.getName(), td.getConnection(), td.getPassword(), td.getUsername());
 			
 			ResultSet rs = null;
 		    DatabaseMetaData meta = c.getMetaData();
@@ -52,7 +52,7 @@ public class ConnectionController {
 		
 	}
 	
-	public List<String> GetColumnNames(int targetDBID, String tableName) throws SQLException{
+	public List<String> getColumnNames(int targetDBID, String tableName) throws SQLException{
 		Session ses = HibernateUtil.getSession();
 		Transaction t = null;
 		List<String> columnNames = new ArrayList<String>();
@@ -61,7 +61,7 @@ public class ConnectionController {
 			t = ses.beginTransaction();
 			TargetDatabase td = (TargetDatabase)ses.get(TargetDatabase.class, targetDBID);
 			TargetDatabaseType tdt = td.getTargetDatabaseType();
-			Connection c = GetTargetConnection(tdt.getName(), td.getConnection(), td.getPassword(), td.getUsername());
+			Connection c = getTargetConnection(tdt.getName(), td.getConnection(), td.getPassword(), td.getUsername());
 			Statement stmt = c.createStatement();
 			
 			DatabaseMetaData meta = c.getMetaData();
@@ -84,16 +84,16 @@ public class ConnectionController {
 		return columnNames;
 	}
 	
-	public Connection GetTargetConnection(String type, String conString, String ww, String user) throws SQLException {
-		Connection c = null;
+	public Connection getTargetConnection(String type, String conString, String ww, String user) throws SQLException {
+		Connection connection = null;
 		
 		switch(type) {
-			case "Oracle": 	 ct = new OracleConnection();
-						     c = ct.Connect(conString, ww, user);
-			case "Postgres": ct = new PostgresConnection();
-							 c = ct.Connect(conString, ww, user);
+			case "Oracle": 	 connectionTemplate = new OracleConnection();
+						     connection = connectionTemplate.Connect(conString, ww, user);
+			case "Postgres": connectionTemplate = new PostgresConnection();
+							 connection = connectionTemplate.Connect(conString, ww, user);
 		}
 		
-		return c;
+		return connection;
 	}
 }

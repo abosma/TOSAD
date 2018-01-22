@@ -7,11 +7,11 @@ public class ConnectionFacade {
 	
 	private ConnectionController cc;
 	
-	public List<String> GetTableNames(int targetDBID) throws SQLException{
-		return cc.GetTableNames(targetDBID);
+	public List<String> getTableNames(int targetDBID) throws SQLException{
+		return cc.getTableNames(targetDBID);
 	}
 	
-	public List<String> GetColumnNames(int targetDBID, String tableName) throws SQLException{
-		return cc.GetColumnNames(targetDBID, tableName);
+	public List<String> getColumnNames(int targetDBID, String tableName) throws SQLException{
+		return cc.getColumnNames(targetDBID, tableName);
 	}
 }
