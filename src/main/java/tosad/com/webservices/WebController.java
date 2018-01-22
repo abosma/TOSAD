@@ -1,5 +1,6 @@
 package tosad.com.webservices;
 
+import java.sql.SQLException;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -18,7 +19,7 @@ public class WebController {
 	@GET
 	@Path("/gettabellen/{dbid}")
 	@Produces("application/json")
-	public String GetTables(@PathParam("dbid") int targetDBID) {
+	public String GetTables(@PathParam("dbid") int targetDBID) throws SQLException {
 		ConnectionFacade cf = new ConnectionFacade();
 		List<String> tableNames = cf.GetTableNames(targetDBID);
 		
@@ -34,7 +35,7 @@ public class WebController {
 	@Path("/getkollomen/{dbid}/{tablename}")
 	@Produces("application/json")
 	public String GetColumns(@PathParam("dbid") int targetDBID,
-							  @PathParam("tablename") String tableName) {
+							  @PathParam("tablename") String tableName) throws SQLException {
 		ConnectionFacade cf = new ConnectionFacade();
 		List<String> columnNames = cf.GetColumnNames(targetDBID, tableName);
 		
