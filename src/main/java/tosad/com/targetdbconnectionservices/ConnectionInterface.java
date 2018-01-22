@@ -4,6 +4,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface ConnectionInterface {
-	public List<String> GetTableNames(int targetDatabaseID) throws SQLException;
-	public List<String> GetColumnNames(int targetDatabaseId)
+	public List<String> getTableNames(int targetDatabaseId) throws SQLException;
+	public List<String> getColumnNames(int targetDatabaseId, String tableName) throws SQLException;
 }

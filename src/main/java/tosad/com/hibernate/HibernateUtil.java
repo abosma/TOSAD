@@ -6,6 +6,7 @@ import org.hibernate.cfg.*;
 import tosad.com.hibernate.model.BusinessRule;
 import tosad.com.hibernate.model.BusinessRuleType;
 import tosad.com.hibernate.model.CompareValue;
+import tosad.com.hibernate.model.Constraint;
 import tosad.com.hibernate.model.GeneratedCode;
 import tosad.com.hibernate.model.Operator;
 import tosad.com.hibernate.model.RuleTemplate;
@@ -23,17 +24,18 @@ private static final SessionFactory sessionFactory;
             		.addAnnotatedClass(BusinessRule.class)
             		.addAnnotatedClass(BusinessRuleType.class)
             		.addAnnotatedClass(CompareValue.class)
+            		.addAnnotatedClass(Constraint.class)
             		.addAnnotatedClass(GeneratedCode.class)
             		.addAnnotatedClass(Operator.class)
             		.addAnnotatedClass(RuleTemplate.class)
+            		.addAnnotatedClass(TargetDatabase.class)
             		.addAnnotatedClass(TargetDatabaseType.class)
             		.addAnnotatedClass(Trigger.class)
             		.addAnnotatedClass(ValidationType.class)
-            		.addAnnotatedClass(TargetDatabase.class)
                     .configure().buildSessionFactory();
-        } catch (Exception ex) {
-            // Log exception!
-            throw new ExceptionInInitializerError(ex);
+        } catch (Exception exception) {
+            // Throw exception!
+            throw new ExceptionInInitializerError(exception);
         }
     }
 

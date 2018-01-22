@@ -8,14 +8,14 @@ public class MySQLConnection extends ConnectionTemplate{
 
 	Connection connection = null;
 
-	public String GetConnectionString(String conString) {
-		return "jdbc:mysql://" + conString;
+	public String getConnectionString(String connectionString) {
+		return "jdbc:mysql://" + connectionString;
 	}
 
 	@Override
-	Connection CreateConnection(String conString, String ww, String user) throws SQLException {
+	Connection createConnection(String connectionString, String password, String username) throws SQLException {
 		try {
-			connection = DriverManager.getConnection(this.GetConnectionString(conString), user, ww);
+			connection = DriverManager.getConnection(this.getConnectionString(connectionString), username, password);
 		} catch (SQLException e) {
 			System.out.println("Connection Failed! Check output console");
 			e.printStackTrace();

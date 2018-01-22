@@ -2,6 +2,7 @@ package tosad.com.webservices;
 
 import java.sql.SQLException;
 import java.util.List;
+
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
@@ -10,18 +11,20 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import tosad.com.targetdbconnectionservices.ConnectionFacade;
+import tosad.com.targetdbconnectionservices.ConnectionController;
+import tosad.com.targetdbconnectionservices.ConnectionInterface;
 
 
 @Path("/get")
 public class WebController {
 	
 	@GET
-	@Path("/gettabellen/{dbid}")
+	@Path("/gettables/{database_id}")
 	@Produces("application/json")
-	public String GetTables(@PathParam("dbid") int targetDBID) throws SQLException {
-		ConnectionFacade cf = new ConnectionFacade();
-		List<String> tableNames = cf.getTableNames(targetDBID);
+	public String getTables(@PathParam("database_id") int targetDatabaseId) throws SQLException {
+		ConnectionInterface connectionInterface = new ConnectionController();
+		
+		List<String> tableNames = connectionInterface.getTableNames(targetDatabaseId);
 		
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 		JsonObjectBuilder objectBuilder = Json.createObjectBuilder().add("tables", arrayBuilder);
@@ -32,12 +35,13 @@ public class WebController {
 	}
 	
 	@GET
-	@Path("/getkollomen/{dbid}/{tablename}")
+	@Path("/gettablecolumns/{database_id}/{tablename}")
 	@Produces("application/json")
-	public String GetColumns(@PathParam("dbid") int targetDBID,
+	public String getColumns(@PathParam("database_id") int targetDatabaseId,
 							  @PathParam("tablename") String tableName) throws SQLException {
-		ConnectionFacade cf = new ConnectionFacade();
-		List<String> columnNames = cf.getColumnNames(targetDBID, tableName);
+		
+		ConnectionInterface connectionInterface = new ConnectionController();
+		List<String> columnNames = connectionInterface.getColumnNames(targetDatabaseId, tableName);
 		
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 		JsonObjectBuilder objectBuilder = Json.createObjectBuilder().add("columns", arrayBuilder);

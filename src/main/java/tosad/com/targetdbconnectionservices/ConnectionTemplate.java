@@ -5,10 +5,10 @@ import java.sql.SQLException;
 
 public abstract class ConnectionTemplate {
 
-	abstract Connection CreateConnection(String conString, String ww, String user) throws SQLException;
+	abstract Connection createConnection(String connectionString, String password, String username) throws SQLException;
 	
-	public final Connection Connect(String conString, String ww, String user) throws SQLException {
-		return CreateConnection(conString, ww, user);
+	public final Connection connect(String connectionString, String password, String username) throws SQLException {
+		return createConnection(connectionString, password, username);
 	}
 	
 }

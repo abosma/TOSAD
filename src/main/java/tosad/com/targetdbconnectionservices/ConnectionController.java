@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,88 +11,89 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import tosad.com.hibernate.*;
+import tosad.com.hibernate.HibernateUtil;
 import tosad.com.hibernate.model.TargetDatabase;
 import tosad.com.hibernate.model.TargetDatabaseType;
 
-public class ConnectionController {
+public class ConnectionController implements ConnectionInterface{
 
 	private ConnectionTemplate connectionTemplate;
 	
-	public List<String> getTableNames(int targetDBID) throws SQLException{
-		Session ses = HibernateUtil.getSession();
-		Transaction t = null;
+	@Override
+	public List<String> getTableNames(int targetDatabaseId) throws SQLException{
+		Session session = HibernateUtil.getSession();
+		Transaction transaction = null;
 		List<String> tableNames = new ArrayList<String>();
 		
 		try {
-			t = ses.beginTransaction();
-			TargetDatabase td = (TargetDatabase)ses.get(TargetDatabase.class, targetDBID);
-			TargetDatabaseType tdt = td.getTargetDatabaseType();
-			Connection c = getTargetConnection(tdt.getName(), td.getConnection(), td.getPassword(), td.getUsername());
+			transaction = session.beginTransaction();
+			TargetDatabase targetDatabase = (TargetDatabase)session.get(TargetDatabase.class, targetDatabaseId);
+			TargetDatabaseType targetDatabaseType = targetDatabase.getTargetDatabaseType();
+			Connection connection = getTargetConnection(targetDatabaseType.getName(), targetDatabase.getConnection(), targetDatabase.getPassword(), targetDatabase.getUsername());
 			
-			ResultSet rs = null;
-		    DatabaseMetaData meta = c.getMetaData();
-		    rs = meta.getTables(null, null, null, new String[]{"TABLE"});
+			ResultSet resultSet = null;
+		    DatabaseMetaData databaseMetaData = connection.getMetaData();
+		    resultSet = databaseMetaData.getTables(null, null, null, new String[]{"TABLE"});
 
-		    while (rs.next()) {
-		      String tableName = rs.getString("TABLE_NAME");
+		    while (resultSet.next()) {
+		      String tableName = resultSet.getString("TABLE_NAME");
 		      tableNames.add(tableName);
 		    }
 		    
-		    c.close();
-		}catch(HibernateException he) {
-			if(t != null) {
-				t.rollback();
+		    connection.close();
+		}catch(HibernateException hibernateException) {
+			if(transaction != null) {
+				transaction.rollback();
 			}
-			he.printStackTrace();
+			hibernateException.printStackTrace();
 		} finally {
-			ses.close();
+			session.close();
 		}
 		
 		return tableNames;
 		
 	}
 	
-	public List<String> getColumnNames(int targetDBID, String tableName) throws SQLException{
-		Session ses = HibernateUtil.getSession();
-		Transaction t = null;
+	@Override
+	public List<String> getColumnNames(int targetDatabaseId, String tableName) throws SQLException{
+		Session session = HibernateUtil.getSession();
+		Transaction transaction = null;
 		List<String> columnNames = new ArrayList<String>();
 		
 		try {
-			t = ses.beginTransaction();
-			TargetDatabase td = (TargetDatabase)ses.get(TargetDatabase.class, targetDBID);
-			TargetDatabaseType tdt = td.getTargetDatabaseType();
-			Connection c = getTargetConnection(tdt.getName(), td.getConnection(), td.getPassword(), td.getUsername());
-			Statement stmt = c.createStatement();
+			transaction = session.beginTransaction();
+			TargetDatabase targetDatabase = (TargetDatabase)session.get(TargetDatabase.class, targetDatabaseId);
+			TargetDatabaseType targetDatabaseType = targetDatabase.getTargetDatabaseType();
+			Connection connection = getTargetConnection(targetDatabaseType.getName(), targetDatabase.getConnection(), targetDatabase.getPassword(), targetDatabase.getUsername());
 			
-			DatabaseMetaData meta = c.getMetaData();
-			ResultSet rs = meta.getColumns(null, null, tableName, null);
+			DatabaseMetaData databaseMetaData = connection.getMetaData();
+			ResultSet resultSet = databaseMetaData.getColumns(null, null, tableName, null);
 
-		    while (rs.next()) {
-		      String columnName = rs.getString("COLUMN_NAME");
+		    while (resultSet.next()) {
+		      String columnName = resultSet.getString("COLUMN_NAME");
 		      columnNames.add(columnName);
 		    }
 		    
-		    c.close();
-		}catch(HibernateException he) {
-			if(t != null) {
-				t.rollback();
+		    connection.close();
+		}catch(HibernateException hibernateException) {
+			if(transaction != null) {
+				transaction.rollback();
 			}
-			he.printStackTrace();
+			hibernateException.printStackTrace();
 		} finally {
-			ses.close();
+			session.close();
 		}
 		return columnNames;
 	}
 	
-	public Connection getTargetConnection(String type, String conString, String ww, String user) throws SQLException {
+	public Connection getTargetConnection(String type, String connectionString, String password, String username) throws SQLException {
 		Connection connection = null;
 		
 		switch(type) {
 			case "Oracle": 	 connectionTemplate = new OracleConnection();
-						     connection = connectionTemplate.Connect(conString, ww, user);
+						     connection = connectionTemplate.connect(connectionString, password, username);
 			case "Postgres": connectionTemplate = new PostgresConnection();
-							 connection = connectionTemplate.Connect(conString, ww, user);
+							 connection = connectionTemplate.connect(connectionString, password, username);
 		}
 		
 		return connection;

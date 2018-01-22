@@ -3,29 +3,37 @@ package tosad.com.main;
 import org.hibernate.Session;
 
 import tosad.com.hibernate.*;
+import tosad.com.hibernate.model.BusinessRule;
+import tosad.com.hibernate.model.BusinessRuleType;
+import tosad.com.hibernate.model.CompareValue;
+import tosad.com.hibernate.model.Constraint;
+import tosad.com.hibernate.model.GeneratedCode;
+import tosad.com.hibernate.model.Operator;
+import tosad.com.hibernate.model.RuleTemplate;
+import tosad.com.hibernate.model.TargetDatabase;
+import tosad.com.hibernate.model.TargetDatabaseType;
+import tosad.com.hibernate.model.Trigger;
+import tosad.com.hibernate.model.ValidationType;
 
 public class Main {
 
 	public static void main(String[] argv) {
-		Session ses = HibernateUtil.getSession();
-		BusinessRule br = new BusinessRule();
-		BusinessRuleType brt = new BusinessRuleType();
-		CompareValue cv = new CompareValue();
-		GeneratedCode gc = new GeneratedCode();
-		Operator op = new Operator();
-		RuleTemplate rt = new RuleTemplate();
-		TargetDatabase td = new TargetDatabase();
-		Trigger t = new Trigger();
-		ValidationType vt = new ValidationType();
-		ses.save(br);
-		ses.save(brt);
-		ses.save(cv);
-		ses.save(gc);
-		ses.save(op);
-		ses.save(rt);
-		ses.save(td);
-		ses.save(t);
-		ses.save(vt);
-		ses.close();
+		
+		/* save database scheme */
+		Session hibernateSession = HibernateUtil.getSession();
+		
+		hibernateSession.save(new BusinessRule());
+		hibernateSession.save(new BusinessRuleType());
+		hibernateSession.save(new CompareValue());
+		hibernateSession.save(new Constraint());
+		hibernateSession.save(new GeneratedCode());
+		hibernateSession.save(new Operator());
+		hibernateSession.save(new RuleTemplate());
+		hibernateSession.save(new TargetDatabase());
+		hibernateSession.save(new TargetDatabaseType());
+		hibernateSession.save(new Trigger());
+		hibernateSession.save(new ValidationType());
+		
+		hibernateSession.close();
 	}
 }
