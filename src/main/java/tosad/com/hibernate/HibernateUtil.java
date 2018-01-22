@@ -3,6 +3,17 @@ package tosad.com.hibernate;
 import org.hibernate.*;
 import org.hibernate.cfg.*;
 
+import tosad.com.hibernate.model.BusinessRule;
+import tosad.com.hibernate.model.BusinessRuleType;
+import tosad.com.hibernate.model.CompareValue;
+import tosad.com.hibernate.model.GeneratedCode;
+import tosad.com.hibernate.model.Operator;
+import tosad.com.hibernate.model.RuleTemplate;
+import tosad.com.hibernate.model.TargetDatabase;
+import tosad.com.hibernate.model.TargetDatabaseType;
+import tosad.com.hibernate.model.Trigger;
+import tosad.com.hibernate.model.ValidationType;
+
 public class HibernateUtil {
 
 private static final SessionFactory sessionFactory;

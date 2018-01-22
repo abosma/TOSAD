@@ -1,4 +1,4 @@
-package tosad.com.hibernate;
+package tosad.com.hibernate.model;
 
 import java.io.Serializable;
 import java.util.HashSet;

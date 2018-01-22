@@ -13,6 +13,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import tosad.com.hibernate.*;
+import tosad.com.hibernate.model.TargetDatabase;
+import tosad.com.hibernate.model.TargetDatabaseType;
 
 public class ConnectionController {
 
