@@ -93,12 +93,25 @@ public class GeneratorTestSite {
 		}
 		return result;
 	}
+	
+	private static RuleTemplate registerTemplate(File sourceFile, String name, TargetDatabaseType databaseType){
+		String templateBody = retrieveFileContent(sourceFile);
+
+		RuleTemplate ruleTemplate = new RuleTemplate();
+		ruleTemplate.setName(name);
+		ruleTemplate.setTargetDatabaseType(databaseType);
+		ruleTemplate.setTemplate(templateBody);
+
+		return getExistingOrPersistNew(ruleTemplate);
+
+	}
 
 	public static void main(String[] args) {
 		/*
 		 * Name definitions
 		 */
 		final String ATTR_RANGE_RULE = "attribute_range_rule";
+		final String ATTR_COMPARE_RULE = "attribute_compare_rule";
 
 		// create session
 		if (!LOCAL_TESTING)
@@ -107,18 +120,26 @@ public class GeneratorTestSite {
 		/*
 		 * TARGET DASTABASE TYPES
 		 */
-		TargetDatabaseType targetDatabaseType = new TargetDatabaseType();
-		targetDatabaseType.setName("Oracle");
+		TargetDatabaseType targetDatabaseTypeOracle = new TargetDatabaseType();
+		targetDatabaseTypeOracle.setName("Oracle");
 
-		getExistingOrPersistNew(targetDatabaseType);
+		getExistingOrPersistNew(targetDatabaseTypeOracle);
 
 		/*
 		 * BusinessRuleType
 		 */
-		BusinessRuleType businessRuleType = new BusinessRuleType();
-		businessRuleType.setName(ATTR_RANGE_RULE);
+		BusinessRuleType businessRuleTypeARNG = new BusinessRuleType();
+		businessRuleTypeARNG.setName(ATTR_COMPARE_RULE);
 
-		businessRuleType = getExistingOrPersistNew(businessRuleType);
+		businessRuleTypeARNG = getExistingOrPersistNew(businessRuleTypeARNG);
+
+		/*
+		 * BusinessRuleType
+		 */
+		BusinessRuleType businessRuleTypeCMP = new BusinessRuleType();
+		businessRuleTypeCMP.setName(ATTR_COMPARE_RULE);
+
+		businessRuleTypeCMP = getExistingOrPersistNew(businessRuleTypeCMP);
 
 		/*
 		 * TargetDatabase
@@ -129,7 +150,7 @@ public class GeneratorTestSite {
 		targetDatabase.setName("HU_Target_DB");
 		targetDatabase.setPassword("tosad_2017_2a_team1_target");
 		targetDatabase.setUsername("tosad_2017_2a_team1_target");
-		targetDatabase.setTargetDatabaseType(targetDatabaseType);
+		targetDatabase.setTargetDatabaseType(targetDatabaseTypeOracle);
 
 		targetDatabase = getExistingOrPersistNew(targetDatabase);
 
@@ -137,12 +158,23 @@ public class GeneratorTestSite {
 		 * Operator
 		 */
 
-		Operator operator = new Operator();
-		operator.setName("operator_between");
-		operator.setNumberOfValues(2);
-		operator.setValue("operator_between");
+		Operator oracleOperatorBetween = new Operator();
+		oracleOperatorBetween.setName("operator_between");
+		oracleOperatorBetween.setNumberOfValues(2);
+		oracleOperatorBetween.setValue("operator_between");
 
-		operator = getExistingOrPersistNew(operator);
+		oracleOperatorBetween = getExistingOrPersistNew(oracleOperatorBetween);
+
+		/*
+		 * Operator
+		 */
+
+		Operator oracleOperatorLte = new Operator();
+		oracleOperatorLte.setName("operator_lte");
+		oracleOperatorLte.setNumberOfValues(2);
+		oracleOperatorLte.setValue("operator_lte");
+
+		oracleOperatorLte = getExistingOrPersistNew(oracleOperatorLte);
 
 		/*
 		 * Trigger
@@ -174,58 +206,85 @@ public class GeneratorTestSite {
 		 * BusinessRule
 		 */
 
-		BusinessRule businessRule = new BusinessRule();
-		businessRule.setBusinessRuleType(businessRuleType);
-		businessRule.setErrorMessage("Waarde moet tussen x en y liggen");
-		businessRule.setExample("BusinessRuleVoorbeeld");
-		businessRule.setExplanation("Hier nog meer uitleg over de regel");
-		businessRule.setName("BRG_TABLEX_ARNG_01");
-		businessRule.setOperator(operator);
-		businessRule.setReferencedColumn("COLUMN-Y");
-		businessRule.setReferencedTable("TABLE-X");
-		businessRule.setTargetDatabase(targetDatabase);
-		businessRule.setTrigger(trigger);
-		businessRule.addCompareValue(compareValue1);
-		businessRule.addCompareValue(compareValue2);
+		BusinessRule businessRuleARNG = new BusinessRule();
+		businessRuleARNG.setBusinessRuleType(businessRuleTypeCMP);
+		businessRuleARNG.setErrorMessage("Waarde moet tussen x en y liggen");
+		businessRuleARNG.setExample("BusinessRuleVoorbeeld");
+		businessRuleARNG.setExplanation("Hier nog meer uitleg over de regel");
+		businessRuleARNG.setName("BRG_TABLEX_ARNG_01");
+		businessRuleARNG.setOperator(oracleOperatorBetween);
+		businessRuleARNG.setReferencedColumn("COLUMN-Y");
+		businessRuleARNG.setReferencedTable("TABLE-X");
+		businessRuleARNG.setTargetDatabase(targetDatabase);
+		businessRuleARNG.setTrigger(trigger);
+		businessRuleARNG.addCompareValue(compareValue1);
+		businessRuleARNG.addCompareValue(compareValue2);
 
-		businessRule = getExistingOrPersistNew(businessRule);
+		businessRuleARNG = getExistingOrPersistNew(businessRuleARNG);
+
+		/*
+		 * BusinessRule
+		 */
+
+		BusinessRule businessRuleCMP = new BusinessRule();
+		businessRuleCMP.setBusinessRuleType(businessRuleTypeCMP);
+		businessRuleCMP.setErrorMessage(String.format("Waarde moet kleiner dan %s zijn", compareValue2.getValue()));
+		businessRuleCMP.setExample("BusinessRule Compare voorbeeld");
+		businessRuleCMP.setExplanation("Hier nog meer uitleg over de regel");
+		businessRuleCMP.setName("BRG_TABLEX_CMP_01");
+		businessRuleCMP.setOperator(oracleOperatorLte);
+		businessRuleCMP.setReferencedColumn("aantal");
+		businessRuleCMP.setReferencedTable("producten");
+		businessRuleCMP.setTargetDatabase(targetDatabase);
+		businessRuleCMP.setTrigger(trigger);
+		businessRuleCMP.addCompareValue(compareValue2);
+
+		businessRuleCMP = getExistingOrPersistNew(businessRuleCMP);
 
 		/*
 		 * ORACLE TEMPLATES
 		 */
 		// Generic Trigger Template
-		String fileTriggerTemplate = retrieveFileContent(new File("templates/oracle/trigger.template"));
-
-		RuleTemplate templateOracleTrigger = new RuleTemplate();
-		templateOracleTrigger.setName("trigger");
-		templateOracleTrigger.setTargetDatabaseType(targetDatabaseType);
-		templateOracleTrigger.setTemplate(fileTriggerTemplate);
-
-		templateOracleTrigger = getExistingOrPersistNew(templateOracleTrigger);
-
-		// Attribute range rule
-		String fileOracleARNGTemplate = retrieveFileContent(new File("templates/oracle/trigger.template"));
-
-		RuleTemplate templateOracleARNG = new RuleTemplate();
-		templateOracleARNG.setName(ATTR_RANGE_RULE);
-		templateOracleARNG.setTargetDatabaseType(targetDatabaseType);
-		templateOracleARNG.setTemplate(fileOracleARNGTemplate);
-
-		templateOracleARNG = getExistingOrPersistNew(templateOracleARNG);
-
+		RuleTemplate ruleTemplateOracleTrigger = 
+				registerTemplate(new File("templates/oracle/trigger.template"), 							"trigger", 							targetDatabaseTypeOracle);
 		
+		RuleTemplate ruleTemplateOracleAttributeRangeRule = 
+				registerTemplate(new File("templates/oracle/" + ATTR_RANGE_RULE + ".template"), 			ATTR_RANGE_RULE, 					targetDatabaseTypeOracle);
 		
+		RuleTemplate ruleTemplateOracleAttributeCompareRule = 
+				registerTemplate(new File("templates/oracle/" + ATTR_COMPARE_RULE + ".template"), 			ATTR_COMPARE_RULE, 					targetDatabaseTypeOracle);
+		
+		RuleTemplate ruleTemplateOracleAttributeRangeRuleTriggerBody = 
+				registerTemplate(new File("templates/oracle/trigger_" + ATTR_RANGE_RULE + ".template"), 	"trigger_"+ATTR_RANGE_RULE, 		targetDatabaseTypeOracle);
+		
+		RuleTemplate ruleTemplateOracleAttributeCompareRuleTriggerBody = 
+				registerTemplate(new File("templates/oracle/trigger_" + ATTR_COMPARE_RULE + ".template"), 	"trigger_attribute_compare_rule", 	targetDatabaseTypeOracle);
+		
+		RuleTemplate ruleTemplateOracleOperatorBetween = 
+				registerTemplate(new File("templates/oracle/operator_between.template"), 					"operator_between", 				targetDatabaseTypeOracle);
+		
+		RuleTemplate ruleTemplateOracleOperatorLTE = 
+				registerTemplate(new File("templates/oracle/operator_lte.template"), 						"operator_lte", 					targetDatabaseTypeOracle);
+
 		/*
 		 * *** *** *** TEST CODE BELOW *** *** ***
 		 */
-		
-		targetDatabaseType.addTemplate(templateOracleARNG);
-		targetDatabaseType.addTemplate(templateOracleTrigger);
-		
-		GeneratorInterface generator = new Generator();
-		String output = generator.generateSQL(businessRule);
 
-		System.out.println("GENERATED OUPUT: \n" + output);
+		targetDatabaseTypeOracle.addTemplate(ruleTemplateOracleAttributeRangeRule);
+		targetDatabaseTypeOracle.addTemplate(ruleTemplateOracleAttributeCompareRule);
+		targetDatabaseTypeOracle.addTemplate(ruleTemplateOracleTrigger);
+		targetDatabaseTypeOracle.addTemplate(ruleTemplateOracleAttributeRangeRuleTriggerBody);
+		targetDatabaseTypeOracle.addTemplate(ruleTemplateOracleAttributeCompareRuleTriggerBody);
+		targetDatabaseTypeOracle.addTemplate(ruleTemplateOracleOperatorBetween);
+		targetDatabaseTypeOracle.addTemplate(ruleTemplateOracleOperatorLTE);
+
+		GeneratorInterface generator = new Generator();
+		String output = generator.generateSQL(businessRuleARNG);
+
+		System.out.println("Generated output for attribute range rule: \n" + output);
+
+		String outputCMP = generator.generateSQL(businessRuleCMP);
+		System.out.println("\nGenerated output for attribute compare rule\n\n" + outputCMP);
 
 		/*
 		 * *** *** *** END OF TEST CODE *** *** ***
