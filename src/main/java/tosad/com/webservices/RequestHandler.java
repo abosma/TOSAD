@@ -29,6 +29,21 @@ import tosad.com.targetdbconnectionservices.ConnectionInterface;
 
 public class RequestHandler {
 	
+	/**
+	 * Returns JSON with table names based on target database ID given with the GET request. 
+	 * Database ID is based on the path parameter after /restservices/gettables/.
+	 * Calls ConnectionController to get a list of table names, then adds these into a JSON array with a lambda loop.
+	 * 
+	 * JSON format is: {
+	 *                  tables:[
+	 *                          {name: "tablename"}
+	 *                         ]
+	 *                 }
+	 *                 
+	 * @param targetDatabaseId
+	 * @return JSON
+	 * @throws SQLException
+	 */
 	@GET
 	@Path("/gettables/{database_id}")
 	@Produces("application/json")
@@ -63,6 +78,24 @@ public class RequestHandler {
 		return objectBuilder.build().toString();
 	}
 	
+	/**
+	 * Returns JSON with column names based on target database ID and tablename given with the GET request. 
+	 * 
+	 * Calls ConnectionController to get a list of column names, then adds these into a JSON array with a lambda loop.
+	 * JSON format is: {
+	 *                  columns:[
+	 *                           {name: "columnname"}
+	 *                          ]
+	 *                 }
+	 * 
+	 * Database ID is based on the path parameter after /restservices/gettables/.
+	 * Tablename is based on the path parameter after /restservices/gettablecolumn/databaseid/
+	 * 
+	 * @param targetDatabaseId
+	 * @param tableName
+	 * @return JSON
+	 * @throws SQLException
+	 */
 	@GET
 	@Path("/gettablecolumns/{database_id}/{tablename}")
 	@Produces("application/json")
@@ -96,6 +129,19 @@ public class RequestHandler {
 		return objectBuilder.build().toString();
 	}
 	
+	/**
+	 * Returns JSON with true or false, this represents if the code has been generated based on the BusinessRule object.
+	 * Creates a GeneratedCode object with the same ID as businessRuleId, with code generated at Generator.java class.
+	 * It then gets status = 0 due to the generated code not yet being inserted into the target database.
+	 * 
+	 * JSON Format is: {status: "false"/"true"}
+	 * 
+	 * businessrule_id is based on the path parameter after /restservices/generatecode/
+	 * 
+	 * @param businessRuleId
+	 * @return JSON
+	 * @throws SQLException
+	 */
 	@POST
 	@Path("/generatecode/{businessrule_id}")
 	@Produces("application/json")
@@ -136,6 +182,20 @@ public class RequestHandler {
 		return responseBuilder.build().toString();
 	}
 	
+	
+	/**
+	 * Returns JSON with true or false, this represents if the code has been inserted based on the GeneratedCode object.
+	 * Inserts the GeneratedCode object with the given ID into the target database using ConnectionController.insertCode.
+	 * The GeneratedCode object then gets status = 1 due to the generated code being inserted into the target database.
+	 * 
+	 * JSON Format is: {status: "false"/"true"}
+	 * 
+	 * generatedcode_id is based on the path parameter after /restservices/insertcode/
+	 * 
+	 * @param generatedCodeId
+	 * @return JSON
+	 * @throws SQLException
+	 */
 	@POST
 	@Path("/insertcode/{generatedcode_id}")
 	@Produces("application/json")
