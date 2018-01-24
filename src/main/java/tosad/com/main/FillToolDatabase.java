@@ -8,8 +8,6 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 
-import tosad.com.generator.Generator;
-import tosad.com.generator.GeneratorInterface;
 import tosad.com.hibernate.HibernateUtil;
 import tosad.com.hibernate.model.BusinessRule;
 import tosad.com.hibernate.model.BusinessRuleType;
@@ -50,9 +48,10 @@ public class FillToolDatabase {
 		@SuppressWarnings("unchecked")
 		List<T> results = criteria.list();
 
-		if (results.isEmpty()) {
+		if (results.size() < 1) {
+			entityManager.beginTransaction();
 			entityManager.persist(tObject);
-
+			entityManager.getTransaction().commit();
 			return tObject;
 		}
 		if (results.size() > 1) {
