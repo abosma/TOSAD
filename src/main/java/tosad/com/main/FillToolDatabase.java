@@ -8,6 +8,8 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 
+import tosad.com.generator.Generator;
+import tosad.com.generator.GeneratorInterface;
 import tosad.com.hibernate.HibernateUtil;
 import tosad.com.hibernate.model.BusinessRule;
 import tosad.com.hibernate.model.BusinessRuleType;
@@ -201,8 +203,19 @@ public class FillToolDatabase {
 
 		templateOracleARNG = getExistingOrPersistNew(templateOracleARNG, entityManager);
 		
+		/*
+		 * *** *** *** TEST CODE BELOW *** *** ***
+		 */
+		
+		GeneratorInterface generator = new Generator();
+		String output = generator.generateSQL(businessRule);
+		
+		System.out.println("GENERATED OUPUT: \n" + output);
+		
+		/*
+		 * *** *** *** END OF TEST CODE *** *** ***
+		 */
+		
 		entityManager.close();
-
 	}
-
 }
