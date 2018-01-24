@@ -56,9 +56,9 @@ public class RequestHandler {
 		
 		List<String> columnNames = new ArrayList<String>();
 		
-		columnNames.add("Test1");
-		columnNames.add("Test2");
-		columnNames.add("Test3");
+		columnNames.add("Column1");
+		columnNames.add("Column2");
+		columnNames.add("Column3");
 		
 		JsonArrayBuilder columnArrayBuilder = Json.createArrayBuilder();
 		columnNames.forEach(a -> columnArrayBuilder.add(Json.createObjectBuilder().add("name", a)));
