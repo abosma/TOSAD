@@ -27,6 +27,7 @@ import tosad.com.hibernate.model.TargetDatabaseType;
 import tosad.com.targetdbconnectionservices.ConnectionController;
 import tosad.com.targetdbconnectionservices.ConnectionInterface;
 
+@Path("/get")
 public class RequestHandler {
 	
 	/**
