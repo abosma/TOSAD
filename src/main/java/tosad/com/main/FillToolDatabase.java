@@ -213,10 +213,15 @@ public class FillToolDatabase {
 
 		templateOracleARNG = getExistingOrPersistNew(templateOracleARNG);
 
+		
+		
 		/*
 		 * *** *** *** TEST CODE BELOW *** *** ***
 		 */
-
+		
+		targetDatabaseType.addTemplate(templateOracleARNG);
+		targetDatabaseType.addTemplate(templateOracleTrigger);
+		
 		GeneratorInterface generator = new Generator();
 		String output = generator.generateSQL(businessRule);
 
