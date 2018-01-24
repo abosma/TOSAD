@@ -208,13 +208,13 @@ public class GeneratorTestSite {
 
 		BusinessRule businessRuleARNG = new BusinessRule();
 		businessRuleARNG.setBusinessRuleType(businessRuleTypeCMP);
-		businessRuleARNG.setErrorMessage("Waarde moet tussen x en y liggen");
+		businessRuleARNG.setErrorMessage(String.format("Waarde moet tussen %d en %d liggen", compareValue1.getValue(), compareValue2.getValue()));
 		businessRuleARNG.setExample("BusinessRuleVoorbeeld");
 		businessRuleARNG.setExplanation("Hier nog meer uitleg over de regel");
 		businessRuleARNG.setName("BRG_TABLEX_ARNG_01");
 		businessRuleARNG.setOperator(oracleOperatorBetween);
-		businessRuleARNG.setReferencedColumn("COLUMN-Y");
-		businessRuleARNG.setReferencedTable("TABLE-X");
+		businessRuleARNG.setReferencedColumn("score");
+		businessRuleARNG.setReferencedTable("waarderingen");
 		businessRuleARNG.setTargetDatabase(targetDatabase);
 		businessRuleARNG.setTrigger(trigger);
 		businessRuleARNG.addCompareValue(compareValue1);
@@ -244,27 +244,27 @@ public class GeneratorTestSite {
 		/*
 		 * ORACLE TEMPLATES
 		 */
-		// Generic Trigger Template
+		
 		RuleTemplate ruleTemplateOracleTrigger = 
-				registerTemplate(new File("templates/oracle/trigger.template"), 							"trigger", 							targetDatabaseTypeOracle);
+				registerTemplate(new File("templates/oracle/trigger.template"), 							"trigger", 						targetDatabaseTypeOracle);
 		
 		RuleTemplate ruleTemplateOracleAttributeRangeRule = 
-				registerTemplate(new File("templates/oracle/" + ATTR_RANGE_RULE + ".template"), 			ATTR_RANGE_RULE, 					targetDatabaseTypeOracle);
+				registerTemplate(new File("templates/oracle/" + ATTR_RANGE_RULE + ".template"), 			ATTR_RANGE_RULE, 				targetDatabaseTypeOracle);
 		
 		RuleTemplate ruleTemplateOracleAttributeCompareRule = 
-				registerTemplate(new File("templates/oracle/" + ATTR_COMPARE_RULE + ".template"), 			ATTR_COMPARE_RULE, 					targetDatabaseTypeOracle);
+				registerTemplate(new File("templates/oracle/" + ATTR_COMPARE_RULE + ".template"), 			ATTR_COMPARE_RULE, 				targetDatabaseTypeOracle);
 		
 		RuleTemplate ruleTemplateOracleAttributeRangeRuleTriggerBody = 
-				registerTemplate(new File("templates/oracle/trigger_" + ATTR_RANGE_RULE + ".template"), 	"trigger_"+ATTR_RANGE_RULE, 		targetDatabaseTypeOracle);
+				registerTemplate(new File("templates/oracle/trigger_" + ATTR_RANGE_RULE + ".template"), 	"trigger_"+ATTR_RANGE_RULE, 	targetDatabaseTypeOracle);
 		
 		RuleTemplate ruleTemplateOracleAttributeCompareRuleTriggerBody = 
-				registerTemplate(new File("templates/oracle/trigger_" + ATTR_COMPARE_RULE + ".template"), 	"trigger_attribute_compare_rule", 	targetDatabaseTypeOracle);
+				registerTemplate(new File("templates/oracle/trigger_" + ATTR_COMPARE_RULE + ".template"), 	"trigger_"+ATTR_COMPARE_RULE, 	targetDatabaseTypeOracle);
 		
 		RuleTemplate ruleTemplateOracleOperatorBetween = 
-				registerTemplate(new File("templates/oracle/operator_between.template"), 					"operator_between", 				targetDatabaseTypeOracle);
+				registerTemplate(new File("templates/oracle/operator_between.template"), 					"operator_between", 			targetDatabaseTypeOracle);
 		
 		RuleTemplate ruleTemplateOracleOperatorLTE = 
-				registerTemplate(new File("templates/oracle/operator_lte.template"), 						"operator_lte", 					targetDatabaseTypeOracle);
+				registerTemplate(new File("templates/oracle/operator_lte.template"), 						"operator_lte", 				targetDatabaseTypeOracle);
 
 		/*
 		 * *** *** *** TEST CODE BELOW *** *** ***
