@@ -28,19 +28,19 @@ public class RuleTemplate implements Serializable {
 	private String template;
 
 	@ManyToOne
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "id", insertable = false, updatable=false)
 	private TargetDatabaseType targetDatabaseType;
 
 	@ManyToOne
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "id", insertable = false, updatable=false)
 	private BusinessRuleType businessRuleType;
 
 	@ManyToOne
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "id", insertable = false, updatable=false)
 	private ValidationType validationType;
 
 	@ManyToOne
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "id", insertable = false, updatable=false)
 	private Operator operator;
 
 	public int getId() {

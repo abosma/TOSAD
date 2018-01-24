@@ -24,10 +24,10 @@ public class Constraint implements Serializable {
 	private int id;
 
 	@ManyToOne
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "id", insertable = false, updatable=false)
 	private ValidationType validationType;
 	
 	@ManyToOne
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "id", insertable = false, updatable=false)
 	private TargetDatabaseType databaseType;
 }

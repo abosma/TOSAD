@@ -44,23 +44,23 @@ public class BusinessRule implements Serializable {
 	private String referencedTable;
 
 	@ManyToOne
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "id", insertable = false, updatable=false)
 	private Trigger trigger;
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "id", insertable = false, updatable=false)
 	private ValidationType validationType;
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "id", insertable = false, updatable=false)
 	private Operator operator;
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "id", insertable = false, updatable=false)
 	private BusinessRuleType businessRuleType;
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "id", insertable = false, updatable=false)
 	private TargetDatabase targetDatabase;
 
 	public int getId() {

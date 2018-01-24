@@ -19,17 +19,17 @@ public class TargetDatabase implements Serializable {
 	@Column(name = "name", nullable = false, length = 255)
 	private String name;
 
-	@Column(name = "name", nullable = false, length = 255)
+	@Column(name = "username", nullable = false, length = 255)
 	private String username;
 
-	@Column(name = "name", nullable = false, length = 255)
+	@Column(name = "password", nullable = false, length = 255)
 	private String password;
 
-	@Column(name = "name", nullable = false, length = 255)
+	@Column(name = "connection", nullable = false, length = 255)
 	private String connection;
 
 	@ManyToOne
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "id", insertable = false, updatable=false)
 	private TargetDatabaseType targetDatabaseType;
 
 	public int getId() {

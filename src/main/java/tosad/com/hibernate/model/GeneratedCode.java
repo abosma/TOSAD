@@ -32,7 +32,7 @@ public class GeneratedCode implements Serializable {
 	private String code;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "id", insertable = false, updatable=false)
 	private BusinessRule businessRule;
 
 	public int getId() {

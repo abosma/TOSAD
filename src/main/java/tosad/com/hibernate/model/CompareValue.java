@@ -33,7 +33,7 @@ public class CompareValue implements Serializable {
 	private String value;
 
 	@ManyToOne
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "id", insertable = false, updatable=false)
 	private BusinessRule businessRule;
 
 	public int getId() {

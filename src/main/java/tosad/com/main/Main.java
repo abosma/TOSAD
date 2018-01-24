@@ -23,21 +23,23 @@ public class Main {
 	public static void main(String[] argv) {
 		
 //		/* save database scheme */
-//		Session hibernateSession = HibernateUtil.getSession();
-//		
-//		hibernateSession.save(new BusinessRule());
-//		hibernateSession.save(new BusinessRuleType());
-//		hibernateSession.save(new CompareValue());
-//		hibernateSession.save(new Constraint());
-//		hibernateSession.save(new GeneratedCode());
-//		hibernateSession.save(new Operator());
-//		hibernateSession.save(new RuleTemplate());
-//		hibernateSession.save(new TargetDatabase());
-//		hibernateSession.save(new TargetDatabaseType());
-//		hibernateSession.save(new Trigger());
-//		hibernateSession.save(new ValidationType());
-//		
-//		hibernateSession.close();
+		Session hibernateSession = HibernateUtil.getSession();
+		
+		/*
+		hibernateSession.save(new ValidationType());
+		hibernateSession.save(new BusinessRule());
+		hibernateSession.save(new BusinessRuleType());
+		hibernateSession.save(new CompareValue());
+		hibernateSession.save(new Constraint());
+		hibernateSession.save(new GeneratedCode());
+		hibernateSession.save(new Operator());
+		hibernateSession.save(new RuleTemplate());
+		hibernateSession.save(new TargetDatabase());
+		hibernateSession.save(new TargetDatabaseType());
+		hibernateSession.save(new Trigger());
+		*/
+		
+		hibernateSession.close();
 		
 		RequestHandler rh = new RequestHandler();
 		

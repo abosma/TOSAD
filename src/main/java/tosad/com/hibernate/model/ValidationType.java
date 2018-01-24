@@ -37,7 +37,7 @@ public class ValidationType implements Serializable {
 	private String triggerLevel;
 
 	@ManyToOne
-	@JoinColumn( name = "id" )
+	@JoinColumn( name = "id", insertable = false, updatable = false )
 	private Trigger trigger;
 	
 	public int getId() {

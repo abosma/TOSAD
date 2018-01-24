@@ -32,8 +32,8 @@ public class BusinessRuleType implements Serializable {
 	private String name;
 
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "business_rule_type_operator", joinColumns = { @JoinColumn(name = "id") }, inverseJoinColumns = {
-			@JoinColumn(name = "id") })
+	@JoinTable(name = "business_rule_type_operator", joinColumns = { @JoinColumn(name = "id", insertable = false, updatable=false) }, inverseJoinColumns = {
+			@JoinColumn(name = "id", insertable = false, updatable=false) })
 	private Set<Operator> operators = new HashSet<>();
 
 	public int getId() {
