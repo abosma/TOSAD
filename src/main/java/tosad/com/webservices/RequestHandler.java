@@ -1,6 +1,7 @@
 package tosad.com.webservices;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.json.Json;
@@ -16,7 +17,7 @@ import tosad.com.targetdbconnectionservices.ConnectionInterface;
 
 
 @Path("/get")
-public class WebController {
+public class RequestHandler {
 	
 	@GET
 	@Path("/gettables/{database_id}")
@@ -24,7 +25,13 @@ public class WebController {
 	public String getTables(@PathParam("database_id") int targetDatabaseId) throws SQLException {
 		ConnectionInterface connectionInterface = new ConnectionController();
 		
-		List<String> tableNames = connectionInterface.getTableNames(targetDatabaseId);
+		//List<String> tableNames = connectionInterface.getTableNames(targetDatabaseId);
+		
+		List<String> tableNames = new ArrayList<String>();
+		
+		tableNames.add("Test1");
+		tableNames.add("Test2");
+		tableNames.add("Test3");
 		
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 		JsonObjectBuilder objectBuilder = Json.createObjectBuilder().add("tables", arrayBuilder);

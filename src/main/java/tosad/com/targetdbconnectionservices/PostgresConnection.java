@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class PostgresConnection extends ConnectionTemplate {
 
-	Connection connection = null;
+	private Connection connection = null;
 
 	public String getConnectionString(String connectionString) {
 		return "jdbc:postgresql://" + connectionString;
