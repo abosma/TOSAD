@@ -1,12 +1,15 @@
 package tosad.com.webservices;
 
+import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonWriter;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -33,10 +36,11 @@ public class RequestHandler {
 		tableNames.add("Test2");
 		tableNames.add("Test3");
 		
-		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-		JsonObjectBuilder objectBuilder = Json.createObjectBuilder().add("tables", arrayBuilder);
+		JsonArrayBuilder tableArrayBuilder = Json.createArrayBuilder();
+		tableNames.forEach(a -> tableArrayBuilder.add(Json.createObjectBuilder().add("name", a)));
 		
-		tableNames.forEach(a -> arrayBuilder.add(a));
+		JsonArray tableArray = tableArrayBuilder.build();
+		JsonObjectBuilder objectBuilder = Json.createObjectBuilder().add("tables", tableArray);
 		
 		return objectBuilder.build().toString();
 	}
