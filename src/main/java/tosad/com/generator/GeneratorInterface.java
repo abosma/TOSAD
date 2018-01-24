@@ -1,5 +1,7 @@
 package tosad.com.generator;
 
-public interface GeneratorInterface {
+import tosad.com.hibernate.model.BusinessRule;
 
+public interface GeneratorInterface {
+	public String generateSQL(BusinessRule businessRule);
 }

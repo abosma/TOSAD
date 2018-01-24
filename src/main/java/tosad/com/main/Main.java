@@ -41,13 +41,13 @@ public class Main {
 		
 		hibernateSession.close();
 		
-		RequestHandler rh = new RequestHandler();
+		/*RequestHandler rh = new RequestHandler();
 		
 		try {
 			rh.getTables(1);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 	}
 }

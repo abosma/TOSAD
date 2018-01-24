@@ -23,13 +23,13 @@ public class CompareValue implements Serializable {
 	@GeneratedValue
 	private int id;
 
-	@Column(name = "table", nullable = true, length = 255)
+	@Column(name = "table_name", nullable = true, length = 255)
 	private String table;
 
-	@Column(name = "column", nullable = true, length = 255)
+	@Column(name = "column_name", nullable = true, length = 255)
 	private String column;
 
-	@Column(name = "value", nullable = true, length = 255)
+	@Column(name = "value_", nullable = true, length = 255)
 	private String value;
 
 	@ManyToOne
