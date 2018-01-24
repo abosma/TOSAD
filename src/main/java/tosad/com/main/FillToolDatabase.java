@@ -125,10 +125,10 @@ public class FillToolDatabase {
 		 */
 
 		TargetDatabase targetDatabase = new TargetDatabase();
-		targetDatabase.setConnection("");
-		targetDatabase.setName("MyOracleDb");
-		targetDatabase.setPassword("P4$$w0rd");
-		targetDatabase.setUsername("Username");
+		targetDatabase.setConnection("ondora02.hu.nl:8521/cursus02.hu.nl");
+		targetDatabase.setName("HU_Target_DB");
+		targetDatabase.setPassword("tosad_2017_2a_team1_target");
+		targetDatabase.setUsername("tosad_2017_2a_team1_target");
 		targetDatabase.setTargetDatabaseType(targetDatabaseType);
 
 		targetDatabase = getExistingOrPersistNew(targetDatabase);
