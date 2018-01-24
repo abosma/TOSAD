@@ -96,4 +96,13 @@ public class Trigger implements Serializable {
 		this.executionLevelTranslations = executionLevelTranslations;
 	}
 
+	@Override
+	public String toString() {
+		return "Trigger [id=" + this.id + ", type=" + this.type + ", typeTranslation=" + this.typeTranslation
+				+ ", executionType=" + this.executionType + ", executionTypeTranslations="
+				+ this.executionTypeTranslations + ", executionLevel=" + this.executionLevel
+				+ ", executionLevelTranslations=" + this.executionLevelTranslations + "]";
+	}
+	
+	
 }

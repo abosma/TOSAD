@@ -59,4 +59,11 @@ public class BusinessRuleType implements Serializable {
 	public void setOperators(Set<Operator> operators) {
 		this.operators = operators;
 	}
+
+	@Override
+	public String toString() {
+		return "BusinessRuleType [id=" + this.id + ", name=" + this.name + ", operators=" + this.operators + "]";
+	}
+	
+	
 }

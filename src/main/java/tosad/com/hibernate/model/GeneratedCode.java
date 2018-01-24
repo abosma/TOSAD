@@ -66,4 +66,10 @@ public class GeneratedCode implements Serializable {
 	public void setBusinessRule(BusinessRule businessRule) {
 		this.businessRule = businessRule;
 	}
+
+	@Override
+	public String toString() {
+		return "GeneratedCode [id=" + this.id + ", status=" + this.status + ", code=" + this.code + ", businessRule="
+				+ this.businessRule + "]";
+	}
 }

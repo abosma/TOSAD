@@ -75,4 +75,10 @@ public class CompareValue implements Serializable {
 	public void setBusinessRule(BusinessRule businessRule) {
 		this.businessRule = businessRule;
 	}
+
+	@Override
+	public String toString() {
+		return "CompareValue [id=" + this.id + ", table=" + this.table + ", column=" + this.column + ", value="
+				+ this.value + "]";
+	}
 }

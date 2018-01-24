@@ -39,14 +39,16 @@ public class Operator implements Serializable {
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "business_rule_type_operator", joinColumns = { @JoinColumn(name = "id", insertable = false, updatable = false) }, inverseJoinColumns = {
 			@JoinColumn(name = "id", insertable = false, updatable = false) })
-	private Set<Operator> operators = new HashSet<>();
+	private Set<BusinessRuleType> businessRuleTypes = new HashSet<>();
 
 	public int getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public Operator setId(int id) {
 		this.id = id;
+		
+		return this;
 	}
 
 	public String getName() {
@@ -73,12 +75,19 @@ public class Operator implements Serializable {
 		this.numberOfValues = numberOfValues;
 	}
 
-	public Set<Operator> getOperators() {
-		return operators;
+	public Set<BusinessRuleType> getBusinessRuleTypes() {
+		return businessRuleTypes;
 	}
 
-	public void setOperators(Set<Operator> operators) {
-		this.operators = operators;
+	public void setBusinessRuleTypes(Set<BusinessRuleType> businessRuleTypes) {
+		this.businessRuleTypes = businessRuleTypes;
 	}
 
+	@Override
+	public String toString() {
+		return "Operator [id=" + this.id + ", name=" + this.name + ", value=" + this.value + ", numberOfValues="
+				+ this.numberOfValues + "]";
+	}
+
+	
 }

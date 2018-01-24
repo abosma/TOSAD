@@ -79,4 +79,11 @@ public class TargetDatabase implements Serializable {
 	public void setTargetDatabaseType(TargetDatabaseType targetDatabaseType) {
 		this.targetDatabaseType = targetDatabaseType;
 	}
+
+	@Override
+	public String toString() {
+		return "TargetDatabase [id=" + this.id + ", name=" + this.name + ", username=" + this.username + ", password="
+				+ this.password + ", connection=" + this.connection + ", targetDatabaseType=" + this.targetDatabaseType
+				+ "]";
+	}
 }

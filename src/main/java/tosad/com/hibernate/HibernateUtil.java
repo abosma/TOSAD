@@ -20,7 +20,6 @@ private static final SessionFactory sessionFactory;
             		.addAnnotatedClass(TargetDatabase.class)
             		.addAnnotatedClass(TargetDatabaseType.class)
             		.addAnnotatedClass(Trigger.class)
-            		.addAnnotatedClass(ValidationType.class)
                     .configure().buildSessionFactory();
         } catch (Exception exception) {
             // Throw exception!

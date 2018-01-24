@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table( name = "rule_templates" )
+@Table(name = "rule_templates")
 public class RuleTemplate implements Serializable {
 
 	/**
@@ -27,21 +27,12 @@ public class RuleTemplate implements Serializable {
 	@Column(name = "template", nullable = false, length = 4000)
 	private String template;
 
+	@Column(name = "name", nullable = false, length = 255)
+	private String name;
+
 	@ManyToOne
-	@JoinColumn(name = "id", insertable = false, updatable=false)
+	@JoinColumn(name = "id", insertable = false, updatable = false)
 	private TargetDatabaseType targetDatabaseType;
-
-	@ManyToOne
-	@JoinColumn(name = "id", insertable = false, updatable=false)
-	private BusinessRuleType businessRuleType;
-
-	@ManyToOne
-	@JoinColumn(name = "id", insertable = false, updatable=false)
-	private ValidationType validationType;
-
-	@ManyToOne
-	@JoinColumn(name = "id", insertable = false, updatable=false)
-	private Operator operator;
 
 	public int getId() {
 		return id;
@@ -59,6 +50,14 @@ public class RuleTemplate implements Serializable {
 		this.template = template;
 	}
 
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public TargetDatabaseType getTargetDatabaseType() {
 		return targetDatabaseType;
 	}
@@ -67,27 +66,11 @@ public class RuleTemplate implements Serializable {
 		this.targetDatabaseType = targetDatabaseType;
 	}
 
-	public BusinessRuleType getBusinessRuleType() {
-		return businessRuleType;
+	@Override
+	public String toString() {
+		return "RuleTemplate [id=" + this.id + ", name=" + this.name + ", targetDatabaseType=" + this.targetDatabaseType
+				+ "]";
 	}
-
-	public void setBusinessRuleType(BusinessRuleType businessRuleType) {
-		this.businessRuleType = businessRuleType;
-	}
-
-	public ValidationType getValidationType() {
-		return validationType;
-	}
-
-	public void setValidationType(ValidationType validationType) {
-		this.validationType = validationType;
-	}
-
-	public Operator getOperator() {
-		return operator;
-	}
-
-	public void setOperator(Operator operator) {
-		this.operator = operator;
-	}
+	
+	
 }

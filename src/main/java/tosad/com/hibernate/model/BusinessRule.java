@@ -1,6 +1,8 @@
 package tosad.com.hibernate.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -44,24 +47,27 @@ public class BusinessRule implements Serializable {
 	private String referencedTable;
 
 	@ManyToOne
-	@JoinColumn(name = "id", insertable = false, updatable=false)
+	@JoinColumn(name = "id", insertable = false, updatable = false)
 	private Trigger trigger;
 
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "id", insertable = false, updatable=false)
-	private ValidationType validationType;
+	@ManyToOne
+	@JoinColumn(name = "id", insertable = false, updatable = false)
+	private Constraint constraint;
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "id", insertable = false, updatable=false)
+	@JoinColumn(name = "id", insertable = false, updatable = false)
 	private Operator operator;
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "id", insertable = false, updatable=false)
+	@JoinColumn(name = "id", insertable = false, updatable = false)
 	private BusinessRuleType businessRuleType;
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "id", insertable = false, updatable=false)
+	@JoinColumn(name = "id", insertable = false, updatable = false)
 	private TargetDatabase targetDatabase;
+
+	@OneToMany
+	private Set<CompareValue> compareValues = new HashSet<CompareValue>();
 
 	public int getId() {
 		return id;
@@ -103,14 +109,6 @@ public class BusinessRule implements Serializable {
 		this.explanation = explanation;
 	}
 
-	public Trigger getTrigger() {
-		return trigger;
-	}
-
-	public void setTrigger(Trigger trigger) {
-		this.trigger = trigger;
-	}
-
 	public String getReferencedColumn() {
 		return referencedColumn;
 	}
@@ -126,13 +124,21 @@ public class BusinessRule implements Serializable {
 	public void setReferencedTable(String referencedTable) {
 		this.referencedTable = referencedTable;
 	}
-
-	public ValidationType getValidationType() {
-		return validationType;
+	
+	public Trigger getTrigger() {
+		return this.trigger;
 	}
 
-	public void setValidationType(ValidationType validationType) {
-		this.validationType = validationType;
+	public Constraint getConstraint() {
+		return this.constraint;
+	}
+
+	public void setTrigger(Trigger trigger) {
+		this.trigger = trigger;
+	}
+
+	public void setConstraint(Constraint constraint) {
+		this.constraint = constraint;
 	}
 
 	public Operator getOperator() {
@@ -157,5 +163,27 @@ public class BusinessRule implements Serializable {
 
 	public void setTargetDatabase(TargetDatabase targetDatabase) {
 		this.targetDatabase = targetDatabase;
+	}
+	
+	public Set<CompareValue> getCompareValues() {
+		return this.compareValues;
+	}
+
+	public void setCompareValues(Set<CompareValue> compareValues) {
+		this.compareValues = compareValues;
+	}
+	
+	public boolean addCompareValue(CompareValue compareValue){
+		return this.compareValues.add(compareValue);
+	}
+
+	@Override
+	public String toString() {
+		return "BusinessRule [id=" + this.id + ", name=" + this.name + ", errorMessage=" + this.errorMessage
+				+ ", example=" + this.example + ", explanation=" + this.explanation + ", referencedColumn="
+				+ this.referencedColumn + ", referencedTable=" + this.referencedTable + ", trigger=" + this.trigger
+				+ ", constraint=" + this.constraint + ", operator=" + this.operator + ", businessRuleType="
+				+ this.businessRuleType + ", targetDatabase=" + this.targetDatabase + ", compareValues="
+				+ this.compareValues + "]";
 	}
 }
