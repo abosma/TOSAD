@@ -180,6 +180,9 @@ public class RequestHandler {
 		ConnectionInterface connectionInterface = new ConnectionController();
 		connectionInterface.insertCode(targetDatabase, targetDatabaseType, generatedCode);
 		
+		generatedCode.setStatus(1);
+		session.save(generatedCode);
+		
 	}
 	
 }
