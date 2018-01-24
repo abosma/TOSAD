@@ -20,6 +20,18 @@ import tosad.com.hibernate.model.Trigger;
 
 public class FillToolDatabase {
 
+	/**
+	 * getExistingOrPersistNew
+	 * 
+	 * checks if the given databseObject exists in the database.
+	 * If the given object exists, return the found object.
+	 * If there are multiple instances found, return null, because no unique object was found for the given request
+	 * If no objects are found. the given object will be persisted and returned
+	 * 
+	 * @param tObject		the database object to find
+	 * @param entityManager	the entitymanager
+	 * @return				tObject if no replicas are found in the database, the repliace if one object is found, null if multiple objects are gound
+	 */
 	public static <T> T getExistingOrPersistNew(T tObject, Session entityManager) {
 		Example example = Example.create(tObject);
 		
@@ -42,13 +54,19 @@ public class FillToolDatabase {
 		return results.get(0);
 	}
 
-	public static String retrieveTemplate(File template) {
-		if (!(template.exists() && template.isFile()))
+	/**
+	 * Retrieves the contents of a given file
+	 * 
+	 * @param templateFile	the file to scan
+	 * @return				file contents if the file was readable, else null
+	 */
+	public static String retrieveFileContent(File templateFile) {
+		if (!(templateFile.exists() && templateFile.isFile()))
 			return null;
 
 		String result = "";
 		try {
-			FileReader fileReader = new FileReader(template);
+			FileReader fileReader = new FileReader(templateFile);
 
 			int iChr;
 			while ((iChr = fileReader.read()) != -1)
@@ -164,7 +182,7 @@ public class FillToolDatabase {
 		 * ORACLE TEMPLATES
 		 */
 		// Generic Trigger Template
-		String fileTriggerTemplate = retrieveTemplate(new File("templates/oracle/trigger.template"));
+		String fileTriggerTemplate = retrieveFileContent(new File("templates/oracle/trigger.template"));
 
 		RuleTemplate templateOracleTrigger = new RuleTemplate();
 		templateOracleTrigger.setName("trigger");
@@ -174,7 +192,7 @@ public class FillToolDatabase {
 		templateOracleTrigger = getExistingOrPersistNew(templateOracleTrigger, entityManager);
 		
 		// Attribute range rule
-		String fileOracleARNGTemplate = retrieveTemplate(new File("templates/oracle/trigger.template"));
+		String fileOracleARNGTemplate = retrieveFileContent(new File("templates/oracle/trigger.template"));
 		
 		RuleTemplate templateOracleARNG = new RuleTemplate();
 		templateOracleARNG.setName(ATTR_RANGE_RULE);
