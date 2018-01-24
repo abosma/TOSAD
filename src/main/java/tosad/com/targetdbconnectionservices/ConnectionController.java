@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import tosad.com.hibernate.HibernateUtil;
+import tosad.com.hibernate.model.GeneratedCode;
 import tosad.com.hibernate.model.TargetDatabase;
 import tosad.com.hibernate.model.TargetDatabaseType;
 
@@ -55,6 +57,22 @@ public class ConnectionController implements ConnectionInterface{
 	    connection.close();
 	    
 		return columnNames;
+	}
+	
+	@Override
+	public void insertCode(TargetDatabase targetDatabase, TargetDatabaseType targetDatabaseType, GeneratedCode generatedCode) throws SQLException{
+		Statement statement = null;
+		
+		Connection connection = getTargetConnection(targetDatabaseType.getName(), targetDatabase.getConnection(), targetDatabase.getPassword(), targetDatabase.getUsername());
+		String query = generatedCode.getCode();
+		try {
+			statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery(query);
+		} finally {
+			if(statement != null) {
+				statement.close();
+			}
+		}
 	}
 	
 	public Connection getTargetConnection(String type, String connectionString, String password, String username) throws SQLException {

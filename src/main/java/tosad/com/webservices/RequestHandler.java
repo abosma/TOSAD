@@ -8,6 +8,7 @@ import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -16,14 +17,16 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import tosad.com.generator.Generator;
+import tosad.com.generator.GeneratorInterface;
 import tosad.com.hibernate.HibernateUtil;
+import tosad.com.hibernate.model.BusinessRule;
+import tosad.com.hibernate.model.GeneratedCode;
 import tosad.com.hibernate.model.TargetDatabase;
 import tosad.com.hibernate.model.TargetDatabaseType;
 import tosad.com.targetdbconnectionservices.ConnectionController;
 import tosad.com.targetdbconnectionservices.ConnectionInterface;
 
-
-@Path("/get")
 public class RequestHandler {
 	
 	@GET
@@ -45,7 +48,13 @@ public class RequestHandler {
 				transaction.rollback();
 			}
 			hibernateException.printStackTrace();
-		} finally {
+		}catch(NullPointerException nullPointerException) {
+			if(transaction != null) {
+				transaction.rollback();
+			}
+			nullPointerException.printStackTrace();
+			return "";
+		}finally {
 			session.close();
 		}
 		
@@ -81,7 +90,13 @@ public class RequestHandler {
 				transaction.rollback();
 			}
 			hibernateException.printStackTrace();
-		} finally {
+		}catch(NullPointerException nullPointerException) {
+			if(transaction != null) {
+				transaction.rollback();
+			}
+			nullPointerException.printStackTrace();
+			return "";
+		}finally {
 			session.close();
 		}
 		
@@ -96,4 +111,75 @@ public class RequestHandler {
 		
 		return objectBuilder.build().toString();
 	}
+	
+	@POST
+	@Path("/generatecode/{businessrule_id}")
+	@Produces("application/json")
+	public void generateCode(@PathParam("businessrule_id") int businessRuleId) throws SQLException {
+		GeneratorInterface generatorInterface = new Generator();
+		Session session = HibernateUtil.getSession();
+		Transaction transaction = null;
+		BusinessRule businessRule = null;
+		
+		try {
+			transaction = session.beginTransaction();
+			businessRule = (BusinessRule)session.get(BusinessRule.class, businessRuleId);
+		}catch(HibernateException hibernateException) {
+			if(transaction != null) {
+				transaction.rollback();
+			}
+			hibernateException.printStackTrace();
+		}finally {
+			session.close();
+		}
+		
+		if(businessRule != null) {
+			String code = generatorInterface.generateSQL(businessRule);
+			
+			GeneratedCode generatedCode = new GeneratedCode();
+			generatedCode.setCode(code);
+			generatedCode.setBusinessRule(businessRule);
+			generatedCode.setId(businessRule.getId());
+			generatedCode.setStatus(0);
+			
+			session.save(generatedCode);
+		}
+	}
+	
+	@POST
+	@Path("/insertcode/{generatedcode_id}")
+	@Produces("application/json")
+	public void insertCode(@PathParam("generatedcode_id") int generatedCodeId) throws SQLException {
+		Session session = HibernateUtil.getSession();
+		Transaction transaction = null;
+		GeneratedCode generatedCode = null;
+		BusinessRule businessRule = null;
+		TargetDatabase targetDatabase = null;
+		TargetDatabaseType targetDatabaseType = null;
+		
+		try {
+			transaction = session.beginTransaction();
+			generatedCode = (GeneratedCode)session.get(GeneratedCode.class, generatedCodeId);
+			businessRule = generatedCode.getBusinessRule();
+			targetDatabase = businessRule.getTargetDatabase();
+			targetDatabaseType = targetDatabase.getTargetDatabaseType();
+		}catch(HibernateException hibernateException) {
+			if(transaction != null) {
+				transaction.rollback();
+			}
+			hibernateException.printStackTrace();
+		}catch(NullPointerException nullPointerException) {
+			if(transaction != null) {
+				transaction.rollback();
+			}
+			nullPointerException.printStackTrace();
+		}finally {
+			session.close();
+		}
+		
+		ConnectionInterface connectionInterface = new ConnectionController();
+		connectionInterface.insertCode(targetDatabase, targetDatabaseType, generatedCode);
+		
+	}
+	
 }
