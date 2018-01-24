@@ -1,20 +1,24 @@
 package tosad.com.webservices;
 
-import java.io.StringWriter;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
-import javax.json.JsonWriter;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
+import tosad.com.hibernate.HibernateUtil;
+import tosad.com.hibernate.model.TargetDatabase;
+import tosad.com.hibernate.model.TargetDatabaseType;
 import tosad.com.targetdbconnectionservices.ConnectionController;
 import tosad.com.targetdbconnectionservices.ConnectionInterface;
 
@@ -26,15 +30,28 @@ public class RequestHandler {
 	@Path("/gettables/{database_id}")
 	@Produces("application/json")
 	public String getTables(@PathParam("database_id") int targetDatabaseId) throws SQLException {
+		
+		Session session = HibernateUtil.getSession();
+		Transaction transaction = null;
+		TargetDatabase targetDatabase = null;
+		TargetDatabaseType targetDatabaseType = null;
+		
+		try {
+			transaction = session.beginTransaction();
+			targetDatabase = (TargetDatabase)session.get(TargetDatabase.class, targetDatabaseId);
+			targetDatabaseType = targetDatabase.getTargetDatabaseType();
+		}catch(HibernateException hibernateException) {
+			if(transaction != null) {
+				transaction.rollback();
+			}
+			hibernateException.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
 		ConnectionInterface connectionInterface = new ConnectionController();
 		
-		//List<String> tableNames = connectionInterface.getTableNames(targetDatabaseId);
-		
-		List<String> tableNames = new ArrayList<String>();
-		
-		tableNames.add("Test1");
-		tableNames.add("Test2");
-		tableNames.add("Test3");
+		List<String> tableNames = connectionInterface.getTableNames(targetDatabase, targetDatabaseType);
 		
 		JsonArrayBuilder tableArrayBuilder = Json.createArrayBuilder();
 		tableNames.forEach(a -> tableArrayBuilder.add(Json.createObjectBuilder().add("name", a)));
@@ -50,15 +67,26 @@ public class RequestHandler {
 	@Produces("application/json")
 	public String getColumns(@PathParam("database_id") int targetDatabaseId,
 							  @PathParam("tablename") String tableName) throws SQLException {
+		Session session = HibernateUtil.getSession();
+		Transaction transaction = null;
+		TargetDatabase targetDatabase = null;
+		TargetDatabaseType targetDatabaseType = null;
+		
+		try {
+			transaction = session.beginTransaction();
+			targetDatabase = (TargetDatabase)session.get(TargetDatabase.class, targetDatabaseId);
+			targetDatabaseType = targetDatabase.getTargetDatabaseType();
+		}catch(HibernateException hibernateException) {
+			if(transaction != null) {
+				transaction.rollback();
+			}
+			hibernateException.printStackTrace();
+		} finally {
+			session.close();
+		}
 		
 		ConnectionInterface connectionInterface = new ConnectionController();
-		//List<String> columnNames = connectionInterface.getColumnNames(targetDatabaseId, tableName);
-		
-		List<String> columnNames = new ArrayList<String>();
-		
-		columnNames.add("Column1");
-		columnNames.add("Column2");
-		columnNames.add("Column3");
+		List<String> columnNames = connectionInterface.getColumnNames(targetDatabase, targetDatabaseType, tableName);
 		
 		JsonArrayBuilder columnArrayBuilder = Json.createArrayBuilder();
 		columnNames.forEach(a -> columnArrayBuilder.add(Json.createObjectBuilder().add("name", a)));
