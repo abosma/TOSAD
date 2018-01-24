@@ -66,17 +66,23 @@ public class RequestHandler {
 			session.close();
 		}
 		
-		ConnectionInterface connectionInterface = new ConnectionController();
-		
-		List<String> tableNames = connectionInterface.getTableNames(targetDatabase);
-		
-		JsonArrayBuilder tableArrayBuilder = Json.createArrayBuilder();
-		tableNames.forEach(a -> tableArrayBuilder.add(Json.createObjectBuilder().add("name", a)));
-		
-		JsonArray tableArray = tableArrayBuilder.build();
-		JsonObjectBuilder objectBuilder = Json.createObjectBuilder().add("tables", tableArray);
-		
-		return objectBuilder.build().toString();
+		if(targetDatabase != null) {
+			ConnectionInterface connectionInterface = new ConnectionController();
+			
+			List<String> tableNames = connectionInterface.getTableNames(targetDatabase);
+			
+			JsonArrayBuilder tableArrayBuilder = Json.createArrayBuilder();
+			tableNames.forEach(a -> tableArrayBuilder.add(Json.createObjectBuilder().add("name", a)));
+			
+			JsonArray tableArray = tableArrayBuilder.build();
+			JsonObjectBuilder objectBuilder = Json.createObjectBuilder().add("tables", tableArray);
+			
+			return objectBuilder.build().toString();
+		}else {
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add("status", "Geen data");
+			return responseBuilder.build().toString();
+		}
 	}
 	
 	/**
@@ -118,16 +124,22 @@ public class RequestHandler {
 			session.close();
 		}
 		
-		ConnectionInterface connectionInterface = new ConnectionController();
-		List<String> columnNames = connectionInterface.getColumnNames(targetDatabase, tableName);
-		
-		JsonArrayBuilder columnArrayBuilder = Json.createArrayBuilder();
-		columnNames.forEach(a -> columnArrayBuilder.add(Json.createObjectBuilder().add("name", a)));
-		
-		JsonArray columnArray = columnArrayBuilder.build();
-		JsonObjectBuilder objectBuilder = Json.createObjectBuilder().add("columns", columnArray);
-		
-		return objectBuilder.build().toString();
+		if(targetDatabase != null) {
+			ConnectionInterface connectionInterface = new ConnectionController();
+			List<String> columnNames = connectionInterface.getColumnNames(targetDatabase, tableName);
+			
+			JsonArrayBuilder columnArrayBuilder = Json.createArrayBuilder();
+			columnNames.forEach(a -> columnArrayBuilder.add(Json.createObjectBuilder().add("name", a)));
+			
+			JsonArray columnArray = columnArrayBuilder.build();
+			JsonObjectBuilder objectBuilder = Json.createObjectBuilder().add("columns", columnArray);
+			
+			return objectBuilder.build().toString();
+		}else {
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add("status", "Geen data");
+			return responseBuilder.build().toString();
+		}
 	}
 	
 	/**
