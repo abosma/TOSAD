@@ -21,10 +21,14 @@ public class ConnectionController implements ConnectionInterface{
 
 	private ConnectionTemplate connectionTemplate;
 	
+	/*
+	 * Haalt tabelnamen op gebaseerd op de gegeven targetdatabase
+	 */
 	@Override
-	public List<String> getTableNames(TargetDatabase targetDatabase, TargetDatabaseType targetDatabaseType) throws SQLException{
+	public List<String> getTableNames(TargetDatabase targetDatabase) throws SQLException{
 		List<String> tableNames = new ArrayList<String>();
-		Connection connection = getTargetConnection(targetDatabaseType.getName(), targetDatabase.getConnection(), targetDatabase.getPassword(), targetDatabase.getUsername());
+		
+		Connection connection = getTargetConnection(targetDatabase.getTargetDatabaseType().getName(), targetDatabase.getConnection(), targetDatabase.getPassword(), targetDatabase.getUsername());
 		
 		ResultSet resultSet = null;
 	    DatabaseMetaData databaseMetaData = connection.getMetaData();
@@ -42,9 +46,9 @@ public class ConnectionController implements ConnectionInterface{
 	}
 	
 	@Override
-	public List<String> getColumnNames(TargetDatabase targetDatabase, TargetDatabaseType targetDatabaseType, String tableName) throws SQLException{
+	public List<String> getColumnNames(TargetDatabase targetDatabase, String tableName) throws SQLException{
 		List<String> columnNames = new ArrayList<String>();
-		Connection connection = getTargetConnection(targetDatabaseType.getName(), targetDatabase.getConnection(), targetDatabase.getPassword(), targetDatabase.getUsername());
+		Connection connection = getTargetConnection(targetDatabase.getTargetDatabaseType().getName(), targetDatabase.getConnection(), targetDatabase.getPassword(), targetDatabase.getUsername());
 		
 		DatabaseMetaData databaseMetaData = connection.getMetaData();
 		ResultSet resultSet = databaseMetaData.getColumns(null, null, tableName, null);
@@ -60,10 +64,10 @@ public class ConnectionController implements ConnectionInterface{
 	}
 	
 	@Override
-	public boolean insertCode(TargetDatabase targetDatabase, TargetDatabaseType targetDatabaseType, GeneratedCode generatedCode) throws SQLException{
+	public boolean insertCode(TargetDatabase targetDatabase, GeneratedCode generatedCode) throws SQLException{
 		Statement statement = null;
 		
-		Connection connection = getTargetConnection(targetDatabaseType.getName(), targetDatabase.getConnection(), targetDatabase.getPassword(), targetDatabase.getUsername());
+		Connection connection = getTargetConnection(targetDatabase.getTargetDatabaseType().getName(), targetDatabase.getConnection(), targetDatabase.getPassword(), targetDatabase.getUsername());
 		String query = generatedCode.getCode();
 		try {
 			statement = connection.createStatement();
