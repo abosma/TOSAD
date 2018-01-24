@@ -52,12 +52,19 @@ public class RequestHandler {
 							  @PathParam("tablename") String tableName) throws SQLException {
 		
 		ConnectionInterface connectionInterface = new ConnectionController();
-		List<String> columnNames = connectionInterface.getColumnNames(targetDatabaseId, tableName);
+		//List<String> columnNames = connectionInterface.getColumnNames(targetDatabaseId, tableName);
 		
-		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-		JsonObjectBuilder objectBuilder = Json.createObjectBuilder().add("columns", arrayBuilder);
+		List<String> columnNames = new ArrayList<String>();
 		
-		columnNames.forEach(a -> arrayBuilder.add(a));
+		columnNames.add("Test1");
+		columnNames.add("Test2");
+		columnNames.add("Test3");
+		
+		JsonArrayBuilder columnArrayBuilder = Json.createArrayBuilder();
+		columnNames.forEach(a -> columnArrayBuilder.add(Json.createObjectBuilder().add("name", a)));
+		
+		JsonArray columnArray = columnArrayBuilder.build();
+		JsonObjectBuilder objectBuilder = Json.createObjectBuilder().add("columns", columnArray);
 		
 		return objectBuilder.build().toString();
 	}
