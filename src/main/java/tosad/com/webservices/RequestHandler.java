@@ -37,30 +37,22 @@ public class RequestHandler {
 		Session session = HibernateUtil.getSession();
 		Transaction transaction = null;
 		TargetDatabase targetDatabase = null;
-		TargetDatabaseType targetDatabaseType = null;
 		
 		try {
 			transaction = session.beginTransaction();
 			targetDatabase = (TargetDatabase)session.get(TargetDatabase.class, targetDatabaseId);
-			targetDatabaseType = targetDatabase.getTargetDatabaseType();
 		}catch(HibernateException hibernateException) {
 			if(transaction != null) {
 				transaction.rollback();
 			}
 			hibernateException.printStackTrace();
-		}catch(NullPointerException nullPointerException) {
-			if(transaction != null) {
-				transaction.rollback();
-			}
-			nullPointerException.printStackTrace();
-			return "";
 		}finally {
 			session.close();
 		}
 		
 		ConnectionInterface connectionInterface = new ConnectionController();
 		
-		List<String> tableNames = connectionInterface.getTableNames(targetDatabase, targetDatabaseType);
+		List<String> tableNames = connectionInterface.getTableNames(targetDatabase);
 		
 		JsonArrayBuilder tableArrayBuilder = Json.createArrayBuilder();
 		tableNames.forEach(a -> tableArrayBuilder.add(Json.createObjectBuilder().add("name", a)));
@@ -79,29 +71,21 @@ public class RequestHandler {
 		Session session = HibernateUtil.getSession();
 		Transaction transaction = null;
 		TargetDatabase targetDatabase = null;
-		TargetDatabaseType targetDatabaseType = null;
 		
 		try {
 			transaction = session.beginTransaction();
 			targetDatabase = (TargetDatabase)session.get(TargetDatabase.class, targetDatabaseId);
-			targetDatabaseType = targetDatabase.getTargetDatabaseType();
 		}catch(HibernateException hibernateException) {
 			if(transaction != null) {
 				transaction.rollback();
 			}
 			hibernateException.printStackTrace();
-		}catch(NullPointerException nullPointerException) {
-			if(transaction != null) {
-				transaction.rollback();
-			}
-			nullPointerException.printStackTrace();
-			return "";
 		}finally {
 			session.close();
 		}
 		
 		ConnectionInterface connectionInterface = new ConnectionController();
-		List<String> columnNames = connectionInterface.getColumnNames(targetDatabase, targetDatabaseType, tableName);
+		List<String> columnNames = connectionInterface.getColumnNames(targetDatabase, tableName);
 		
 		JsonArrayBuilder columnArrayBuilder = Json.createArrayBuilder();
 		columnNames.forEach(a -> columnArrayBuilder.add(Json.createObjectBuilder().add("name", a)));
@@ -163,14 +147,12 @@ public class RequestHandler {
 		GeneratedCode generatedCode = null;
 		BusinessRule businessRule = null;
 		TargetDatabase targetDatabase = null;
-		TargetDatabaseType targetDatabaseType = null;
 		
 		try {
 			transaction = session.beginTransaction();
 			generatedCode = (GeneratedCode)session.get(GeneratedCode.class, generatedCodeId);
 			businessRule = generatedCode.getBusinessRule();
 			targetDatabase = businessRule.getTargetDatabase();
-			targetDatabaseType = targetDatabase.getTargetDatabaseType();
 		}catch(HibernateException hibernateException) {
 			if(transaction != null) {
 				transaction.rollback();
@@ -185,7 +167,7 @@ public class RequestHandler {
 			session.close();
 		}
 		
-		boolean hasInserted = connectionInterface.insertCode(targetDatabase, targetDatabaseType, generatedCode);
+		boolean hasInserted = connectionInterface.insertCode(targetDatabase, generatedCode);
 		
 		if(hasInserted) {
 			generatedCode.setStatus(1);
