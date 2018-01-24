@@ -10,5 +10,5 @@ import tosad.com.hibernate.model.TargetDatabaseType;
 public interface ConnectionInterface {
 	public List<String> getTableNames(TargetDatabase targetDatabase, TargetDatabaseType targetDatabaseType) throws SQLException;
 	public List<String> getColumnNames(TargetDatabase targetDatabase, TargetDatabaseType targetDatabaseType, String tableName) throws SQLException;
-	public void insertCode(TargetDatabase targetDatabase, TargetDatabaseType targetDatabaseType, GeneratedCode generatedCode) throws SQLException;
+	public boolean insertCode(TargetDatabase targetDatabase, TargetDatabaseType targetDatabaseType, GeneratedCode generatedCode) throws SQLException;
 }

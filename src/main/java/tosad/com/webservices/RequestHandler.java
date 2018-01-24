@@ -115,7 +115,8 @@ public class RequestHandler {
 	@POST
 	@Path("/generatecode/{businessrule_id}")
 	@Produces("application/json")
-	public void generateCode(@PathParam("businessrule_id") int businessRuleId) throws SQLException {
+	public String generateCode(@PathParam("businessrule_id") int businessRuleId) throws SQLException {
+		JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
 		GeneratorInterface generatorInterface = new Generator();
 		Session session = HibernateUtil.getSession();
 		Transaction transaction = null;
@@ -143,13 +144,20 @@ public class RequestHandler {
 			generatedCode.setStatus(0);
 			
 			session.save(generatedCode);
+			responseBuilder.add("status", "true");
+		} else {
+			responseBuilder.add("status", "false");
 		}
+		
+		return responseBuilder.build().toString();
 	}
 	
 	@POST
 	@Path("/insertcode/{generatedcode_id}")
 	@Produces("application/json")
-	public void insertCode(@PathParam("generatedcode_id") int generatedCodeId) throws SQLException {
+	public String insertCode(@PathParam("generatedcode_id") int generatedCodeId) throws SQLException {
+		ConnectionInterface connectionInterface = new ConnectionController();
+		JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
 		Session session = HibernateUtil.getSession();
 		Transaction transaction = null;
 		GeneratedCode generatedCode = null;
@@ -177,12 +185,17 @@ public class RequestHandler {
 			session.close();
 		}
 		
-		ConnectionInterface connectionInterface = new ConnectionController();
-		connectionInterface.insertCode(targetDatabase, targetDatabaseType, generatedCode);
+		boolean hasInserted = connectionInterface.insertCode(targetDatabase, targetDatabaseType, generatedCode);
 		
-		generatedCode.setStatus(1);
-		session.save(generatedCode);
+		if(hasInserted) {
+			generatedCode.setStatus(1);
+			session.save(generatedCode);
+			responseBuilder.add("status", "true");
+		}else {
+			responseBuilder.add("status", "false");
+		}
 		
+		return responseBuilder.build().toString();
 	}
 	
 }
