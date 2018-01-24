@@ -50,10 +50,33 @@ public class Generator implements GeneratorInterface {
 		Matcher matcher = regexp.matcher(actualTemplate);
 		
 		while(matcher.find()){
-			actualTemplate = actualTemplate.replace(matcher.group(0), "---CHECK---");
+			
+			String replaceArg = matcher.group(0);
+			
+			String actualArg = replaceArg.substring(1, replaceArg.length() - 1);
+			
+			String replacement = "";
+			
+			switch (actualArg) {
+			case "trigger_indentifier": replacement = businessRule.getName(); break;
+			case "trigger_execution": replacement = businessRule.getTrigger().getExecutionLevel(); break;
+			case "trigger_types": replacement = businessRule.getTrigger().getExecutionType(); break;
+			case "table_name": replacement = businessRule.getReferencedTable(); break;
+			case "condition": replacement = generateTriggerCondition(businessRule, databaseType); break;
+			case "error_text": replacement = businessRule.getErrorMessage(); break;
+			default:
+				break;
+			}
+			
+			actualTemplate = actualTemplate.replace(replaceArg, replacement);
 		}
 		
 		System.out.println(actualTemplate);
+	}
+
+	private String generateTriggerCondition(BusinessRule businessRule, TargetDatabaseType databaseType) {
+		return "Todo: generateTriggerCondition";
+		
 	}
 
 }

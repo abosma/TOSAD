@@ -66,7 +66,7 @@ public class BusinessRule implements Serializable {
 	@JoinColumn(name = "id", insertable = false, updatable = false)
 	private TargetDatabase targetDatabase;
 
-	@OneToMany
+	@OneToMany(mappedBy = "businessRule")
 	private Set<CompareValue> compareValues = new HashSet<CompareValue>();
 
 	public int getId() {
