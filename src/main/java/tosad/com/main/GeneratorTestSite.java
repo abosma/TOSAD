@@ -20,7 +20,9 @@ import tosad.com.hibernate.model.TargetDatabase;
 import tosad.com.hibernate.model.TargetDatabaseType;
 import tosad.com.hibernate.model.Trigger;
 
-public class FillToolDatabase {
+public class GeneratorTestSite {
+
+	public static final boolean LOCAL_TESTING = true;
 
 	private static Session entityManager;
 
@@ -41,6 +43,8 @@ public class FillToolDatabase {
 	 *         one object is found, null if multiple objects are gound
 	 */
 	public static <T> T getExistingOrPersistNew(T tObject) {
+		if (LOCAL_TESTING)
+			return tObject;
 
 		Example example = Example.create(tObject);
 
@@ -97,7 +101,8 @@ public class FillToolDatabase {
 		final String ATTR_RANGE_RULE = "attribute_range_rule";
 
 		// create session
-		entityManager = HibernateUtil.getSession();
+		if (!LOCAL_TESTING)
+			entityManager = HibernateUtil.getSession();
 
 		/*
 		 * TARGET DASTABASE TYPES
@@ -208,6 +213,25 @@ public class FillToolDatabase {
 
 		templateOracleARNG = getExistingOrPersistNew(templateOracleARNG);
 
-		entityManager.close();
+		
+		
+		/*
+		 * *** *** *** TEST CODE BELOW *** *** ***
+		 */
+		
+		targetDatabaseType.addTemplate(templateOracleARNG);
+		targetDatabaseType.addTemplate(templateOracleTrigger);
+		
+		GeneratorInterface generator = new Generator();
+		String output = generator.generateSQL(businessRule);
+
+		System.out.println("GENERATED OUPUT: \n" + output);
+
+		/*
+		 * *** *** *** END OF TEST CODE *** *** ***
+		 */
+
+		if (!LOCAL_TESTING)
+			entityManager.close();
 	}
 }
