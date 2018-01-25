@@ -10,7 +10,6 @@ import org.hibernate.criterion.Example;
 
 import tosad.com.generator.Generator;
 import tosad.com.generator.GeneratorInterface;
-import tosad.com.hibernate.HibernateUtil;
 import tosad.com.model.BusinessRule;
 import tosad.com.model.BusinessRuleType;
 import tosad.com.model.CompareValue;
@@ -19,6 +18,7 @@ import tosad.com.model.RuleTemplate;
 import tosad.com.model.TargetDatabase;
 import tosad.com.model.TargetDatabaseType;
 import tosad.com.model.Trigger;
+import tosad.com.model.util.HibernateUtil;
 
 public class GeneratorTestSite {
 

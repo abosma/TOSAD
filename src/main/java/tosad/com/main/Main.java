@@ -2,7 +2,7 @@ package tosad.com.main;
 
 import org.hibernate.Session;
 
-import tosad.com.hibernate.HibernateUtil;
+import tosad.com.model.util.HibernateUtil;
 
 public class Main {
 
