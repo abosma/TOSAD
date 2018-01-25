@@ -5,7 +5,6 @@ import java.util.List;
 
 import tosad.com.hibernate.model.GeneratedCode;
 import tosad.com.hibernate.model.TargetDatabase;
-import tosad.com.hibernate.model.TargetDatabaseType;
 
 public interface ConnectionInterface {
 	public List<String> getTableNames(TargetDatabase targetDatabase) throws SQLException;

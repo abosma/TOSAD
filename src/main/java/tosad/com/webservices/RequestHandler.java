@@ -23,7 +23,6 @@ import tosad.com.hibernate.HibernateUtil;
 import tosad.com.hibernate.model.BusinessRule;
 import tosad.com.hibernate.model.GeneratedCode;
 import tosad.com.hibernate.model.TargetDatabase;
-import tosad.com.hibernate.model.TargetDatabaseType;
 import tosad.com.targetdbconnectionservices.ConnectionController;
 import tosad.com.targetdbconnectionservices.ConnectionInterface;
 
