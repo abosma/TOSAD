@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+
 @Entity
 @Table(name = "business_rules")
 public class BusinessRule implements Serializable {
@@ -30,6 +31,8 @@ public class BusinessRule implements Serializable {
 
 	@Column(name = "name", nullable = false, length = 255)
 	private String name;
+	
+	
 
 	@Column(name = "error_message", nullable = true, length = 4000)
 	private String errorMessage;
@@ -45,25 +48,28 @@ public class BusinessRule implements Serializable {
 
 	@Column(name = "referenced_table", nullable = false, length = 255)
 	private String referencedTable;
+	
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn( insertable = true, updatable = true )
+	private BusinessRuleType businessRuleType;
+	
 
 	@ManyToOne
-	@JoinColumn(name = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "trigger_id", insertable = false, updatable = false)
 	private Trigger trigger;
 
 	@ManyToOne
-	@JoinColumn(name = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "constraint_id", insertable = false, updatable = false)
 	private Constraint constraint;
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "operator_id", insertable = false, updatable = false)
 	private Operator operator;
 
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "id", insertable = false, updatable = false)
-	private BusinessRuleType businessRuleType;
+
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "targetDatabase_id", insertable = false, updatable = false)
 	private TargetDatabase targetDatabase;
 
 	@OneToMany(mappedBy = "businessRule")
@@ -187,3 +193,7 @@ public class BusinessRule implements Serializable {
 				+ this.compareValues + "]";
 	}
 }
+
+
+
+

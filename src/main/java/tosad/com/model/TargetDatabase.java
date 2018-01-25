@@ -3,6 +3,8 @@ package tosad.com.model;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import tosad.com.model.TargetDatabaseType;
+
 @Entity
 @Table(name = "target_databases")
 public class TargetDatabase implements Serializable {
@@ -29,7 +31,7 @@ public class TargetDatabase implements Serializable {
 	private String connection;
 
 	@ManyToOne
-	@JoinColumn(name = "id", insertable = false, updatable=false)
+	@JoinColumn(name = "type_id", insertable = true, updatable=false)
 	private TargetDatabaseType targetDatabaseType;
 
 	public int getId() {

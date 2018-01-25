@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import tosad.com.model.TargetDatabaseType;
+
 @Entity
 @Table(name = "rule_templates")
 public class RuleTemplate implements Serializable {
@@ -31,7 +33,7 @@ public class RuleTemplate implements Serializable {
 	private String name;
 
 	@ManyToOne
-	@JoinColumn(name = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "targetDatabaseType_id", insertable = true, updatable = false)
 	private TargetDatabaseType targetDatabaseType;
 
 	public int getId() {
@@ -74,3 +76,4 @@ public class RuleTemplate implements Serializable {
 	
 	
 }
+
