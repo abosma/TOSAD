@@ -1,4 +1,4 @@
-package tosad.com.hibernate.model;
+package tosad.com.model;
 
 import java.io.Serializable;
 

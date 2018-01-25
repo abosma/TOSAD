@@ -1,4 +1,4 @@
-package tosad.com.hibernate.model;
+package tosad.com.model;
 
 import java.io.Serializable;
 
@@ -41,11 +41,11 @@ public class Trigger implements Serializable {
 	private String executionLevelTranslations;
 	
 	public int getId() {
-		return id;
+		return triggerId;
 	}
 
 	public void setId(int id) {
-		this.id = id;
+		this.triggerId = id;
 	}
 
 	public String getType() {
@@ -98,7 +98,7 @@ public class Trigger implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Trigger [id=" + this.id + ", type=" + this.type + ", typeTranslation=" + this.typeTranslation
+		return "Trigger [id=" + this.triggerId + ", type=" + this.type + ", typeTranslation=" + this.typeTranslation
 				+ ", executionType=" + this.executionType + ", executionTypeTranslations="
 				+ this.executionTypeTranslations + ", executionLevel=" + this.executionLevel
 				+ ", executionLevelTranslations=" + this.executionLevelTranslations + "]";

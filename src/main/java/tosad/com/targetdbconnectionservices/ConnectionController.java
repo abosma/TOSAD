@@ -13,9 +13,9 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import tosad.com.hibernate.HibernateUtil;
-import tosad.com.hibernate.model.GeneratedCode;
-import tosad.com.hibernate.model.TargetDatabase;
-import tosad.com.hibernate.model.TargetDatabaseType;
+import tosad.com.model.GeneratedCode;
+import tosad.com.model.TargetDatabase;
+import tosad.com.model.TargetDatabaseType;
 
 public class ConnectionController implements ConnectionInterface{
 

@@ -11,14 +11,14 @@ import org.hibernate.criterion.Example;
 import tosad.com.generator.Generator;
 import tosad.com.generator.GeneratorInterface;
 import tosad.com.hibernate.HibernateUtil;
-import tosad.com.hibernate.model.BusinessRule;
-import tosad.com.hibernate.model.BusinessRuleType;
-import tosad.com.hibernate.model.CompareValue;
-import tosad.com.hibernate.model.Operator;
-import tosad.com.hibernate.model.RuleTemplate;
-import tosad.com.hibernate.model.TargetDatabase;
-import tosad.com.hibernate.model.TargetDatabaseType;
-import tosad.com.hibernate.model.Trigger;
+import tosad.com.model.BusinessRule;
+import tosad.com.model.BusinessRuleType;
+import tosad.com.model.CompareValue;
+import tosad.com.model.Operator;
+import tosad.com.model.RuleTemplate;
+import tosad.com.model.TargetDatabase;
+import tosad.com.model.TargetDatabaseType;
+import tosad.com.model.Trigger;
 
 public class GeneratorTestSite {
 
@@ -208,7 +208,7 @@ public class GeneratorTestSite {
 
 		BusinessRule businessRuleARNG = new BusinessRule();
 		businessRuleARNG.setBusinessRuleType(businessRuleTypeCMP);
-		businessRuleARNG.setErrorMessage(String.format("Waarde moet tussen %d en %d liggen", compareValue1.getValue(), compareValue2.getValue()));
+		businessRuleARNG.setErrorMessage(String.format("Waarde moet tussen %s en %s liggen", compareValue1.getValue(), compareValue2.getValue()));
 		businessRuleARNG.setExample("BusinessRuleVoorbeeld");
 		businessRuleARNG.setExplanation("Hier nog meer uitleg over de regel");
 		businessRuleARNG.setName("BRG_TABLEX_ARNG_01");

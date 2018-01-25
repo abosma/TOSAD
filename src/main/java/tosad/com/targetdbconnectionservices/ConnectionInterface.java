@@ -3,9 +3,9 @@ package tosad.com.targetdbconnectionservices;
 import java.sql.SQLException;
 import java.util.List;
 
-import tosad.com.hibernate.model.GeneratedCode;
-import tosad.com.hibernate.model.TargetDatabase;
-import tosad.com.hibernate.model.TargetDatabaseType;
+import tosad.com.model.GeneratedCode;
+import tosad.com.model.TargetDatabase;
+import tosad.com.model.TargetDatabaseType;
 
 public interface ConnectionInterface {
 	public List<String> getTableNames(TargetDatabase targetDatabase) throws SQLException;

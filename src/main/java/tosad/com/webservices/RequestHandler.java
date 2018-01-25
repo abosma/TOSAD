@@ -20,10 +20,10 @@ import org.hibernate.Transaction;
 import tosad.com.generator.Generator;
 import tosad.com.generator.GeneratorInterface;
 import tosad.com.hibernate.HibernateUtil;
-import tosad.com.hibernate.model.BusinessRule;
-import tosad.com.hibernate.model.GeneratedCode;
-import tosad.com.hibernate.model.TargetDatabase;
-import tosad.com.hibernate.model.TargetDatabaseType;
+import tosad.com.model.BusinessRule;
+import tosad.com.model.GeneratedCode;
+import tosad.com.model.TargetDatabase;
+import tosad.com.model.TargetDatabaseType;
 import tosad.com.targetdbconnectionservices.ConnectionController;
 import tosad.com.targetdbconnectionservices.ConnectionInterface;
 

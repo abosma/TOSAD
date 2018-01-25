@@ -4,10 +4,10 @@ import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import tosad.com.hibernate.model.BusinessRule;
-import tosad.com.hibernate.model.CompareValue;
-import tosad.com.hibernate.model.RuleTemplate;
-import tosad.com.hibernate.model.TargetDatabaseType;
+import tosad.com.model.BusinessRule;
+import tosad.com.model.CompareValue;
+import tosad.com.model.RuleTemplate;
+import tosad.com.model.TargetDatabaseType;
 
 public class Generator implements GeneratorInterface {
 

@@ -9,14 +9,14 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 
 import tosad.com.hibernate.HibernateUtil;
-import tosad.com.hibernate.model.BusinessRule;
-import tosad.com.hibernate.model.BusinessRuleType;
-import tosad.com.hibernate.model.CompareValue;
-import tosad.com.hibernate.model.Operator;
-import tosad.com.hibernate.model.RuleTemplate;
-import tosad.com.hibernate.model.TargetDatabase;
-import tosad.com.hibernate.model.TargetDatabaseType;
-import tosad.com.hibernate.model.Trigger;
+import tosad.com.model.BusinessRule;
+import tosad.com.model.BusinessRuleType;
+import tosad.com.model.CompareValue;
+import tosad.com.model.Operator;
+import tosad.com.model.RuleTemplate;
+import tosad.com.model.TargetDatabase;
+import tosad.com.model.TargetDatabaseType;
+import tosad.com.model.Trigger;
 
 public class FillToolDatabase {
 
@@ -49,9 +49,11 @@ public class FillToolDatabase {
 		List<T> results = criteria.list();
 
 		if (results.size() < 1) {
+			System.err.println(tObject.toString());
 			entityManager.beginTransaction();
 			entityManager.persist(tObject);
 			entityManager.getTransaction().commit();
+			System.err.println(tObject.toString());
 			return tObject;
 		}
 		if (results.size() > 1) {

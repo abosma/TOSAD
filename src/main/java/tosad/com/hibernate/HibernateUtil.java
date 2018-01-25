@@ -2,7 +2,8 @@ package tosad.com.hibernate;
 
 import org.hibernate.*;
 import org.hibernate.cfg.*;
-import tosad.com.hibernate.model.*;
+
+import tosad.com.model.*;
 
 public class HibernateUtil {
 

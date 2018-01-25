@@ -1,4 +1,4 @@
-package tosad.com.hibernate.model;
+package tosad.com.model;
 
 import java.io.Serializable;
 
@@ -35,11 +35,11 @@ public class RuleTemplate implements Serializable {
 	private TargetDatabaseType targetDatabaseType;
 
 	public int getId() {
-		return id;
+		return ruleTemplateId;
 	}
 
 	public void setId(int id) {
-		this.id = id;
+		this.ruleTemplateId = id;
 	}
 
 	public String getTemplate() {
@@ -68,7 +68,7 @@ public class RuleTemplate implements Serializable {
 
 	@Override
 	public String toString() {
-		return "RuleTemplate [id=" + this.id + ", name=" + this.name + ", targetDatabaseType=" + this.targetDatabaseType
+		return "RuleTemplate [id=" + this.ruleTemplateId + ", name=" + this.name + ", targetDatabaseType=" + this.targetDatabaseType
 				+ "]";
 	}
 	
