@@ -36,11 +36,11 @@ public class GeneratedCode implements Serializable {
 	private BusinessRule businessRule;
 
 	public int getId() {
-		return generatedCodeId;
+		return id;
 	}
 
 	public void setId(int id) {
-		this.generatedCodeId = id;
+		this.id = id;
 	}
 
 	public int getStatus() {
@@ -69,7 +69,7 @@ public class GeneratedCode implements Serializable {
 
 	@Override
 	public String toString() {
-		return "GeneratedCode [id=" + this.generatedCodeId + ", status=" + this.status + ", code=" + this.code + ", businessRule="
+		return "GeneratedCode [id=" + this.id + ", status=" + this.status + ", code=" + this.code + ", businessRule="
 				+ this.businessRule + "]";
 	}
 }

@@ -41,11 +41,11 @@ public class Trigger implements Serializable {
 	private String executionLevelTranslations;
 	
 	public int getId() {
-		return triggerId;
+		return id;
 	}
 
 	public void setId(int id) {
-		this.triggerId = id;
+		this.id = id;
 	}
 
 	public String getType() {
@@ -98,7 +98,7 @@ public class Trigger implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Trigger [id=" + this.triggerId + ", type=" + this.type + ", typeTranslation=" + this.typeTranslation
+		return "Trigger [id=" + this.id + ", type=" + this.type + ", typeTranslation=" + this.typeTranslation
 				+ ", executionType=" + this.executionType + ", executionTypeTranslations="
 				+ this.executionTypeTranslations + ", executionLevel=" + this.executionLevel
 				+ ", executionLevelTranslations=" + this.executionLevelTranslations + "]";

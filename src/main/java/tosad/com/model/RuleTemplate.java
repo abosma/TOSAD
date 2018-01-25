@@ -35,11 +35,11 @@ public class RuleTemplate implements Serializable {
 	private TargetDatabaseType targetDatabaseType;
 
 	public int getId() {
-		return ruleTemplateId;
+		return id;
 	}
 
 	public void setId(int id) {
-		this.ruleTemplateId = id;
+		this.id = id;
 	}
 
 	public String getTemplate() {
@@ -68,7 +68,7 @@ public class RuleTemplate implements Serializable {
 
 	@Override
 	public String toString() {
-		return "RuleTemplate [id=" + this.ruleTemplateId + ", name=" + this.name + ", targetDatabaseType=" + this.targetDatabaseType
+		return "RuleTemplate [id=" + this.id + ", name=" + this.name + ", targetDatabaseType=" + this.targetDatabaseType
 				+ "]";
 	}
 	

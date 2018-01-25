@@ -42,11 +42,11 @@ public class Operator implements Serializable {
 	private Set<BusinessRuleType> businessRuleTypes = new HashSet<>();
 
 	public int getId() {
-		return operatorId;
+		return id;
 	}
 
 	public Operator setId(int id) {
-		this.operatorId = id;
+		this.id = id;
 		
 		return this;
 	}
@@ -85,7 +85,7 @@ public class Operator implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Operator [id=" + this.operatorId + ", name=" + this.name + ", value=" + this.value + ", numberOfValues="
+		return "Operator [id=" + this.id + ", name=" + this.name + ", value=" + this.value + ", numberOfValues="
 				+ this.numberOfValues + "]";
 	}
 

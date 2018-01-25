@@ -33,11 +33,11 @@ public class TargetDatabase implements Serializable {
 	private TargetDatabaseType targetDatabaseType;
 
 	public int getId() {
-		return targetDatabaseId;
+		return id;
 	}
 
 	public void setId(int id) {
-		this.targetDatabaseId = id;
+		this.id = id;
 	}
 
 	public String getName() {
@@ -82,7 +82,7 @@ public class TargetDatabase implements Serializable {
 
 	@Override
 	public String toString() {
-		return "TargetDatabase [id=" + this.targetDatabaseId + ", name=" + this.name + ", username=" + this.username + ", password="
+		return "TargetDatabase [id=" + this.id + ", name=" + this.name + ", username=" + this.username + ", password="
 				+ this.password + ", connection=" + this.connection + ", targetDatabaseType=" + this.targetDatabaseType
 				+ "]";
 	}
