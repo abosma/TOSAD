@@ -8,19 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-<<<<<<< HEAD
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
-import tosad.com.hibernate.HibernateUtil;
 import tosad.com.model.GeneratedCode;
 import tosad.com.model.TargetDatabase;
-import tosad.com.model.TargetDatabaseType;
-=======
-import tosad.com.hibernate.model.GeneratedCode;
-import tosad.com.hibernate.model.TargetDatabase;
->>>>>>> 75477289b104f92216984a1115444d19deee04ba
 
 public class ConnectionController implements ConnectionInterface{
 
