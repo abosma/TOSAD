@@ -167,30 +167,40 @@ public class RequestHandler {
 		try {
 			transaction = session.beginTransaction();
 			businessRule = (BusinessRule)session.get(BusinessRule.class, businessRuleId);
-		}catch(HibernateException hibernateException) {
-			if(transaction != null) {
-				transaction.rollback();
-			}
-			hibernateException.printStackTrace();
-		}finally {
-			session.close();
-		}
-		
-		if(businessRule != null) {
+
 			String code = generatorInterface.generateSQL(businessRule);
-			
+
 			GeneratedCode generatedCode = new GeneratedCode();
 			generatedCode.setCode(code);
 			generatedCode.setBusinessRule(businessRule);
 			generatedCode.setId(businessRule.getId());
 			generatedCode.setStatus(0);
-			
+
 			session.save(generatedCode);
-			responseBuilder.add("status", "true");
-		} else {
+
+			if(session.get(GeneratedCode.class, businessRule.getId()) != null) {
+				responseBuilder.add("status", "true");
+				session.close();
+			}else{
+				responseBuilder.add("status", "false");
+				session.close();
+			}
+		}catch(HibernateException hibernateException) {
+			if(transaction != null) {
+				transaction.rollback();
+			}
+			hibernateException.printStackTrace();
+			session.close();
+		}catch(NullPointerException nullPointerException){
+			if(transaction != null) {
+				transaction.rollback();
+			}
+			nullPointerException.printStackTrace();
+			session.close();
+
 			responseBuilder.add("status", "false");
 		}
-		
+
 		return responseBuilder.build().toString();
 	}
 	
@@ -225,6 +235,18 @@ public class RequestHandler {
 			generatedCode = (GeneratedCode)session.get(GeneratedCode.class, generatedCodeId);
 			businessRule = generatedCode.getBusinessRule();
 			targetDatabase = businessRule.getTargetDatabase();
+
+			boolean hasInserted = connectionInterface.insertCode(targetDatabase, generatedCode);
+
+			if(hasInserted) {
+				generatedCode.setStatus(1);
+				session.save(generatedCode);
+				responseBuilder.add("status", "true");
+				session.close();
+			}else {
+				responseBuilder.add("status", "false");
+				session.close();
+			}
 		}catch(HibernateException hibernateException) {
 			if(transaction != null) {
 				transaction.rollback();
@@ -235,17 +257,9 @@ public class RequestHandler {
 				transaction.rollback();
 			}
 			nullPointerException.printStackTrace();
-		}finally {
+
 			session.close();
-		}
-		
-		boolean hasInserted = connectionInterface.insertCode(targetDatabase, generatedCode);
-		
-		if(hasInserted) {
-			generatedCode.setStatus(1);
-			session.save(generatedCode);
-			responseBuilder.add("status", "true");
-		}else {
+
 			responseBuilder.add("status", "false");
 		}
 		
