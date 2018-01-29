@@ -32,7 +32,7 @@ public class CompareValue implements Serializable {
 	@Column(name = "value_", nullable = true, length = 255)
 	private String value;
 	
-	@Column(name= " order", nullable = true )
+	@Column(name= "ordertype", nullable = true )
 	private int order;
 	
 	@ManyToOne
