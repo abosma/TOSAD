@@ -30,10 +30,11 @@ public class ConnectionController implements ConnectionInterface{
 		List<String> tableNames = new ArrayList<String>();
 		
 		Connection connection = getTargetConnection(targetDatabase.getTargetDatabaseType().getName(), targetDatabase.getConnection(), targetDatabase.getPassword(), targetDatabase.getUsername());
-		
-		ResultSet resultSet = null;
-	    DatabaseMetaData databaseMetaData = connection.getMetaData();
-	    resultSet = databaseMetaData.getTables(null, null, null, new String[]{"TABLE"});
+
+		Statement statement = connection.createStatement();
+		String query = "select tablespace_name, table_name from user_tables";
+
+		ResultSet resultSet = statement.executeQuery(query);
 
 	    while (resultSet.next()) {
 	      String tableName = resultSet.getString("TABLE_NAME");
@@ -132,8 +133,6 @@ public class ConnectionController implements ConnectionInterface{
 		switch(type) {
 			case "Oracle": 	 connectionTemplate = new OracleConnection();
 						     connection = connectionTemplate.connect(connectionString, password, username);
-			case "Postgres": connectionTemplate = new PostgresConnection();
-							 connection = connectionTemplate.connect(connectionString, password, username);
 		}
 		
 		return connection;

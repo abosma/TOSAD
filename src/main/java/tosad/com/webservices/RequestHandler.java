@@ -125,7 +125,7 @@ public class RequestHandler {
 		
 		if(targetDatabase != null) {
 			ConnectionInterface connectionInterface = new ConnectionController();
-			List<String> columnNames = connectionInterface.getColumnNames(targetDatabase, tableName);
+			List<String> columnNames = connectionInterface.getColumnNames(targetDatabase, tableName.toUpperCase());
 			
 			JsonArrayBuilder columnArrayBuilder = Json.createArrayBuilder();
 			columnNames.forEach(a -> columnArrayBuilder.add(Json.createObjectBuilder().add("name", a)));
@@ -154,7 +154,7 @@ public class RequestHandler {
 	 * @return JSON
 	 * @throws SQLException
 	 */
-	@POST
+	@GET
 	@Path("/generatecode/{businessrule_id}")
 	@Produces("application/json")
 	public String generateCode(@PathParam("businessrule_id") int businessRuleId) throws SQLException {
@@ -208,7 +208,7 @@ public class RequestHandler {
 	 * @return JSON
 	 * @throws SQLException
 	 */
-	@POST
+	@GET
 	@Path("/insertcode/{generatedcode_id}")
 	@Produces("application/json")
 	public String insertCode(@PathParam("generatedcode_id") int generatedCodeId) throws SQLException {
