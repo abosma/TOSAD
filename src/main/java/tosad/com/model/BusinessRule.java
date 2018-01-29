@@ -55,21 +55,21 @@ public class BusinessRule implements Serializable {
 	
 
 	@ManyToOne
-	@JoinColumn(name = "trigger_id", insertable = false, updatable = false)
+	@JoinColumn(name = "trigger_id", insertable = true, updatable = false)
 	private Trigger trigger;
 
 	@ManyToOne
-	@JoinColumn(name = "constraint_id", insertable = false, updatable = false)
+	@JoinColumn(name = "constraint_id", insertable = true, updatable = false)
 	private Constraint constraint;
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "operator_id", insertable = false, updatable = false)
+	@JoinColumn(name = "operator_id", insertable = true, updatable = false)
 	private Operator operator;
 
 
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "targetDatabase_id", insertable = false, updatable = false)
+	@JoinColumn(name = "targetDatabase_id", insertable = true, updatable = false)
 	private TargetDatabase targetDatabase;
 
 	@OneToMany(mappedBy = "businessRule")
