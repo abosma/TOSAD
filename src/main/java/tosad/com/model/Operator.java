@@ -37,9 +37,11 @@ public class Operator implements Serializable {
 	private int numberOfValues;
 
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "business_rule_type_operator", joinColumns = { @JoinColumn(name = "id", insertable = false, updatable = false) }, inverseJoinColumns = {
-			@JoinColumn(name = "id", insertable = false, updatable = false) })
+	@JoinTable(name = "business_rule_type_operator", joinColumns = { @JoinColumn(name = "operator_type_id", insertable = true, updatable = false) }, inverseJoinColumns = {
+			@JoinColumn(name = "businessrule_type_id", referencedColumnName ="id") })
 	private Set<BusinessRuleType> businessRuleTypes = new HashSet<>();
+
+	
 
 	public int getId() {
 		return id;
