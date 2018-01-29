@@ -31,7 +31,10 @@ public class CompareValue implements Serializable {
 
 	@Column(name = "value_", nullable = true, length = 255)
 	private String value;
-
+	
+	@Column(name= " order", nullable = true )
+	private int order;
+	
 	@ManyToOne
 	@JoinColumn(name = "businessrule_id", insertable = true, updatable=false)
 	private BusinessRule businessRule;
@@ -80,5 +83,13 @@ public class CompareValue implements Serializable {
 	public String toString() {
 		return "CompareValue [id=" + this.id + ", table=" + this.table + ", column=" + this.column + ", value="
 				+ this.value + "]";
+	}
+
+	public int getOrder() {
+		return this.order;
+	}
+
+	public void setOrder(int order) {
+		this.order = order;
 	}
 }
