@@ -1,15 +1,11 @@
 package tosad.com.targetdbconnectionservices;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
 import tosad.com.model.GeneratedCode;
 import tosad.com.model.TargetDatabase;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConnectionController implements ConnectionInterface{
 
@@ -92,18 +88,17 @@ public class ConnectionController implements ConnectionInterface{
 	 */
 	@Override
 	public boolean insertCode(TargetDatabase targetDatabase, GeneratedCode generatedCode) throws SQLException{
-		Statement statement = null;
-		
+        Statement stmt = null;
+
 		Connection connection = getTargetConnection(targetDatabase.getTargetDatabaseType().getName(), targetDatabase.getConnection(), targetDatabase.getPassword(), targetDatabase.getUsername());
 		String query = generatedCode.getCode();
 		try {
-			statement = connection.createStatement();
-			int insertedCode = statement.executeUpdate(query);
-
-			return insertedCode > 0;
+            stmt = connection.createStatement();
+            int insertedCode = stmt.executeUpdate(query);;
+			return true;
 		} finally {
-			if(statement != null) {
-				statement.close();
+			if(stmt != null) {
+                stmt.close();
 			}
 		}
 	}

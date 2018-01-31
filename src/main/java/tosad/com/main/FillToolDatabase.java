@@ -1,35 +1,22 @@
 package tosad.com.main;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
-
 import tosad.com.generator.Generator;
 import tosad.com.generator.GeneratorInterface;
 import tosad.com.generator.exception.GenerationException;
 import tosad.com.generator.exception.SQLFormatException;
 import tosad.com.generator.exception.TemplateNotFoundException;
-import tosad.com.model.BusinessRule;
-import tosad.com.model.BusinessRuleType;
-import tosad.com.model.CompareValue;
-import tosad.com.model.Constraint;
-import tosad.com.model.Operator;
-import tosad.com.model.RuleTemplate;
-import tosad.com.model.TargetDatabase;
-import tosad.com.model.TargetDatabaseType;
-import tosad.com.model.Trigger;
+import tosad.com.model.*;
 import tosad.com.model.enums.Amount;
 import tosad.com.model.enums.ValueType;
 import tosad.com.model.util.HibernateUtil;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
 
 public class FillToolDatabase {
 
