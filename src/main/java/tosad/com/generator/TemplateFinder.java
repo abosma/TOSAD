@@ -17,7 +17,7 @@ public class TemplateFinder {
 	private RuleTemplate retrieveTemplate(String templateName){
 		RuleTemplate ruleTemplate = null;
 		for(RuleTemplate template : this.templates){
-			System.err.println(String.format("%30s - %30s", template.getName(), templateName));
+			//System.err.println(String.format("%30s - %30s", template.getName(), templateName));
 			
 			if(template.getName().equals(templateName)){
 				ruleTemplate = template;

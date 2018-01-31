@@ -401,6 +401,7 @@ public class FillToolDatabase {
 					Set<CompareValue> compareValues = getCompareValuesFor(businessRule, valueType, operator.getAmountOfValues());
 					for (CompareValue compareValue : compareValues) {
 						compareValue = getExistingOrPersistNew(compareValue);
+						businessRule.addCompareValue(compareValue);
 					}
 					businessRules.add(businessRule);
 				}
