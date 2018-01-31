@@ -59,7 +59,7 @@ public class ConnectionController implements ConnectionInterface{
 	 */
 	@Override
 	public List<String> getColumnNames(TargetDatabase targetDatabase, String tableName) throws SQLException{
-		List<String> columnNames = new ArrayList<String>();
+		List<String> columnNames = new ArrayList<>();
 		Connection connection = getTargetConnection(targetDatabase.getTargetDatabaseType().getName(), targetDatabase.getConnection(), targetDatabase.getPassword(), targetDatabase.getUsername());
 		
 		DatabaseMetaData databaseMetaData = connection.getMetaData();
@@ -99,13 +99,8 @@ public class ConnectionController implements ConnectionInterface{
 		try {
 			statement = connection.createStatement();
 			int insertedCode = statement.executeUpdate(query);
-			
-			if(insertedCode > 0) {
-				return true;
-			}else {
-				return false;
-			}
-			
+
+			return insertedCode > 0;
 		} finally {
 			if(statement != null) {
 				statement.close();
