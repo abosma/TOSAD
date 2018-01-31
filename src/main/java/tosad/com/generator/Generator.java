@@ -1,5 +1,6 @@
 package tosad.com.generator;
 
+import tosad.com.generator.exception.GenerationException;
 import tosad.com.model.BusinessRule;
 
 public class Generator implements GeneratorInterface {
@@ -20,7 +21,7 @@ public class Generator implements GeneratorInterface {
 			result = "NOT IMPLEMENTED";
 		}
 		else {
-			result = "NO TRIGGER NOR CONSTRAINT FOUND!";
+			throw new GenerationException("No Thingy Defined");
 		}
 
 		return result;

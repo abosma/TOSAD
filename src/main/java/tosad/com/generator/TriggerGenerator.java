@@ -1,7 +1,7 @@
 package tosad.com.generator;
 
+import tosad.com.generator.exception.GenerationException;
 import tosad.com.generator.exception.TemplateNotFoundException;
-import tosad.com.generator.exception.UnknownKeywordException;
 import tosad.com.model.BusinessRule;
 import tosad.com.model.TargetDatabaseType;
 
@@ -13,7 +13,7 @@ public class TriggerGenerator extends AbstractGenerator{
 		this.templateFinder = new TemplateFinder(databaseType);
 	}
 	
-	public String getContentForKeyword(String keyword) throws UnknownKeywordException, TemplateNotFoundException{
+	public String getContentForKeyword(String keyword) throws GenerationException, TemplateNotFoundException {
 		switch (keyword) {
 		case "trigger_identifier":
 			return this.generateRuleIdentifier();
@@ -29,22 +29,24 @@ public class TriggerGenerator extends AbstractGenerator{
 			return retrieveTriggerConditionSubTemplate();
 		case "column_name":
 			return getReferencedColumnName();
+		case "value":
+			return getCompareValue();
 		case "operator":
 			return operatorValue();
 		case "error_text":
 			return retrieveErrorText();
 		default:
-			throw new UnknownKeywordException("keyword");
+			throw new GenerationException(String.format("Error while parsing a template: keyword '%s' is unknown.", keyword));
 		}
 	}
 
-	public String generateCode() throws TemplateNotFoundException, UnknownKeywordException {
+	public String generateCode() throws GenerationException, TemplateNotFoundException {
 		String baseTemplate = templateFinder.findTemplate("trigger");
 		String evaluatedTemplate = evaluateTemplate(baseTemplate);
 		return evaluatedTemplate;
 	}
 	
-	public String evaluateTemplate(String template) throws UnknownKeywordException, TemplateNotFoundException{
+	public String evaluateTemplate(String template) throws GenerationException, TemplateNotFoundException {
 		
 		// retrieve keywords from template
 		String[] keywords = this.retrieveTemplateKeywords(template);

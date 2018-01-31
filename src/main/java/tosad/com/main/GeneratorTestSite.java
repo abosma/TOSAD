@@ -114,8 +114,8 @@ public class GeneratorTestSite {
 		final String ATTR_COMPARE_RULE = "attribute_compare_rule";
 
 		// create session
-		if (!LOCAL_TESTING)
-			entityManager = HibernateUtil.getSession();
+//		if (!LOCAL_TESTING)
+//			entityManager = HibernateUtil.getSession();
 
 		/*
 		 * TARGET DASTABASE TYPES
@@ -299,7 +299,7 @@ public class GeneratorTestSite {
 		 * *** *** *** END OF TEST CODE *** *** ***
 		 */
 
-		if (!LOCAL_TESTING)
-			entityManager.close();
+//		if (!LOCAL_TESTING)
+//			entityManager.close();
 	}
 }

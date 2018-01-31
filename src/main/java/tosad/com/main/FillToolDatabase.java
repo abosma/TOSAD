@@ -1,28 +1,10 @@
 package tosad.com.main;
 
-import java.io.File;
-import java.io.FileReader;
-import java.util.List;
-
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Example;
-
-import tosad.com.model.BusinessRule;
-import tosad.com.model.BusinessRuleType;
-import tosad.com.model.CompareValue;
-import tosad.com.model.Operator;
-import tosad.com.model.RuleTemplate;
-import tosad.com.model.TargetDatabase;
-import tosad.com.model.TargetDatabaseType;
-import tosad.com.model.Trigger;
-import tosad.com.model.util.HibernateUtil;
-
 public class FillToolDatabase {
-
+/*
 	private static Session entityManager;
 
-	/**
+	*//**
 	 * getExistingOrPersistNew
 	 * 
 	 * checks if the given databseObject exists in the database. If the given
@@ -37,7 +19,7 @@ public class FillToolDatabase {
 	 *            the entitymanager
 	 * @return tObject if no replicas are found in the database, the repliace if
 	 *         one object is found, null if multiple objects are gound
-	 */
+	 *//*
 	public static <T> T getExistingOrPersistNew(T tObject) {
 
 		Example example = Example.create(tObject);
@@ -64,13 +46,13 @@ public class FillToolDatabase {
 		return results.get(0);
 	}
 
-	/**
+	*//**
 	 * Retrieves the contents of a given file
 	 * 
 	 * @param templateFile
 	 *            the file to scan
 	 * @return file contents if the file was readable, else null
-	 */
+	 *//*
 	public static String retrieveFileContent(File templateFile) {
 		if (!(templateFile.exists() && templateFile.isFile()))
 			return null;
@@ -92,33 +74,33 @@ public class FillToolDatabase {
 	}
 
 	public static void main(String[] args) {
-		/*
+		
 		 * Name definitions
-		 */
+		 
 		final String ATTR_RANGE_RULE = "attribute_range_rule";
 
 		// create session
 		entityManager = HibernateUtil.getSession();
 
-		/*
+		
 		 * TARGET DASTABASE TYPES
-		 */
+		 
 		TargetDatabaseType targetDatabaseType = new TargetDatabaseType();
 		targetDatabaseType.setName("Oracle");
 
 		getExistingOrPersistNew(targetDatabaseType);
 
-		/*
+		
 		 * BusinessRuleType
-		 */
+		 
 		BusinessRuleType businessRuleType = new BusinessRuleType();
 		businessRuleType.setName(ATTR_RANGE_RULE);
 
 		businessRuleType = getExistingOrPersistNew(businessRuleType);
 
-		/*
+		
 		 * TargetDatabase
-		 */
+		 
 
 		TargetDatabase targetDatabase = new TargetDatabase();
 		targetDatabase.setConnection("ondora02.hu.nl:8521/cursus02.hu.nl");
@@ -129,9 +111,9 @@ public class FillToolDatabase {
 
 		targetDatabase = getExistingOrPersistNew(targetDatabase);
 
-		/*
+		
 		 * Operator
-		 */
+		 
 
 		Operator operator = new Operator();
 		operator.setName("operator_between");
@@ -140,9 +122,9 @@ public class FillToolDatabase {
 
 		operator = getExistingOrPersistNew(operator);
 
-		/*
+		
 		 * Trigger
-		 */
+		 
 
 		Trigger trigger = new Trigger();
 		trigger.setExecutionLevel("BEFORE");
@@ -156,9 +138,9 @@ public class FillToolDatabase {
 
 		trigger = getExistingOrPersistNew(trigger);
 
-		/*
+		
 		 * Compare values
-		 */
+		 
 
 		CompareValue compareValue1 = new CompareValue();
 		compareValue1.setValue("1");
@@ -166,9 +148,9 @@ public class FillToolDatabase {
 		CompareValue compareValue2 = new CompareValue();
 		compareValue2.setValue("10");
 
-		/*
+		
 		 * BusinessRule
-		 */
+		 
 
 		BusinessRule businessRule = new BusinessRule();
 		businessRule.setBusinessRuleType(businessRuleType);
@@ -186,9 +168,9 @@ public class FillToolDatabase {
 
 		businessRule = getExistingOrPersistNew(businessRule);
 
-		/*
+		
 		 * ORACLE TEMPLATES
-		 */
+		 
 		// Generic Trigger Template
 		String fileTriggerTemplate = retrieveFileContent(new File("templates/oracle/trigger.template"));
 
@@ -211,4 +193,4 @@ public class FillToolDatabase {
 
 		entityManager.close();
 	}
-}
+*/}

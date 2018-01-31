@@ -5,9 +5,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import tosad.com.generator.exception.GenerationException;
 import tosad.com.generator.exception.TemplateNotFoundException;
-import tosad.com.generator.exception.UnknownKeywordException;
-import tosad.com.generator.exception.ValueNotFoundException;
 import tosad.com.model.BusinessRule;
 import tosad.com.model.CompareValue;
 
@@ -19,8 +18,8 @@ public abstract class AbstractGenerator  {
 	protected TemplateFinder templateFinder;
 	protected int valueCounter;
 	
-	public abstract String generateCode() throws TemplateNotFoundException, UnknownKeywordException;
-	public abstract String getContentForKeyword(String keyword) throws UnknownKeywordException, TemplateNotFoundException;
+	public abstract String generateCode() throws GenerationException, TemplateNotFoundException;
+	public abstract String getContentForKeyword(String keyword) throws GenerationException, TemplateNotFoundException;
 	
 	public AbstractGenerator() {
 		KeyfinderPattern = Pattern.compile("\\{.*?\\}");
@@ -49,7 +48,7 @@ public abstract class AbstractGenerator  {
 		return template;
 	}
 
-	protected String getCompareValue() throws ValueNotFoundException, CompareValueError{
+	protected String getCompareValue() throws GenerationException{
 		Set<CompareValue> values = businessRule.getCompareValues();
 		for(CompareValue value : values){
 			if(value.getOrder() == valueCounter){
@@ -60,18 +59,18 @@ public abstract class AbstractGenerator  {
 				return valueRepresentation;
 			}
 		}
-		throw new ValueNotFoundException(Integer.toString(valueCounter));
+		throw new GenerationException(String.format("No CompareValue was found for order '%d'. Please check the businessrule", valueCounter));
 	}
 	
-	private String compileCompareValue(CompareValue compareValue) throws CompareValueError {
+	private String compileCompareValue(CompareValue compareValue) throws GenerationException {
 		String empty	= new String();
-		String literal	= compareValue.getValue().trim();
-		String table	= compareValue.getTable().trim();
-		String column	= compareValue.getColumn().trim();
+		String literal	= compareValue.getValue() != null ? compareValue.getValue().trim() : new String();
+		String table	= compareValue.getTable() != null ? compareValue.getTable().trim() : new String();
+		String column	= compareValue.getColumn() != null ? compareValue.getColumn().trim() : new String();
 				
 		if( literal.equals(empty)){
 			if( column.equals(empty)){
-				throw new CompareValueError("No Literal or referenced value set.");
+				throw new GenerationException(String.format("Error while evaluating CompareValue with id '%d': No value defined.", compareValue.getId()));
 			} 
 			// check whether reference is to external table, or own table
 			if( table.equals(empty)){
@@ -84,7 +83,7 @@ public abstract class AbstractGenerator  {
 				return literal;
 			}
 			// both literal value and referenced table are set
-			throw new CompareValueError("Litaral and non-litared values are defined");
+			throw new GenerationException(String.format("Error while evaluating CompareValue with id '%d': Both a literal value and a reference are defined"));
 		}
 	}
 
