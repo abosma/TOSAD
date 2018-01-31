@@ -170,8 +170,6 @@ public class RequestHandler {
 			transaction = session.beginTransaction();
 			businessRule = (BusinessRule)session.get(BusinessRule.class, businessRuleId);
 
-			transaction.commit();
-
 			//String code = generatorInterface.generateSQL(businessRule);
 
             String code = "hallo ik ben atilla";
