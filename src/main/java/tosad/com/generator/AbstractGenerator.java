@@ -23,7 +23,7 @@ public abstract class AbstractGenerator  {
 	
 	public AbstractGenerator() {
 		KeyfinderPattern = Pattern.compile("\\{.*?\\}");
-		valueCounter = 0;
+		valueCounter = 1;
 	}
 
 	protected String generateRuleIdentifier() {

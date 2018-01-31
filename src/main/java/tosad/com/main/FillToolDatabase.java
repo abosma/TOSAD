@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,6 +13,10 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 
+import tosad.com.generator.Generator;
+import tosad.com.generator.GeneratorInterface;
+import tosad.com.generator.exception.GenerationException;
+import tosad.com.generator.exception.TemplateNotFoundException;
 import tosad.com.model.BusinessRule;
 import tosad.com.model.BusinessRuleType;
 import tosad.com.model.CompareValue;
@@ -22,10 +27,13 @@ import tosad.com.model.TargetDatabase;
 import tosad.com.model.TargetDatabaseType;
 import tosad.com.model.Trigger;
 import tosad.com.model.enums.Amount;
+import tosad.com.model.enums.ValueType;
 import tosad.com.model.util.HibernateUtil;
 
 public class FillToolDatabase {
 
+	private final static boolean ONLINE = false;
+	
 	private static Session entityManager;
 
 	/**
@@ -43,7 +51,13 @@ public class FillToolDatabase {
 	 *        one object is found, null if multiple objects were found
 	 */
 	public static <T> T getExistingOrPersistNew(T tObject) {
-
+		
+		if( ! ONLINE ){
+			//System.out.println(String.format("FAKED PERISTENCE OF %s", tObject.toString()));
+			return tObject;
+		}
+			
+		
 		Example example = Example.create(tObject);
 
 		@SuppressWarnings("deprecation")
@@ -96,8 +110,7 @@ public class FillToolDatabase {
 			return null;
 		}
 		
-		if( result.trim().equals(new String()))
-			return null;
+		//if( result.trim().equals(new String()))return null;
 		
 		return result;
 	}
@@ -117,11 +130,11 @@ public class FillToolDatabase {
 
 	}
 	
-	private static BusinessRuleType newBusinessRuleType(String name, String code, Operator[] operators, Amount amount){
+	private static BusinessRuleType newBusinessRuleType(String name, String code, Operator[] operators, Set<ValueType> hashSet){
 		BusinessRuleType businessRuleType = new BusinessRuleType();
 		businessRuleType.setName(name);
 		businessRuleType.setCode(code);
-		businessRuleType.setNumberOfValues(amount);
+		businessRuleType.setAllowedValueTypes(hashSet);
 		
 		for( Operator operator : operators ){
 			businessRuleType.addOperator(operator);
@@ -153,48 +166,58 @@ public class FillToolDatabase {
 		return businessRule;
 	}
 	
-	public static Operator newOperator(String name, String code, String amountOfValues){
+	public static Operator newOperator(String name, String code, Amount amount){
 		Operator operator = new Operator();
 		operator.setName(name);
 		operator.setCode(code);
-		operator.setAmountOfValues(amountOfValues);
+		operator.setAmountOfValues(amount);
 		
 		return operator;
 	}
 	
-	public static Set<CompareValue> getCompareValuesFor(BusinessRule businessRule){
-		Set<CompareValue> values = new HashSet<>();
+	private static Set<CompareValue> getCompareValuesFor(BusinessRule businessRule, ValueType valueType, Amount amount) {
+		Set<CompareValue> compareValues = new HashSet<CompareValue>();
 		
-		BusinessRuleType brt = businessRule.getBusinessRuleType();
-		brt.getNumberOfValues();
-		
-		return values;
+		int iterations = amount == Amount.SINGLE  ? 1 : amount == Amount.DOUBLE ? 2 : 3;
+		for(int i = 0; i < iterations; i++){
+			CompareValue compareValue = new CompareValue();
+			compareValue.setBusinessRule(businessRule);
+			compareValue.setOrder(i+1);
+			if( ValueType.LITERAL == valueType ){
+				compareValue.setValue(String.format("literal_%d", i));
+			} else {
+				compareValue.setTable(ValueType.COLUMN == valueType ? businessRule.getReferencedTable() : "OTHER_TABLE");
+				compareValue.setColumn(ValueType.TABLE == valueType ? "EXTERNAL_COLUMN" : "OTHER_COLUMN");
+			}
+			compareValues.add(compareValue);
+		}
+		return compareValues;
 	}
-	
+
 	public static void main(String[] args) {
 				
 		// create session
-		entityManager = HibernateUtil.getSession();
+		if(ONLINE)entityManager = HibernateUtil.getSession();
 	
 		//TARGET DASTABASE TYPES
 		 
-		TargetDatabaseType targetDatabaseType = new TargetDatabaseType();
-		targetDatabaseType.setName("Oracle");
+		TargetDatabaseType targetDatabaseTypeOracle = new TargetDatabaseType();
+		targetDatabaseTypeOracle.setName("Oracle");
 
-		targetDatabaseType = getExistingOrPersistNew(targetDatabaseType);
+		targetDatabaseTypeOracle = getExistingOrPersistNew(targetDatabaseTypeOracle);
 
 		//targetDatabase = getExistingOrPersistNew(targetDatabase);
 		//* Operator
-		Operator operatorBT		 = newOperator("Between",				"operator_between",					"double");
-		Operator operatorNBT	 = newOperator("Not Between",			"operator_not_between",				"double");
-		Operator operatorIN		 = newOperator("In",					"operator_in",						"multiple");
-		Operator operatorNIN	 = newOperator("Not In",				"operator_not_in",					"multiple");
-		Operator operatorEQ		 = newOperator("Equals",				"operator_equals",					"single");
-		Operator operatorNEQ	 = newOperator("Not Equals",			"operator_not_equals",				"single");
-		Operator operatorLT		 = newOperator("Less Than",				"operator_less_than",				"single");
-		Operator operatorGT		 = newOperator("Greater Than",			"operator_greater_than",			"single");
-		Operator operatorLTE	 = newOperator("Less Than Or Equal",	"operator_less_than_or_equal",		"single");
-		Operator operatorGTE	 = newOperator("Greater Than Or Equal",	"operator_greater_than_or_equal",	"single");
+		Operator operatorBT		 = newOperator("Between",				"operator_between",					Amount.DOUBLE);
+		Operator operatorNBT	 = newOperator("Not Between",			"operator_not_between",				Amount.DOUBLE);
+		Operator operatorIN		 = newOperator("In",					"operator_in",						Amount.MULTIPLE);
+		Operator operatorNIN	 = newOperator("Not In",				"operator_not_in",					Amount.MULTIPLE);
+		Operator operatorEQ		 = newOperator("Equals",				"operator_equals",					Amount.SINGLE);
+		Operator operatorNEQ	 = newOperator("Not Equals",			"operator_not_equals",				Amount.SINGLE);
+		Operator operatorLT		 = newOperator("Less Than",				"operator_less_than",				Amount.SINGLE);
+		Operator operatorGT		 = newOperator("Greater Than",			"operator_greater_than",			Amount.SINGLE);
+		Operator operatorLTE	 = newOperator("Less Than Or Equal",	"operator_less_than_or_equal",		Amount.SINGLE);
+		Operator operatorGTE	 = newOperator("Greater Than Or Equal",	"operator_greater_than_or_equal",	Amount.SINGLE);
 		
 		operatorBT	= getExistingOrPersistNew(operatorBT);
 		operatorNBT	= getExistingOrPersistNew(operatorNBT);
@@ -215,15 +238,15 @@ public class FillToolDatabase {
 		Operator[] opersOTH = new Operator[] {};
 		
 		//BusinessRuleType 
-		BusinessRuleType attr_rng_rule		= newBusinessRuleType("Attribute Range Rule",		"attribute_range_rule",			opersRNG,			Amount.DOUBLE);
-		BusinessRuleType attr_cmp_rule		= newBusinessRuleType("Attribute Compare Rule",		"attribute_compare_rule",		opersCMP,			Amount.SINGLE);
-		BusinessRuleType attr_lst_rul		= newBusinessRuleType("Attribute List Rule",		"attribute_list_rule",			opersLST,			Amount.MULTIPLE);
-		BusinessRuleType attr_oth_rule		= newBusinessRuleType("Attribute Other Rule",		"attribute_other_rule",			opersOTH,			Amount.MULTIPLE);
-		BusinessRuleType tuple_cmp_rule 	= newBusinessRuleType("Tuple Compare Rule",			"tuple_compare_rule",			opersCMP,			Amount.SINGLE);
-		BusinessRuleType tuple_oth_rule 	= newBusinessRuleType("Tuple Compare Rule",			"tuple_other_rule",				opersOTH,			Amount.SINGLE);
-		BusinessRuleType int_ent_cmp_rule	= newBusinessRuleType("Inter Entity Compare Rule",	"inter_entity_compare_rule"	,	opersCMP,			Amount.SINGLE);
-		BusinessRuleType ent_oth_rule 		= newBusinessRuleType("Entity Other Rule",			"entity_other_rule", 			opersOTH,			Amount.MULTIPLE);
-		BusinessRuleType modif_rule 		= newBusinessRuleType("Modify Rule", 				"modify_rule", 					new Operator[]{},	Amount.MULTIPLE);
+		BusinessRuleType attr_rng_rule		= newBusinessRuleType("Attribute Range Rule",		"attribute_range_rule",			opersRNG,			new HashSet<ValueType>(Arrays.asList(ValueType.LITERAL)));
+		BusinessRuleType attr_cmp_rule		= newBusinessRuleType("Attribute Compare Rule",		"attribute_compare_rule",		opersCMP,			new HashSet<ValueType>(Arrays.asList(ValueType.LITERAL)));
+		BusinessRuleType attr_lst_rul		= newBusinessRuleType("Attribute List Rule",		"attribute_list_rule",			opersLST,			new HashSet<ValueType>(Arrays.asList(ValueType.LITERAL)));
+		BusinessRuleType attr_oth_rule		= newBusinessRuleType("Attribute Other Rule",		"attribute_other_rule",			opersOTH,			new HashSet<ValueType>(Arrays.asList(ValueType.LITERAL)));
+		BusinessRuleType tuple_cmp_rule 	= newBusinessRuleType("Tuple Compare Rule",			"tuple_compare_rule",			opersCMP,			new HashSet<ValueType>(Arrays.asList(ValueType.COLUMN)));
+		BusinessRuleType tuple_oth_rule 	= newBusinessRuleType("Tuple Compare Rule",			"tuple_other_rule",				opersOTH,			new HashSet<ValueType>(Arrays.asList(ValueType.COLUMN)));
+		BusinessRuleType int_ent_cmp_rule	= newBusinessRuleType("Inter Entity Compare Rule",	"inter_entity_compare_rule"	,	opersCMP,			new HashSet<ValueType>(Arrays.asList(ValueType.TABLE)));
+		BusinessRuleType ent_oth_rule 		= newBusinessRuleType("Entity Other Rule",			"entity_other_rule", 			opersOTH,			new HashSet<ValueType>(Arrays.asList(ValueType.TABLE)));
+		BusinessRuleType modif_rule 		= newBusinessRuleType("Modify Rule", 				"modify_rule", 					new Operator[]{},	new HashSet<ValueType>(Arrays.asList(ValueType.LITERAL, ValueType.COLUMN, ValueType.TABLE)));
 		
 		attr_rng_rule		= getExistingOrPersistNew(attr_rng_rule);
 		attr_cmp_rule		= getExistingOrPersistNew(attr_cmp_rule);
@@ -243,7 +266,7 @@ public class FillToolDatabase {
 		targetDatabase.setName("HU_Target_DB");
 		targetDatabase.setPassword("tosad_2017_2a_team1_target");
 		targetDatabase.setUsername("tosad_2017_2a_team1_target");
-		targetDatabase.setTargetDatabaseType(targetDatabaseType);
+		targetDatabase.setTargetDatabaseType(targetDatabaseTypeOracle);
 
 		targetDatabase = getExistingOrPersistNew(targetDatabase);
 
@@ -291,7 +314,7 @@ public class FillToolDatabase {
 		
 		ArrayList<RuleTemplate> ruleTemplates = new ArrayList<RuleTemplate>();
 		
-		RuleTemplate ruleTemplateOracleTrigger = registerTemplate( new File("templates/oracle/trigger.template"), "trigger", targetDatabaseType);
+		RuleTemplate ruleTemplateOracleTrigger = registerTemplate( new File("templates/oracle/trigger.template"), "trigger", targetDatabaseTypeOracle);
 		ruleTemplateOracleTrigger = getExistingOrPersistNew(ruleTemplateOracleTrigger);
 		ruleTemplates.add(ruleTemplateOracleTrigger);
 		
@@ -299,9 +322,16 @@ public class FillToolDatabase {
 		for (BusinessRuleType o : allBusinessRuleTypes) {
 			
 			String v = o.getCode();
-		
-			for( String prefix : new String[]{"", "trigger_"}){
-				RuleTemplate ruleTemplate = registerTemplate(new File(String.format("templates/oracle/%s.template", prefix + v)), v, targetDatabaseType);
+			
+			String[] prefixes = new String[]{"", "trigger_"};
+			
+			for( String prefix : prefixes){
+				String name = prefix + v;
+				String fileLocation = String.format( "templates/oracle/%s.template", name );
+				System.out.println(fileLocation);
+				File theFile = new File(fileLocation);
+				
+				RuleTemplate ruleTemplate = registerTemplate(theFile, name, targetDatabaseTypeOracle);
 				if(ruleTemplate == null)
 					continue;
 				
@@ -313,7 +343,7 @@ public class FillToolDatabase {
 		// ALL OPERATORS
 		for( Operator o : operALL){
 			String v = o.getCode();
-			RuleTemplate ruleTemplate = registerTemplate(new File(String.format("templates/oracle/%s.template", v)), v, targetDatabaseType);
+			RuleTemplate ruleTemplate = registerTemplate(new File(String.format("templates/oracle/%s.template", v)), v, targetDatabaseTypeOracle);
 			if(ruleTemplate == null)
 				continue;
 			
@@ -322,7 +352,7 @@ public class FillToolDatabase {
 		}
 
 		for(String s : new String[]{"string","number","table","column"}){
-			RuleTemplate ruleTemplateOracleString = registerTemplate( new File(String.format("templates/oracle/%s.template", s)), s, targetDatabaseType);
+			RuleTemplate ruleTemplateOracleString = registerTemplate( new File(String.format("templates/oracle/%s.template", s)), s, targetDatabaseTypeOracle);
 			
 			if(ruleTemplateOracleString == null)
 				continue;
@@ -331,6 +361,10 @@ public class FillToolDatabase {
 			ruleTemplates.add(ruleTemplateOracleString);
 		}
 	
+		for (RuleTemplate ruleTemplate : ruleTemplates) {
+			targetDatabaseTypeOracle.addTemplate(ruleTemplate);
+		}
+		
 		Constraint nullConstraint = new Constraint();
 		nullConstraint.setId(0);
 		nullConstraint = getExistingOrPersistNew(nullConstraint);
@@ -346,74 +380,57 @@ public class FillToolDatabase {
 		int businessRuleCounter = 0;
 		for(BusinessRuleType businessRuleType : allBusinessRuleTypes){
 			
-			Set<Operator> operators = businessRuleType.getOperators();
-			for (Operator operator : operators) {
-				
-				BusinessRule businessRule = newBusinessRule(
-						String.format("BRT_%3d", businessRuleCounter++), 
-						businessRuleType, 
-						operator, 
-						"BR_TABLE", 
-						"BR_COLUMN", 
-						trigger, 
-						targetDatabase
-				);
-				businessRule = getExistingOrPersistNew(businessRule);
-				if(businessRule != null)
+			Set<ValueType> allowedTypes = businessRuleType.getAllowedValueTypes();
+			
+			for(ValueType valueType : allowedTypes){
+			
+				Set<Operator> operators = businessRuleType.getOperators();
+				for (Operator operator : operators) {
+					
+					BusinessRule businessRule = newBusinessRule(
+							String.format("BRT_%d", businessRuleCounter++), 
+							businessRuleType, 
+							operator, 
+							"BR_TABLE", 
+							"BR_COLUMN", 
+							trigger, 
+							targetDatabase
+					);
+					businessRule = getExistingOrPersistNew(businessRule);
+
+					Set<CompareValue> compareValues = getCompareValuesFor(businessRule, valueType, operator.getAmountOfValues());
+					for (CompareValue compareValue : compareValues) {
+						compareValue = getExistingOrPersistNew(compareValue);
+					}
 					businessRules.add(businessRule);
+				}
 			}
 		}
 		
-	/*	//Compare values
-		CompareValue compareValue1 = new CompareValue();
-		compareValue1.setValue("1");
-
-		CompareValue compareValue2 = new CompareValue();
-		compareValue2.setValue("10");
-
+		int count = 0;
 		
-		//BusinessRule
-		 
-
-		BusinessRule businessRule = new BusinessRule();
-		businessRule.setBusinessRuleType(businessRuleType);
-		businessRule.setErrorMessage("Waarde moet tussen x en y liggen");
-		businessRule.setExample("BusinessRuleVoorbeeld");
-		businessRule.setExplanation("Hier nog meer uitleg over de regel");
-		businessRule.setName("BRG_TABLEX_ARNG_01");
-		businessRule.setOperator(operator);
-		businessRule.setReferencedColumn("COLUMN-Y");
-		businessRule.setReferencedTable("TABLE-X");
-		businessRule.setTargetDatabase(targetDatabase);
-		businessRule.setTrigger(trigger);
-		businessRule.addCompareValue(compareValue1);
-		businessRule.addCompareValue(compareValue2);
-
-		businessRule = getExistingOrPersistNew(businessRule);
-
+		GeneratorInterface generator = new Generator();
+		for (BusinessRule businessRule : businessRules) {
+			System.out.println(String.format("\n\n----- GENERATING FOR %s ------", businessRule.getName()));
+			System.out.println(String.format("%s\n%s", businessRule.getBusinessRuleType().getName(), businessRule.getOperator().getName()));
+			for (CompareValue compareValue : businessRule.getCompareValues()) 
+				System.out.println(compareValue.toString());
+			System.out.println();
+			
+			try {
+				String OSql = generator.generateSQL(businessRule);
+				System.out.println(OSql);
+			} catch (GenerationException e1) {
+				e1.printStackTrace();
+			} catch (TemplateNotFoundException e1) {
+				e1.printStackTrace();
+			}
+			
+			if(++count > 5)
+				break;
+		}
 		
-		//ORACLE TEMPLATES
-		 
-		// Generic Trigger Template
-		String fileTriggerTemplate = retrieveFileContent(new File("templates/oracle/trigger.template"));
-
-		RuleTemplate templateOracleTrigger = new RuleTemplate();
-		templateOracleTrigger.setName("trigger");
-		templateOracleTrigger.setTargetDatabaseType(targetDatabaseType);
-		templateOracleTrigger.setTemplate(fileTriggerTemplate);
-
-		templateOracleTrigger = getExistingOrPersistNew(templateOracleTrigger);
-
-		// Attribute range rule
-		String fileOracleARNGTemplate = retrieveFileContent(new File("templates/oracle/trigger.template"));
-
-		RuleTemplate templateOracleARNG = new RuleTemplate();
-		templateOracleARNG.setName(ATTR_RANGE_RULE);
-		templateOracleARNG.setTargetDatabaseType(targetDatabaseType);
-		templateOracleARNG.setTemplate(fileOracleARNGTemplate);
-
-		templateOracleARNG = getExistingOrPersistNew(templateOracleARNG);
-		*/
-		entityManager.close();
+		if(ONLINE)
+			entityManager.close();
 	}
 }

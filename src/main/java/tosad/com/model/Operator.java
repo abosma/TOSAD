@@ -16,6 +16,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import tosad.com.model.enums.Amount;
+
 @Entity
 @Table(name = "operators")
 public class Operator implements Serializable {
@@ -36,7 +38,7 @@ public class Operator implements Serializable {
 	@Column(name = "code", nullable = false, length = 255)
 	private String code;
 
-	@Column(name = "number_of_values", nullable = false)
+	@Column(name = "number_of_values", nullable = true)
 	private String amountOfValues;
 
 	@ManyToMany(cascade = CascadeType.ALL)
@@ -72,12 +74,12 @@ public class Operator implements Serializable {
 		this.code = code;
 	}
 
-	public String getAmountOfValues() {
-		return this.amountOfValues;
+	public Amount getAmountOfValues() {
+		return Amount.valueOf(this.amountOfValues);
 	}
 
-	public void setAmountOfValues(String amountOfValues) {
-		this.amountOfValues = amountOfValues;
+	public void setAmountOfValues(Amount amount) {
+		this.amountOfValues = amount.toString();
 	}
 
 	public Set<BusinessRuleType> getBusinessRuleTypes() {

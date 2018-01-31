@@ -16,7 +16,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import tosad.com.model.enums.Amount;
+import tosad.com.model.enums.ValueType;
 
 @Entity
 @Table(name = "business_rule_types")
@@ -32,15 +32,26 @@ public class BusinessRuleType implements Serializable {
 	@Column(name = "name", nullable = false, length = 250)
 	private String name;
 
-	@Column(name = "amount_of_values", nullable = true, length = 250)
-	private String numberOfValues;
+	@Column(name = "allowed_value_types", nullable = false, length = 250)
+	private String allowedValueTypes;
 
-	public Amount getNumberOfValues() {
-		return Amount.valueOf(this.numberOfValues);
+	public Set<ValueType> getAllowedValueTypes() {
+		String[] sValues = allowedValueTypes.split(";");
+		Set<ValueType> values = new HashSet<ValueType>();
+		
+		for (int i = 0; i < sValues.length; i++) 
+			values.add( ValueType.valueOf(sValues[i]) );
+		
+		return values;
 	}
 
-	public void setNumberOfValues(Amount amount) {
-		this.numberOfValues = amount.toString();
+	public void setAllowedValueTypes(Set<ValueType> valueTypes) {
+		String[] tmp = new String[valueTypes.size()];
+		int iterationCount = 0;
+		for(ValueType type : valueTypes)
+			tmp[iterationCount++] = type.toString();
+		
+		this.allowedValueTypes = String.join(";", tmp);
 	}
 
 	public String getCode() {
