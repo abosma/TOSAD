@@ -28,7 +28,7 @@ public abstract class AbstractGenerator  {
 
 	protected String generateRuleIdentifier() {
 		String tableName = businessRule.getReferencedTable().toUpperCase();
-		String ruleType = businessRule.getBusinessRuleType().getName().toUpperCase();
+		String ruleType = businessRule.getBusinessRuleType().getName().toUpperCase().replace(' ', '_');
 		
 		//TODO change the hardcoded rulenumber
 		return String.format("BRG_%S_%S_%d", tableName, ruleType, 0);

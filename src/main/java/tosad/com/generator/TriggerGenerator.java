@@ -20,7 +20,7 @@ public class TriggerGenerator extends AbstractGenerator{
 		case "trigger_execution":
 			return generateTriggerExecution();
 		case "trigger_types":
-			return generateTriggerTypes(businessRule);
+			return generateTriggerTypes();
 		case "table_name":
 			return getReferencedTableName();
 		case "condition":
@@ -67,9 +67,9 @@ public class TriggerGenerator extends AbstractGenerator{
 		return template;
 	}
 	
-	private String generateTriggerTypes(BusinessRule businessRule) {
+	private String generateTriggerTypes() {
 		//TODO double check if this is correct... looks quite ugly
-		return String.join(",", businessRule.getTrigger().getExecutionType().split(":")); 
+		return String.join(",", businessRule.getTrigger().getExecutionType().split(";")); 
 	}
 
 	private String generateTriggerExecution() {

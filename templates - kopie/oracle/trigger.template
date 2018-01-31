@@ -1,0 +1,11 @@
+CREATE OR REPLACE TRIGGER {trigger_identifier}
+{trigger_execution} {trigger_types}
+ON {table_name}
+FOR EACH ROW
+DECLARE
+	l_passed BOOLEAN := TRUE;
+BEGIN
+	{condition}
+IF NOT l_passed THEN
+	RAISE_APPLICAITON_ERROR(-20000, {error_text});
+END;

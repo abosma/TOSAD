@@ -79,17 +79,17 @@ public class CompareValue implements Serializable {
 		this.businessRule = businessRule;
 	}
 
-	@Override
-	public String toString() {
-		return "CompareValue [id=" + this.id + ", table=" + this.table + ", column=" + this.column + ", value="
-				+ this.value + "]";
-	}
-
 	public int getOrder() {
 		return this.order;
 	}
 
 	public void setOrder(int order) {
 		this.order = order;
+	}
+
+	@Override
+	public String toString() {
+		return "CompareValue [id=" + this.id + ", table=" + this.table + ", column=" + this.column + ", value="
+				+ this.value + ", order=" + this.order + "]";
 	}
 }
