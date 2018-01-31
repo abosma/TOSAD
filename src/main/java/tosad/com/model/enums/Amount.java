@@ -1,11 +1,11 @@
 package tosad.com.model.enums;
 
-public enum ValueType {
-	LITERAL("LITERAL"), COLUMN("COLUMN"), TABLE("TABLE");
+public enum Amount {
+	SINGLE("SINGLE"), DOUBLE("DOUBLE"), MULTIPLE("MULTIPLE");
 
 	private final String text;
 
-	private ValueType(final String text) {
+	private Amount(final String text) {
 		this.text = text;
 	}
 

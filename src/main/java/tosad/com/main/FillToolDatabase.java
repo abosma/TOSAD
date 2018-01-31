@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -12,13 +14,14 @@ import org.hibernate.criterion.Example;
 
 import tosad.com.model.BusinessRule;
 import tosad.com.model.BusinessRuleType;
+import tosad.com.model.CompareValue;
 import tosad.com.model.Constraint;
 import tosad.com.model.Operator;
 import tosad.com.model.RuleTemplate;
 import tosad.com.model.TargetDatabase;
 import tosad.com.model.TargetDatabaseType;
 import tosad.com.model.Trigger;
-import tosad.com.model.enums.ValueType;
+import tosad.com.model.enums.Amount;
 import tosad.com.model.util.HibernateUtil;
 
 public class FillToolDatabase {
@@ -114,11 +117,11 @@ public class FillToolDatabase {
 
 	}
 	
-	private static BusinessRuleType newBusinessRuleType(String name, String code, Operator[] operators, ValueType[] valueTypes){
+	private static BusinessRuleType newBusinessRuleType(String name, String code, Operator[] operators, Amount amount){
 		BusinessRuleType businessRuleType = new BusinessRuleType();
 		businessRuleType.setName(name);
 		businessRuleType.setCode(code);
-		businessRuleType.setValueTypes(valueTypes);
+		businessRuleType.setNumberOfValues(amount);
 		
 		for( Operator operator : operators ){
 			businessRuleType.addOperator(operator);
@@ -159,6 +162,15 @@ public class FillToolDatabase {
 		return operator;
 	}
 	
+	public static Set<CompareValue> getCompareValuesFor(BusinessRule businessRule){
+		Set<CompareValue> values = new HashSet<>();
+		
+		BusinessRuleType brt = businessRule.getBusinessRuleType();
+		brt.getNumberOfValues();
+		
+		return values;
+	}
+	
 	public static void main(String[] args) {
 				
 		// create session
@@ -195,7 +207,7 @@ public class FillToolDatabase {
 		operatorLTE	= getExistingOrPersistNew(operatorLTE);
 		operatorGTE	= getExistingOrPersistNew(operatorGTE);
 		
-		Operator[] operALL	= new Operator[] {operatorBT,operatorNBT,operatorIN,operatorNIN,operatorEQ,operatorNEQ,operatorLT,operatorGT,operatorLTE,operatorGTE};
+		Operator[] operALL	= new Operator[] {operatorBT, operatorNBT, operatorIN, operatorNIN, operatorEQ, operatorNEQ, operatorLT, operatorGT, operatorLTE, operatorGTE};
 
 		Operator[] opersRNG = new Operator[] {operatorBT, operatorNBT};
 		Operator[] opersCMP = new Operator[] {operatorEQ, operatorNEQ, operatorGT, operatorGTE, operatorLT, operatorLTE};
@@ -203,15 +215,15 @@ public class FillToolDatabase {
 		Operator[] opersOTH = new Operator[] {};
 		
 		//BusinessRuleType 
-		BusinessRuleType attr_rng_rule		= newBusinessRuleType("Attribute Range Rule",		"attribute_range_rule",			opersRNG,			new ValueType[]{});
-		BusinessRuleType attr_cmp_rule		= newBusinessRuleType("Attribute Compare Rule",		"attribute_compare_rule",		opersCMP,			new ValueType[]{});
-		BusinessRuleType attr_lst_rul		= newBusinessRuleType("Attribute List Rule",		"attribute_list_rule",			opersLST,			new ValueType[]{});
-		BusinessRuleType attr_oth_rule		= newBusinessRuleType("Attribute Other Rule",		"attribute_other_rule",			opersOTH,			new ValueType[]{});
-		BusinessRuleType tuple_cmp_rule 	= newBusinessRuleType("Tuple Compare Rule",			"tuple_compare_rule",			opersCMP,			new ValueType[]{});
-		BusinessRuleType tuple_oth_rule 	= newBusinessRuleType("Tuple Compare Rule",			"tuple_other_rule",				opersOTH,			new ValueType[]{});
-		BusinessRuleType int_ent_cmp_rule	= newBusinessRuleType("Inter Entity Compare Rule",	"inter_entity_compare_rule"	,	opersCMP,			new ValueType[]{});
-		BusinessRuleType ent_oth_rule 		= newBusinessRuleType("Entity Other Rule",			"entity_other_rule", 			opersOTH,			new ValueType[]{});
-		BusinessRuleType modif_rule 		= newBusinessRuleType("Modify Rule", 				"modify_rule", 					new Operator[]{},	new ValueType[]{});
+		BusinessRuleType attr_rng_rule		= newBusinessRuleType("Attribute Range Rule",		"attribute_range_rule",			opersRNG,			Amount.DOUBLE);
+		BusinessRuleType attr_cmp_rule		= newBusinessRuleType("Attribute Compare Rule",		"attribute_compare_rule",		opersCMP,			Amount.SINGLE);
+		BusinessRuleType attr_lst_rul		= newBusinessRuleType("Attribute List Rule",		"attribute_list_rule",			opersLST,			Amount.MULTIPLE);
+		BusinessRuleType attr_oth_rule		= newBusinessRuleType("Attribute Other Rule",		"attribute_other_rule",			opersOTH,			Amount.MULTIPLE);
+		BusinessRuleType tuple_cmp_rule 	= newBusinessRuleType("Tuple Compare Rule",			"tuple_compare_rule",			opersCMP,			Amount.SINGLE);
+		BusinessRuleType tuple_oth_rule 	= newBusinessRuleType("Tuple Compare Rule",			"tuple_other_rule",				opersOTH,			Amount.SINGLE);
+		BusinessRuleType int_ent_cmp_rule	= newBusinessRuleType("Inter Entity Compare Rule",	"inter_entity_compare_rule"	,	opersCMP,			Amount.SINGLE);
+		BusinessRuleType ent_oth_rule 		= newBusinessRuleType("Entity Other Rule",			"entity_other_rule", 			opersOTH,			Amount.MULTIPLE);
+		BusinessRuleType modif_rule 		= newBusinessRuleType("Modify Rule", 				"modify_rule", 					new Operator[]{},	Amount.MULTIPLE);
 		
 		attr_rng_rule		= getExistingOrPersistNew(attr_rng_rule);
 		attr_cmp_rule		= getExistingOrPersistNew(attr_cmp_rule);
@@ -239,7 +251,7 @@ public class FillToolDatabase {
 		String[] trigger_levels = {"Before", "After"};
 		String[] e = {"Insert", "Update", "Delete"};
 		
-		List<Trigger> triggers = new ArrayList<Trigger>();
+		List<Trigger> allTriggers = new ArrayList<Trigger>();
 		for(int i = 0; i < trigger_levels.length; i++){
 			String level = trigger_levels[i];
 			for(int j = 0; j < e.length; j++){
@@ -251,7 +263,7 @@ public class FillToolDatabase {
 				_trigger.setExecutionType(eType.toUpperCase());
 				_trigger.setExecutionTypeTranslations(eType);
 				
-				triggers.add(_trigger);
+				allTriggers.add(_trigger);
 				
 				String thisAndNextType = String.format("%s:%s", e[j], e[j%e.length]);
 				
@@ -261,7 +273,7 @@ public class FillToolDatabase {
 				_triggerAB.setExecutionType(thisAndNextType.toUpperCase());
 				_triggerAB.setExecutionTypeTranslations(thisAndNextType);
 				
-				triggers.add(_triggerAB);
+				allTriggers.add(_triggerAB);
 			}
 			
 			Trigger _trigger = new Trigger();
@@ -270,10 +282,10 @@ public class FillToolDatabase {
 			_trigger.setExecutionType(String.format("%s:%s:%s", e[0], e[1], e[2]).toUpperCase());
 			_trigger.setExecutionTypeTranslations(String.format("%s, %s, %s", e[0], e[1], e[2]));
 			
-			triggers.add(_trigger);
+			allTriggers.add(_trigger);
 		}
 
-		for (Trigger t : triggers) {
+		for (Trigger t : allTriggers) {
 			t = getExistingOrPersistNew(t);
 		}
 		
@@ -323,11 +335,34 @@ public class FillToolDatabase {
 		nullConstraint.setId(0);
 		nullConstraint = getExistingOrPersistNew(nullConstraint);
 		
+		Trigger trigger = new Trigger();
+		trigger.setExecutionLevel("BEFORE");
+		trigger.setExecutionType("INSERT;UPDATE;DELETE");
+		
+		trigger = getExistingOrPersistNew(trigger);
+		
+		List<BusinessRule> businessRules = new ArrayList<BusinessRule>();
+		
+		int businessRuleCounter = 0;
 		for(BusinessRuleType businessRuleType : allBusinessRuleTypes){
 			
+			Set<Operator> operators = businessRuleType.getOperators();
+			for (Operator operator : operators) {
+				
+				BusinessRule businessRule = newBusinessRule(
+						String.format("BRT_%3d", businessRuleCounter++), 
+						businessRuleType, 
+						operator, 
+						"BR_TABLE", 
+						"BR_COLUMN", 
+						trigger, 
+						targetDatabase
+				);
+				businessRule = getExistingOrPersistNew(businessRule);
+				if(businessRule != null)
+					businessRules.add(businessRule);
+			}
 		}
-		
-		
 		
 	/*	//Compare values
 		CompareValue compareValue1 = new CompareValue();
