@@ -23,7 +23,7 @@ public class TriggerGenerator extends AbstractGenerator{
 			return getReferencedTableName();
 		case "condition":
 			return retrieveCondition();
-		case "condition_sub_template":
+		case "constraint":
 			return retrieveTriggerConditionSubTemplate();
 		case "column_name":
 			return getReferencedColumnName();
@@ -71,7 +71,7 @@ public class TriggerGenerator extends AbstractGenerator{
 	
 	private String generateTriggerTypes() {
 		//TODO double check if this is correct... looks quite ugly
-		return String.join(",", businessRule.getTrigger().getExecutionType().split(";")); 
+		return String.join(" OR ", businessRule.getTrigger().getExecutionType().split(";")); 
 	}
 
 	private String generateTriggerExecution() {

@@ -91,8 +91,7 @@ public abstract class AbstractGenerator  {
 			
 			column	= sqlFormatter.format("column", column);
 			table	= sqlFormatter.format("table", table);
-			
-			return String.format("%s.%s", column, table);
+			return String.format("%s.%s", table, column);
 		} else {
 			if( table.equals(empty) && column.equals(empty)){
 				// only the literal value is set, so return it

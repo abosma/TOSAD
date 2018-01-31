@@ -1,1 +1,1 @@
-{column_name} {operator} ({values})
+:NEW.{column_name} {operator} ({values})

@@ -68,7 +68,7 @@ public class FillToolDatabase {
 		List<T> results = criteria.list();
 
 		if (results.size() < 1) {
-			System.out.println("Persisting object: " + tObject.toString());
+			//System.out.println("Persisting object: " + tObject.toString());
 			entityManager.beginTransaction();
 			entityManager.persist(tObject);
 			entityManager.getTransaction().commit();
@@ -193,6 +193,7 @@ public class FillToolDatabase {
 				compareValue.setColumn(ValueType.ENTITY == valueType ? "EXTERNAL_COLUMN" : "OTHER_COLUMN");
 			}
 			compareValues.add(compareValue);
+			System.out.println(compareValue);
 		}
 		return compareValues;
 	}
@@ -369,9 +370,11 @@ public class FillToolDatabase {
 			targetDatabaseTypeOracle.addTemplate(ruleTemplate);
 		}
 		
-		entityManager.beginTransaction();
-		entityManager.persist(targetDatabaseTypeOracle);
-		entityManager.getTransaction().commit();
+		if(ONLINE){
+			entityManager.beginTransaction();
+			entityManager.persist(targetDatabaseTypeOracle);
+			entityManager.getTransaction().commit();
+		}
 		
 		Constraint nullConstraint = new Constraint();
 		nullConstraint.setId(0);
@@ -399,8 +402,8 @@ public class FillToolDatabase {
 							String.format("BRT_%d", businessRuleCounter++), 
 							businessRuleType, 
 							operator, 
-							"BR_TABLE", 
-							"BR_COLUMN", 
+							"BR_COLUMN",
+							"BR_TABLE",  
 							trigger, 
 							targetDatabase
 					);
