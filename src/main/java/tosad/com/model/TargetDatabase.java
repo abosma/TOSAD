@@ -15,7 +15,8 @@ public class TargetDatabase implements Serializable {
 	private static final long serialVersionUID = -9141646972166988519L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "target_db_generator")
+	@SequenceGenerator(name="target_db_generator", sequenceName = "target_db_seq", allocationSize=50)
 	private int id;
 
 	@Column(name = "name", nullable = false, length = 255)

@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -19,14 +20,9 @@ public class Trigger implements Serializable {
 	private static final long serialVersionUID = -2576986450271109183L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "trigger_generator")
+	@SequenceGenerator(name="trigger_generator", sequenceName = "trigger_seq", allocationSize=50)
 	private int id;
-
-	@Column(name = "type", nullable = false, length = 255)
-	private String type;
-
-	@Column(name = "type_translation", nullable = false, length = 4000)
-	private String typeTranslation;
 
 	@Column(name = "execution_type", nullable = false, length = 255)
 	private String executionType;
@@ -46,22 +42,6 @@ public class Trigger implements Serializable {
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public String getTypeTranslation() {
-		return typeTranslation;
-	}
-
-	public void setTypeTranslation(String typeTranslation) {
-		this.typeTranslation = typeTranslation;
 	}
 
 	public String getExecutionType() {
@@ -98,8 +78,7 @@ public class Trigger implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Trigger [id=" + this.id + ", type=" + this.type + ", typeTranslation=" + this.typeTranslation
-				+ ", executionType=" + this.executionType + ", executionTypeTranslations="
+		return "Trigger [id=" + this.id + ", executionType=" + this.executionType + ", executionTypeTranslations="
 				+ this.executionTypeTranslations + ", executionLevel=" + this.executionLevel
 				+ ", executionLevelTranslations=" + this.executionLevelTranslations + "]";
 	}

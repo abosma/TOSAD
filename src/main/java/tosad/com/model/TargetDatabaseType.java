@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -22,7 +23,8 @@ public class TargetDatabaseType implements Serializable {
 	private static final long serialVersionUID = -1403812530125696107L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tbt_generator")
+	@SequenceGenerator(name="tbt_generator", sequenceName = "tbt_seq", allocationSize=50)
 	private int id;
 
 	@Column(name = "type", nullable = false, length = 50)

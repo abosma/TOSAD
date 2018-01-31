@@ -8,10 +8,12 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -24,7 +26,8 @@ public class Operator implements Serializable {
 	private static final long serialVersionUID = 5058409315298659885L;
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "operator_generator")
+	@SequenceGenerator(name="operator_generator", sequenceName = "operator_seq", allocationSize=50)
 	private int id;
 
 	@Column(name = "name", nullable = false, length = 255)

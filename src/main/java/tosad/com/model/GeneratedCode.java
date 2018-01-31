@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -22,7 +23,8 @@ public class GeneratedCode implements Serializable {
 	private static final long serialVersionUID = 4862358544941898382L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_code_generator")
+	@SequenceGenerator(name="gen_code_generator", sequenceName = "gen_code_seq", allocationSize=50)
 	private int id;
 
 	@Column(updatable = false, name = "status", nullable = false, unique = true)

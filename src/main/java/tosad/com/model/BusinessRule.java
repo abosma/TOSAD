@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 
@@ -26,13 +27,12 @@ public class BusinessRule implements Serializable {
 	private static final long serialVersionUID = 1293391282912092618L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "businessrule_generator")
+	@SequenceGenerator(name="businessrule_generator", sequenceName = "businessrule_seq", allocationSize=50)
 	private int id;
 
 	@Column(name = "name", nullable = false, length = 255)
 	private String name;
-	
-	
 
 	@Column(name = "error_message", nullable = true, length = 4000)
 	private String errorMessage;

@@ -5,9 +5,11 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -20,7 +22,8 @@ public class CompareValue implements Serializable {
 	private static final long serialVersionUID = -3559038127062256567L;
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "comp_val_generator")
+	@SequenceGenerator(name="comp_val_generator", sequenceName = "comp_val_seq", allocationSize=50)
 	private int id;
 
 	@Column(name = "table_name", nullable = true, length = 255)
