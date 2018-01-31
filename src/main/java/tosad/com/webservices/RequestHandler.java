@@ -18,13 +18,11 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
-import org.hibernate.query.*;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.List;
 
 @Path("/get")
@@ -182,6 +180,7 @@ public class RequestHandler {
 
 			if(session.get(GeneratedCode.class, generatedCode.getId()) != null) {
 				responseBuilder.add("code", code);
+				responseBuilder.add("id", generatedCode.getId());
 				session.close();
 			}else{
 				responseBuilder.add("status", "Business Rule is null");
