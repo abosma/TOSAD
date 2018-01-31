@@ -279,12 +279,21 @@ public class GeneratorTestSite {
 		targetDatabaseTypeOracle.addTemplate(ruleTemplateOracleOperatorLTE);
 
 		GeneratorInterface generator = new Generator();
-		String output = generator.generateSQL(businessRuleARNG);
+		try {
+			String output = generator.generateSQL(businessRuleARNG);
+			System.out.println("Generated output for attribute range rule: \n" + output);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		System.out.println("Generated output for attribute range rule: \n" + output);
-
-		String outputCMP = generator.generateSQL(businessRuleCMP);
-		System.out.println("\nGenerated output for attribute compare rule\n\n" + outputCMP);
+		try {
+			String outputCMP = generator.generateSQL(businessRuleCMP);
+			System.out.println("\nGenerated output for attribute compare rule\n\n" + outputCMP);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		/*
 		 * *** *** *** END OF TEST CODE *** *** ***
