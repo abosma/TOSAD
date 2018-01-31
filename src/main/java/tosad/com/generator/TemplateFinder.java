@@ -1,5 +1,6 @@
 package tosad.com.generator;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import tosad.com.generator.exception.TemplateNotFoundException;
@@ -16,9 +17,7 @@ public class TemplateFinder {
 	
 	private RuleTemplate retrieveTemplate(String templateName){
 		RuleTemplate ruleTemplate = null;
-		for(RuleTemplate template : this.templates){
-			//System.err.println(String.format("%30s - %30s", template.getName(), templateName));
-			
+		for(RuleTemplate template : this.templates){			
 			if(template.getName().equals(templateName)){
 				ruleTemplate = template;
 				break;
@@ -33,5 +32,15 @@ public class TemplateFinder {
 			throw new TemplateNotFoundException(type);
 		}
 		return template.getTemplate();
+	}
+
+	public Set<RuleTemplate> findTemplatesByPartial(String partial) {
+		Set<RuleTemplate> ruleTemplates = new HashSet<RuleTemplate>();
+		for(RuleTemplate ruleTemplate : this.templates){
+			if(ruleTemplate.getName().contains(partial)){
+				ruleTemplates.add(ruleTemplate);
+			}
+		}
+		return ruleTemplates;		
 	}
 }

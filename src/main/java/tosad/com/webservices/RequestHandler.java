@@ -1,31 +1,29 @@
 package tosad.com.webservices;
 
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
 import tosad.com.generator.Generator;
 import tosad.com.generator.GeneratorInterface;
-import tosad.com.generator.exception.GenerationException;
-import tosad.com.generator.exception.TemplateNotFoundException;
 import tosad.com.model.BusinessRule;
 import tosad.com.model.GeneratedCode;
 import tosad.com.model.TargetDatabase;
 import tosad.com.model.util.HibernateUtil;
 import tosad.com.targetdbconnectionservices.ConnectionController;
 import tosad.com.targetdbconnectionservices.ConnectionInterface;
-
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
-import org.hibernate.query.*;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.List;
 
 @Path("/get")
 public class RequestHandler {
@@ -187,7 +185,7 @@ public class RequestHandler {
 				responseBuilder.add("status", "Business Rule is null");
 				session.close();
 			}
-		}catch(HibernateException|NullPointerException|GenerationException|TemplateNotFoundException multiException) {
+		}catch( Exception multiException ) {
 			if(transaction != null) {
 				transaction.rollback();
 			}

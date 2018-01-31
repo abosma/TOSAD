@@ -1,14 +1,17 @@
 package tosad.com.generator;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import tosad.com.generator.exception.GenerationException;
+import tosad.com.generator.exception.SQLFormatException;
 import tosad.com.generator.exception.TemplateNotFoundException;
 import tosad.com.model.BusinessRule;
 import tosad.com.model.CompareValue;
+import tosad.com.model.TargetDatabaseType;
 
 public abstract class AbstractGenerator  {
 	
@@ -16,14 +19,19 @@ public abstract class AbstractGenerator  {
 	
 	protected BusinessRule businessRule;
 	protected TemplateFinder templateFinder;
-	protected int valueCounter;
+	protected SQLFormatter sqlFormatter;
+	protected int valueCounter = 1;
 	
-	public abstract String generateCode() throws GenerationException, TemplateNotFoundException;
-	public abstract String getContentForKeyword(String keyword) throws GenerationException, TemplateNotFoundException;
+	public abstract String generateCode() throws GenerationException, TemplateNotFoundException, SQLFormatException;
+	public abstract String getContentForKeyword(String keyword) throws GenerationException, TemplateNotFoundException, SQLFormatException;
 	
-	public AbstractGenerator() {
+	public AbstractGenerator(BusinessRule businessRule) {
 		KeyfinderPattern = Pattern.compile("\\{.*?\\}");
-		valueCounter = 1;
+		this.businessRule = businessRule;
+		TargetDatabaseType databaseType = this.businessRule.getTargetDatabase().getTargetDatabaseType();
+		
+		this.templateFinder = new TemplateFinder(databaseType);
+		this.sqlFormatter = new SQLFormatter(this.templateFinder);
 	}
 
 	protected String generateRuleIdentifier() {
@@ -34,12 +42,12 @@ public abstract class AbstractGenerator  {
 		return String.format("BRG_%S_%S_%d", tableName, ruleType, 0);
 	}
 	
-	protected String getReferencedTableName() {
-		return sqlReferenceFormat(businessRule.getReferencedTable().toLowerCase());
+	protected String getReferencedTableName() throws SQLFormatException {
+		return sqlFormatter.format("table",businessRule.getReferencedTable().toLowerCase());
 	}
 	
-	protected String getReferencedColumnName() {
-		return sqlReferenceFormat(businessRule.getReferencedColumn());
+	protected String getReferencedColumnName() throws SQLFormatException {
+		return sqlFormatter.format("column", businessRule.getReferencedColumn());
 	}
 	
 	protected String operatorValue() throws TemplateNotFoundException{
@@ -48,13 +56,13 @@ public abstract class AbstractGenerator  {
 		return template;
 	}
 
-	protected String getCompareValue() throws GenerationException{
+	protected String getCompareValue() throws GenerationException, SQLFormatException{
 		Set<CompareValue> values = businessRule.getCompareValues();
 		for(CompareValue value : values){
 			if(value.getOrder() == valueCounter){
 				// retrieve string representation of the value
 				String valueRepresentation = compileCompareValue(value);
-				// if it hasn't failed, increment the counter
+				// if it hasn't throw any erros, increment the counter
 				valueCounter++;
 				return valueRepresentation;
 			}
@@ -62,7 +70,7 @@ public abstract class AbstractGenerator  {
 		throw new GenerationException(String.format("No CompareValue was found for order '%d'. Please check the businessrule", valueCounter));
 	}
 	
-	private String compileCompareValue(CompareValue compareValue) throws GenerationException {
+	private String compileCompareValue(CompareValue compareValue) throws GenerationException, SQLFormatException {
 		String empty	= new String();
 		String literal	= compareValue.getValue() != null ? compareValue.getValue().trim() : new String();
 		String table	= compareValue.getTable() != null ? compareValue.getTable().trim() : new String();
@@ -73,20 +81,28 @@ public abstract class AbstractGenerator  {
 				throw new GenerationException(String.format("Error while evaluating CompareValue with id '%d': No value defined.", compareValue.getId()));
 			} 
 			// check whether reference is to external table, or own table
+			
 			if( table.equals(empty)){
-				return String.format("%s.%s", column, businessRule.getReferencedTable());
+				table = businessRule.getReferencedTable();
 			}
+			
+			column	= sqlFormatter.format("column", column);
+			table	= sqlFormatter.format("table", table);
+			
 			return String.format("%s.%s", column, table);
 		} else {
 			if( table.equals(empty) && column.equals(empty)){
 				// only the literal value is set, so return it
-				return literal;
+				if( literal.matches("\\d+") ){
+					return sqlFormatter.format("number", literal);
+				} 
+				return sqlFormatter.format("string", literal);
 			}
 			// both literal value and referenced table are set
 			throw new GenerationException(String.format("Error while evaluating CompareValue with id '%d': Both a literal value and a reference are defined"));
 		}
 	}
-
+	
 	/**
 	 * Checks whether then given string contains keywords from the following pattern: '{keyword}'
 	 * @param string	the string that might contain one or more keywords	
@@ -103,37 +119,16 @@ public abstract class AbstractGenerator  {
 	 * @return			String[] containing all found keywords, without brackets
 	 */
 	protected String[] retrieveTemplateKeywords(String string){
-		Set<String> resultSet = new HashSet<String>();
+		List<String> resultSet = new ArrayList<String>();
 		
 		Matcher matcher = KeyfinderPattern.matcher(string);
 		
 		while(matcher.find()){
 			String bracketedKeyword = matcher.group(0);
 			String pureKeyword = bracketedKeyword.substring(1, bracketedKeyword.length() - 1);
-			
 			resultSet.add(pureKeyword);
 		}
 		
 		return resultSet.toArray(new String[resultSet.size()]);
-	}
-	
-	/**
-	 * Transform a string to the correct string format for the database type
-	 * @param string
-	 * @return formatted string
-	 */
-	protected String sqlStringFormat(String string) {
-		//TODO change to template!
-		return String.format("\"%s\"", string);
-	}
-	
-	/**
-	 * Transform a string to the correct reference format for the database type
-	 * @param string
-	 * @return formatted string
-	 */
-	protected String sqlReferenceFormat(String string) {
-		//TODO change to template!
-		return string;
 	}
 }

@@ -1,19 +1,17 @@
 package tosad.com.generator;
 
 import tosad.com.generator.exception.GenerationException;
+import tosad.com.generator.exception.SQLFormatException;
 import tosad.com.generator.exception.TemplateNotFoundException;
 import tosad.com.model.BusinessRule;
-import tosad.com.model.TargetDatabaseType;
 
 public class TriggerGenerator extends AbstractGenerator{
 	
 	public TriggerGenerator(BusinessRule businessRule) {
-		this.businessRule = businessRule;
-		TargetDatabaseType databaseType = this.businessRule.getTargetDatabase().getTargetDatabaseType();
-		this.templateFinder = new TemplateFinder(databaseType);
+		super(businessRule);
 	}
 	
-	public String getContentForKeyword(String keyword) throws GenerationException, TemplateNotFoundException {
+	public String getContentForKeyword(String keyword) throws GenerationException, TemplateNotFoundException, SQLFormatException {
 		switch (keyword) {
 		case "trigger_identifier":
 			return this.generateRuleIdentifier();
@@ -40,17 +38,16 @@ public class TriggerGenerator extends AbstractGenerator{
 		}
 	}
 
-	public String generateCode() throws GenerationException, TemplateNotFoundException {
+	public String generateCode() throws GenerationException, TemplateNotFoundException, SQLFormatException {
 		String baseTemplate = templateFinder.findTemplate("trigger");
 		String evaluatedTemplate = evaluateTemplate(baseTemplate);
 		return evaluatedTemplate;
 	}
 	
-	public String evaluateTemplate(String template) throws GenerationException, TemplateNotFoundException {
+	public String evaluateTemplate(String template) throws GenerationException, TemplateNotFoundException, SQLFormatException {
 		
 		// retrieve keywords from template
 		String[] keywords = this.retrieveTemplateKeywords(template);
-		
 		for (String keyword : keywords) {
 			// retrieve content for the given keyword
 			String keywordContent = getContentForKeyword(keyword);
@@ -61,7 +58,7 @@ public class TriggerGenerator extends AbstractGenerator{
 				keywordContent = evaluateTemplate(keywordContent);
 			}
 			// replace the keyword with it's generated content
-			template = template.replace(String.format("{%s}", keyword), keywordContent);
+			template = template.replaceFirst(String.format("\\{%s\\}", keyword), keywordContent);
 		}		
 		
 		return template;
@@ -88,7 +85,7 @@ public class TriggerGenerator extends AbstractGenerator{
 		return templateFinder.findTemplate(rulename);
 	}
 	
-	private String retrieveErrorText(){
-		return sqlStringFormat(businessRule.getErrorMessage());
+	private String retrieveErrorText() throws SQLFormatException{
+		return sqlFormatter.format("string", businessRule.getErrorMessage());
 	}
 }

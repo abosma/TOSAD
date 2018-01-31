@@ -16,6 +16,7 @@ import org.hibernate.criterion.Example;
 import tosad.com.generator.Generator;
 import tosad.com.generator.GeneratorInterface;
 import tosad.com.generator.exception.GenerationException;
+import tosad.com.generator.exception.SQLFormatException;
 import tosad.com.generator.exception.TemplateNotFoundException;
 import tosad.com.model.BusinessRule;
 import tosad.com.model.BusinessRuleType;
@@ -328,7 +329,6 @@ public class FillToolDatabase {
 			for( String prefix : prefixes){
 				String name = prefix + v;
 				String fileLocation = String.format( "templates/oracle/%s.template", name );
-				System.out.println(fileLocation);
 				File theFile = new File(fileLocation);
 				
 				RuleTemplate ruleTemplate = registerTemplate(theFile, name, targetDatabaseTypeOracle);
@@ -351,8 +351,9 @@ public class FillToolDatabase {
 			ruleTemplates.add(ruleTemplate);
 		}
 
+		/* register formats */
 		for(String s : new String[]{"string","number","table","column"}){
-			RuleTemplate ruleTemplateOracleString = registerTemplate( new File(String.format("templates/oracle/%s.template", s)), s, targetDatabaseTypeOracle);
+			RuleTemplate ruleTemplateOracleString = registerTemplate( new File(String.format("templates/oracle/%s.template", s)), String.format("%s_format", s), targetDatabaseTypeOracle);
 			
 			if(ruleTemplateOracleString == null)
 				continue;
@@ -425,10 +426,10 @@ public class FillToolDatabase {
 				e1.printStackTrace();
 			} catch (TemplateNotFoundException e1) {
 				e1.printStackTrace();
+			} catch (SQLFormatException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
-			
-			if(++count > 5)
-				break;
 		}
 		
 		if(ONLINE)
