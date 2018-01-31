@@ -1,4 +1,4 @@
-package tosad.com.generator;
+package tosad.com.generator.exception;
 
 public class ValueNotFoundException extends Exception {
 	
