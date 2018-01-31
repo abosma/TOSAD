@@ -33,7 +33,7 @@ import tosad.com.model.util.HibernateUtil;
 
 public class FillToolDatabase {
 
-	private final static boolean ONLINE = true;
+	private final static boolean ONLINE = false;
 	
 	private static Session entityManager;
 
@@ -193,7 +193,7 @@ public class FillToolDatabase {
 				compareValue.setColumn(ValueType.ENTITY == valueType ? "EXTERNAL_COLUMN" : "OTHER_COLUMN");
 			}
 			compareValues.add(compareValue);
-			System.out.println(compareValue);
+			//System.out.println(compareValue);
 		}
 		return compareValues;
 	}
@@ -418,13 +418,9 @@ public class FillToolDatabase {
 				}
 			}
 		}
-		
-		int count = 0;
-		
+				
 		GeneratorInterface generator = new Generator();
 		for (BusinessRule businessRule : businessRules) {
-			//if (  )
-			
 			System.out.println(String.format("\n\n----- GENERATING FOR %s ------", businessRule.getName()));
 			System.out.println(String.format("%s | %s", businessRule.getBusinessRuleType().getName(), businessRule.getOperator().getName()));
 			for (CompareValue compareValue : businessRule.getCompareValues()) 
@@ -439,7 +435,6 @@ public class FillToolDatabase {
 			} catch (TemplateNotFoundException e1) {
 				e1.printStackTrace();
 			} catch (SQLFormatException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}

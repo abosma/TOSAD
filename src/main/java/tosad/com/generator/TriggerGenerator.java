@@ -12,6 +12,11 @@ public class TriggerGenerator extends AbstractGenerator{
 	}
 	
 	public String getContentForKeyword(String keyword) throws GenerationException, TemplateNotFoundException, SQLFormatException {
+		keyword = keyword.toLowerCase();
+		
+		if(keyword.startsWith("value"))
+			return getCompareValue(keyword);
+		
 		switch (keyword) {
 		case "trigger_identifier":
 			return this.generateRuleIdentifier();
@@ -27,10 +32,6 @@ public class TriggerGenerator extends AbstractGenerator{
 			return retrieveTriggerConditionSubTemplate();
 		case "column_name":
 			return getReferencedColumnName();
-		case "value":
-			return getCompareValue();
-		case "values":
-			return getCompareValueList();
 		case "operator":
 			return operatorValue();
 		case "error_text":
@@ -41,15 +42,13 @@ public class TriggerGenerator extends AbstractGenerator{
 	}
 
 	public String generateCode() throws GenerationException, TemplateNotFoundException, SQLFormatException {
-		//System.err.println(businessRule.toString());
+
 		String baseTemplate = templateFinder.findTemplate("trigger");
 		String evaluatedTemplate = evaluateTemplate(baseTemplate);
 		return evaluatedTemplate;
 	}
 	
 	public String evaluateTemplate(String template) throws GenerationException, TemplateNotFoundException, SQLFormatException {
-		
-		//System.out.println("\n\nIN:\n"+template);
 		
 		// retrieve keywords from template
 		String[] keywords = this.retrieveTemplateKeywords(template);
@@ -64,18 +63,16 @@ public class TriggerGenerator extends AbstractGenerator{
 			}
 			// replace the keyword with it's generated content
 			template = template.replaceFirst(String.format("\\{%s\\}", keyword), keywordContent);
-		}		
-		//System.out.println("\n\nOUT:\n"+template);
+		}
+		
 		return template;
 	}
 	
 	private String generateTriggerTypes() {
-		//TODO double check if this is correct... looks quite ugly
 		return String.join(" OR ", businessRule.getTrigger().getExecutionType().split(";")); 
 	}
 
 	private String generateTriggerExecution() {
-		//TODO could it be this simple???
 		return businessRule.getTrigger().getExecutionLevel();
 	}
 

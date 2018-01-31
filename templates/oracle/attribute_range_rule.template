@@ -1,1 +1,1 @@
-:NEW.{column_name} {operator} {value} AND {value}
+:NEW.{column_name} {operator} {value_1} AND {value_2}

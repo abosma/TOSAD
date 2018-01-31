@@ -1,1 +1,10 @@
-:NEW.{column_name} {operator} {value}
+CURSOR cururent_check_cursor IS
+	SELECT tb.{value_1_column}
+	FORM {value_1_table} tb
+	WHERE tb.id = :NEW.{value_1_table}_id;
+	l_value {value_1_table}.{value_1_column} %type;
+begin
+	open cururent_check_cursor;
+	fetch cururent_check_cursor into l_value;
+	close cururent_check_cursor;
+	l_passed := :NEW.{column_name} {operator} l_value;

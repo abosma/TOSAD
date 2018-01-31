@@ -19,7 +19,6 @@ public abstract class AbstractGenerator  {
 	protected BusinessRule businessRule;
 	protected TemplateFinder templateFinder;
 	protected SQLFormatter sqlFormatter;
-	protected int valueCounter = 1;
 	
 	public abstract String generateCode() throws GenerationException, TemplateNotFoundException, SQLFormatException;
 	public abstract String getContentForKeyword(String keyword) throws GenerationException, TemplateNotFoundException, SQLFormatException;
@@ -58,26 +57,59 @@ public abstract class AbstractGenerator  {
 		String template =  templateFinder.findTemplate(operatorTemplateName);
 		return template;
 	}
+	
+	protected String getCompareValue(String keyword) throws GenerationException, SQLFormatException {
+		if(keyword.equals("values"))
+			return getCompareValueList();
+		
+		String[] parts = keyword.split("_");
+		String base = parts[0];
+		
+		if( ! base.equals("value"))
+			throw new GenerationException(String.format("Cannot compile CompareValue starting with key '%s'.", base));
+		
+		if(parts.length < 2)
+			throw new GenerationException(String.format("Cannot compile CompareValue with key '%s', missings identifier (int)", keyword));
+		
+		String sOrder = parts[1];
+		int order;
+		try {
+			order = Integer.parseInt(sOrder);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new GenerationException(String.format("Cannot compile CompareValue starting with key '%s' and order '%s'.", base, sOrder));
+		}
+		
+		CompareValue compareValue = getCompareValue(order);
+		
+		if( ! ( parts.length > 2))
+			return compileCompareValue(compareValue);
+		
+		String suffix = parts[2];
+		if(suffix.equals("column")) {
+			return sqlFormatter.format(suffix, compareValue.getColumn().toLowerCase());
+		} else if(suffix.equals("table")) {
+			return sqlFormatter.format(suffix, compareValue.getTable().toLowerCase());
+		} else {
+			throw new GenerationException(String.format("Cannot compile CompareValue with key '%s', Unknown Suffix '%s'", keyword, suffix));
+		}
+	}
 
-	protected String getCompareValue() throws GenerationException, SQLFormatException{
+	protected CompareValue getCompareValue(int order) throws GenerationException, SQLFormatException{
 		Set<CompareValue> values = businessRule.getCompareValues();
 		for(CompareValue value : values){
-			if(value.getOrder() == valueCounter){
-				// retrieve string representation of the value
-				String valueRepresentation = compileCompareValue(value);
-				// if it hasn't throw any erros, increment the counter
-				valueCounter++;
-				return valueRepresentation;
+			if(value.getOrder() == order){
+				return value;
 			}
 		}
-		throw new GenerationException(String.format("No CompareValue was found for order '%d'. Please check the businessrule", valueCounter));
+		throw new GenerationException(String.format("No CompareValue was found for order '%d'. Please check the businessrule", order));
 	}
 	
 	private String compileCompareValue(CompareValue compareValue) throws GenerationException, SQLFormatException {
 		String empty	= new String();
-		String literal	= compareValue.getValue() != null ? compareValue.getValue().trim() : new String();
-		String table	= compareValue.getTable() != null ? compareValue.getTable().trim() : new String();
-		String column	= compareValue.getColumn() != null ? compareValue.getColumn().trim() : new String();
+		String literal	= compareValue.getValue() != null ? compareValue.getValue().trim().toLowerCase() : new String();
+		String table	= compareValue.getTable() != null ? compareValue.getTable().trim().toLowerCase() : new String();
+		String column	= compareValue.getColumn() != null ? compareValue.getColumn().trim().toLowerCase() : new String();
 				
 		if( literal.equals(empty)){
 			if( column.equals(empty)){
