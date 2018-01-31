@@ -5,6 +5,9 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import tosad.com.generator.Generator;
 import tosad.com.generator.GeneratorInterface;
+import tosad.com.generator.exception.GenerationException;
+import tosad.com.generator.exception.SQLFormatException;
+import tosad.com.generator.exception.TemplateNotFoundException;
 import tosad.com.model.BusinessRule;
 import tosad.com.model.GeneratedCode;
 import tosad.com.model.TargetDatabase;
@@ -166,6 +169,8 @@ public class RequestHandler {
 
 			businessRule = session.get(BusinessRule.class, businessRuleId);
 
+			System.out.println(businessRule);
+
 			String code = generatorInterface.generateSQL(businessRule);
 
 			GeneratedCode generatedCode = new GeneratedCode();
@@ -173,8 +178,9 @@ public class RequestHandler {
 			generatedCode.setBusinessRule(businessRule);
 			generatedCode.setStatus(0);
 
-			session.persist(generatedCode);
-			transaction.commit();
+			session.save(generatedCode);
+
+			session.getTransaction().commit();
 
 			if(session.get(GeneratedCode.class, generatedCode.getId()) != null) {
 				responseBuilder.add("code", code);
@@ -184,10 +190,13 @@ public class RequestHandler {
 				responseBuilder.add("status", "Business Rule is null");
 				session.close();
 			}
-		}catch( Exception multiException ) {
+		}catch(SQLFormatException|GenerationException|TemplateNotFoundException|NullPointerException|HibernateException multiException ) {
 			if(transaction != null) {
 				transaction.rollback();
 			}
+
+			System.out.println(multiException.getMessage());
+
 			multiException.printStackTrace();
 			session.close();
 
