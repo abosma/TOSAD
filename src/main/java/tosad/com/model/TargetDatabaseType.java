@@ -24,7 +24,7 @@ public class TargetDatabaseType implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tbt_generator")
-	@SequenceGenerator(name="tbt_generator", sequenceName = "tbt_seq", allocationSize=50)
+	@SequenceGenerator(name="tbt_generator", sequenceName = "target_database_type_seq", allocationSize=50)
 	private int id;
 
 	@Column(name = "type", nullable = false, length = 50)

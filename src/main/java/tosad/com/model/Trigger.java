@@ -27,13 +27,13 @@ public class Trigger implements Serializable {
 	@Column(name = "execution_type", nullable = false, length = 255)
 	private String executionType;
 
-	@Column(name = "execution_type_translations", nullable = false, length = 4000)
+	@Column(name = "execution_type_translations", nullable = true, length = 4000)
 	private String executionTypeTranslations;
 
 	@Column(name = "execution_level", nullable = false, length = 255)
 	private String executionLevel;
 
-	@Column(name = "execution_level_translations", nullable = false, length = 4000)
+	@Column(name = "execution_level_translations", nullable = true, length = 4000)
 	private String executionLevelTranslations;
 	
 	public int getId() {

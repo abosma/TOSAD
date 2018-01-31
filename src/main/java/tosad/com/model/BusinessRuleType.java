@@ -16,22 +16,37 @@ import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import tosad.com.model.enums.ValueType;
+
 @Entity
 @Table(name = "business_rule_types")
 public class BusinessRuleType implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 9157483833030449230L;
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "br_type_generator")
-	@SequenceGenerator(name="br_type_generator", sequenceName = "br_type_seq", allocationSize=50)
+	@SequenceGenerator(name="br_type_generator", sequenceName = "business_rule_type_seq", allocationSize=50)
 	private int id;
 
 	@Column(name = "name", nullable = false, length = 250)
 	private String name;
+
+	@Column(name = "value_types", nullable = true, length = 250)
+	private String valueTypes;
+	
+	public ValueType[] getValueTypes() {
+		String[] tmp = this.valueTypes.split(";");
+		ValueType[] types = new ValueType[tmp.length];
+		for(int i =0; i < tmp.length; i++){ types[i] = ValueType.valueOf(tmp[i]); }
+		return types;
+	}
+
+	public void setValueTypes(ValueType[] valueTypes) {
+		String[] sTypes = new String[valueTypes.length];
+		for(int i = 0; i < valueTypes.length; i++){ sTypes[i] = valueTypes[i].toString(); }
+		this.valueTypes = String.join(";", sTypes);
+	}
 
 	public String getCode() {
 		return this.code;

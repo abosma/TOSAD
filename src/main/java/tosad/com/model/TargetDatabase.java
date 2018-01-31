@@ -16,7 +16,7 @@ public class TargetDatabase implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "target_db_generator")
-	@SequenceGenerator(name="target_db_generator", sequenceName = "target_db_seq", allocationSize=50)
+	@SequenceGenerator(name="target_db_generator", sequenceName = "target_database_seq", allocationSize=50)
 	private int id;
 
 	@Column(name = "name", nullable = false, length = 255)

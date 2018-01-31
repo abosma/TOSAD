@@ -24,7 +24,7 @@ public class GeneratedCode implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gen_code_generator")
-	@SequenceGenerator(name="gen_code_generator", sequenceName = "gen_code_seq", allocationSize=50)
+	@SequenceGenerator(name="gen_code_generator", sequenceName = "generated_code_seq", allocationSize=50)
 	private int id;
 
 	@Column(updatable = false, name = "status", nullable = false)

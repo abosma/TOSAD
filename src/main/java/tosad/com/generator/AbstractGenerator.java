@@ -43,7 +43,7 @@ public abstract class AbstractGenerator  {
 	}
 	
 	protected String operatorValue() throws TemplateNotFoundException{
-		String operatorTemplateName = businessRule.getOperator().getValue();
+		String operatorTemplateName = businessRule.getOperator().getCode();
 		String template =  templateFinder.findTemplate(operatorTemplateName);
 		return template;
 	}

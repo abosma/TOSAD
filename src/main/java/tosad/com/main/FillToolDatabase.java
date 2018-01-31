@@ -10,12 +10,15 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 
+import tosad.com.model.BusinessRule;
 import tosad.com.model.BusinessRuleType;
+import tosad.com.model.Constraint;
 import tosad.com.model.Operator;
 import tosad.com.model.RuleTemplate;
 import tosad.com.model.TargetDatabase;
 import tosad.com.model.TargetDatabaseType;
 import tosad.com.model.Trigger;
+import tosad.com.model.enums.ValueType;
 import tosad.com.model.util.HibernateUtil;
 
 public class FillToolDatabase {
@@ -111,16 +114,40 @@ public class FillToolDatabase {
 
 	}
 	
-	public static BusinessRuleType newBusinessRuleType(String name, String code, Operator[] operators){
+	private static BusinessRuleType newBusinessRuleType(String name, String code, Operator[] operators, ValueType[] valueTypes){
 		BusinessRuleType businessRuleType = new BusinessRuleType();
 		businessRuleType.setName(name);
 		businessRuleType.setCode(code);
+		businessRuleType.setValueTypes(valueTypes);
 		
 		for( Operator operator : operators ){
 			businessRuleType.addOperator(operator);
 		}
 		
 		return businessRuleType;
+	}
+	
+	private static BusinessRule newBusinessRule(
+			String name, 
+			BusinessRuleType businessRuleType, 
+			Operator operator, 
+			String referencedColumn, 
+			String referencedTable, 
+			Trigger trigger, 
+			TargetDatabase targetDatabase)
+	{
+		BusinessRule businessRule = new BusinessRule();
+		businessRule.setName(name);
+		businessRule.setBusinessRuleType(businessRuleType);
+		businessRule.setOperator(operator);
+		businessRule.setReferencedColumn(referencedColumn);
+		businessRule.setReferencedTable(referencedTable);
+		businessRule.setTrigger(trigger);
+		businessRule.setTargetDatabase(targetDatabase);
+		businessRule.setExample(String.format("example for %s", name));
+		businessRule.setExplanation(String.format("explanation for %s", name));
+		
+		return businessRule;
 	}
 	
 	public static Operator newOperator(String name, String code, String amountOfValues){
@@ -176,15 +203,15 @@ public class FillToolDatabase {
 		Operator[] opersOTH = new Operator[] {};
 		
 		//BusinessRuleType 
-		BusinessRuleType attr_rng_rule		= newBusinessRuleType("Attribute Range Rule",		"attribute_range_rule",			opersRNG);
-		BusinessRuleType attr_cmp_rule		= newBusinessRuleType("Attribute Compare Rule",		"attribute_compare_rule",		opersCMP);
-		BusinessRuleType attr_lst_rul		= newBusinessRuleType("Attribute List Rule",		"attribute_list_rule",			opersLST);
-		BusinessRuleType attr_oth_rule		= newBusinessRuleType("Attribute Other Rule",		"attribute_other_rule",			opersOTH);
-		BusinessRuleType tuple_cmp_rule 	= newBusinessRuleType("Tuple Compare Rule",			"tuple_compare_rule",			opersCMP);
-		BusinessRuleType tuple_oth_rule 	= newBusinessRuleType("Tuple Compare Rule",			"tuple_other_rule",				opersOTH);
-		BusinessRuleType int_ent_cmp_rule	= newBusinessRuleType("Inter Entity Compare Rule",	"inter_entity_compare_rule"	,	opersCMP);
-		BusinessRuleType ent_oth_rule 		= newBusinessRuleType("Entity Other Rule",			"entity_other_rule", 			opersOTH);
-		BusinessRuleType modif_rule 		= newBusinessRuleType("Modify Rule", 				"modify_rule", 					new Operator[]{});
+		BusinessRuleType attr_rng_rule		= newBusinessRuleType("Attribute Range Rule",		"attribute_range_rule",			opersRNG,			new ValueType[]{});
+		BusinessRuleType attr_cmp_rule		= newBusinessRuleType("Attribute Compare Rule",		"attribute_compare_rule",		opersCMP,			new ValueType[]{});
+		BusinessRuleType attr_lst_rul		= newBusinessRuleType("Attribute List Rule",		"attribute_list_rule",			opersLST,			new ValueType[]{});
+		BusinessRuleType attr_oth_rule		= newBusinessRuleType("Attribute Other Rule",		"attribute_other_rule",			opersOTH,			new ValueType[]{});
+		BusinessRuleType tuple_cmp_rule 	= newBusinessRuleType("Tuple Compare Rule",			"tuple_compare_rule",			opersCMP,			new ValueType[]{});
+		BusinessRuleType tuple_oth_rule 	= newBusinessRuleType("Tuple Compare Rule",			"tuple_other_rule",				opersOTH,			new ValueType[]{});
+		BusinessRuleType int_ent_cmp_rule	= newBusinessRuleType("Inter Entity Compare Rule",	"inter_entity_compare_rule"	,	opersCMP,			new ValueType[]{});
+		BusinessRuleType ent_oth_rule 		= newBusinessRuleType("Entity Other Rule",			"entity_other_rule", 			opersOTH,			new ValueType[]{});
+		BusinessRuleType modif_rule 		= newBusinessRuleType("Modify Rule", 				"modify_rule", 					new Operator[]{},	new ValueType[]{});
 		
 		attr_rng_rule		= getExistingOrPersistNew(attr_rng_rule);
 		attr_cmp_rule		= getExistingOrPersistNew(attr_cmp_rule);
@@ -196,7 +223,7 @@ public class FillToolDatabase {
 		ent_oth_rule		= getExistingOrPersistNew(ent_oth_rule);
 		modif_rule			= getExistingOrPersistNew(modif_rule);
 
-		BusinessRuleType[] brtALL = new BusinessRuleType[]{attr_rng_rule,attr_cmp_rule,attr_lst_rul,attr_oth_rule,tuple_cmp_rule,tuple_oth_rule,int_ent_cmp_rule,ent_oth_rule,modif_rule};
+		BusinessRuleType[] allBusinessRuleTypes = new BusinessRuleType[]{attr_rng_rule,attr_cmp_rule,attr_lst_rul,attr_oth_rule,tuple_cmp_rule,tuple_oth_rule,int_ent_cmp_rule,ent_oth_rule,modif_rule};
 
 		//* TargetDatabase
 		TargetDatabase targetDatabase = new TargetDatabase();
@@ -257,7 +284,7 @@ public class FillToolDatabase {
 		ruleTemplates.add(ruleTemplateOracleTrigger);
 		
 		// ALL BUSINESS RULE TYPES
-		for (BusinessRuleType o : brtALL) {
+		for (BusinessRuleType o : allBusinessRuleTypes) {
 			
 			String v = o.getCode();
 		
@@ -291,6 +318,15 @@ public class FillToolDatabase {
 			ruleTemplateOracleString = getExistingOrPersistNew(ruleTemplateOracleString);
 			ruleTemplates.add(ruleTemplateOracleString);
 		}
+	
+		Constraint nullConstraint = new Constraint();
+		nullConstraint.setId(0);
+		nullConstraint = getExistingOrPersistNew(nullConstraint);
+		
+		for(BusinessRuleType businessRuleType : allBusinessRuleTypes){
+			
+		}
+		
 		
 		
 	/*	//Compare values

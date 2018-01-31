@@ -28,10 +28,10 @@ public class BusinessRule implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "businessrule_generator")
-	@SequenceGenerator(name="businessrule_generator", sequenceName = "businessrule_seq", allocationSize=50)
+	@SequenceGenerator(name="businessrule_generator", sequenceName = "business_rule_seq", allocationSize=50)
 	private int id;
 
-	@Column(name = "name", nullable = false, length = 255)
+	@Column(name = "name", nullable = true, length = 255)
 	private String name;
 
 	@Column(name = "error_message", nullable = true, length = 4000)
@@ -40,7 +40,7 @@ public class BusinessRule implements Serializable {
 	@Column(name = "example", nullable = true, length = 4000)
 	private String example;
 
-	@Column(name = "explanation", nullable = false, length = 4000)
+	@Column(name = "explanation", nullable = true, length = 4000)
 	private String explanation;
 
 	@Column(name = "referenced_column", nullable = false, length = 255)

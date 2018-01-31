@@ -16,14 +16,11 @@ import javax.persistence.Table;
 @Table(name = "compare_values")
 public class CompareValue implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3559038127062256567L;
+	private static final long serialVersionUID = -3559038127062256567L;	
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "comp_val_generator")
-	@SequenceGenerator(name="comp_val_generator", sequenceName = "comp_val_seq", allocationSize=50)
+	@SequenceGenerator(name="comp_val_generator", sequenceName = "compare_value_seq", allocationSize=50)
 	private int id;
 
 	@Column(name = "table_name", nullable = true, length = 255)
