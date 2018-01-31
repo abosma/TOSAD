@@ -180,6 +180,7 @@ public class RequestHandler {
 
 			if(session.get(GeneratedCode.class, generatedCode.getId()) != null) {
 				responseBuilder.add("code", code);
+				responseBuilder.add("id", generatedCode.getId());
 				session.close();
 			}else{
 				responseBuilder.add("status", "Business Rule is null");
@@ -235,17 +236,17 @@ public class RequestHandler {
             System.out.println(businessRule.toString());
             System.out.println(targetDatabase.toString());
 
-//			boolean hasInserted = connectionInterface.insertCode(targetDatabase, generatedCode);
-//
-//			if(hasInserted) {
-//				generatedCode.setStatus(1);
-//				session.save(generatedCode);
-//				responseBuilder.add("status", "true");
-//				session.close();
-//			}else {
-//				responseBuilder.add("status", "Code was not inserted due to error.");
-//				session.close();
-//			}
+			boolean hasInserted = connectionInterface.insertCode(targetDatabase, generatedCode);
+
+			if(hasInserted) {
+				generatedCode.setStatus(1);
+				session.save(generatedCode);
+				responseBuilder.add("status", "true");
+				session.close();
+			}else {
+				responseBuilder.add("status", "Code was not inserted due to error.");
+				session.close();
+			}
 		}catch(HibernateException|NullPointerException multiException) {
 			if(transaction != null) {
 				transaction.rollback();
