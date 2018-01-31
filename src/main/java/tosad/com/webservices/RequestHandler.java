@@ -168,7 +168,9 @@ public class RequestHandler {
 			transaction = session.beginTransaction();
 			businessRule = (BusinessRule)session.get(BusinessRule.class, businessRuleId);
 
-			String code = generatorInterface.generateSQL(businessRule);
+			//String code = generatorInterface.generateSQL(businessRule);
+
+            String code = "hallo ik ben atilla";
 
 			GeneratedCode generatedCode = new GeneratedCode();
 			generatedCode.setCode(code);
@@ -182,7 +184,7 @@ public class RequestHandler {
 				responseBuilder.add("status", "true");
 				session.close();
 			}else{
-				responseBuilder.add("status", "false");
+				responseBuilder.add("status", "Business Rule is null");
 				session.close();
 			}
 		}catch(HibernateException hibernateException) {
@@ -191,6 +193,8 @@ public class RequestHandler {
 			}
 			hibernateException.printStackTrace();
 			session.close();
+
+            responseBuilder.add("status", hibernateException.getMessage());
 		}catch(NullPointerException nullPointerException){
 			if(transaction != null) {
 				transaction.rollback();
@@ -198,7 +202,7 @@ public class RequestHandler {
 			nullPointerException.printStackTrace();
 			session.close();
 
-			responseBuilder.add("status", "false");
+			responseBuilder.add("status", nullPointerException.getMessage());
 		}catch(Exception exception){
             if(transaction != null) {
                 transaction.rollback();
@@ -206,7 +210,7 @@ public class RequestHandler {
             exception.printStackTrace();
             session.close();
 
-            responseBuilder.add("status", "false");
+            responseBuilder.add("status", exception.getMessage());
         }
 
 		return responseBuilder.build().toString();
@@ -252,7 +256,7 @@ public class RequestHandler {
 				responseBuilder.add("status", "true");
 				session.close();
 			}else {
-				responseBuilder.add("status", "false");
+				responseBuilder.add("status", "Code was not inserted due to error.");
 				session.close();
 			}
 		}catch(HibernateException hibernateException) {
@@ -260,6 +264,10 @@ public class RequestHandler {
 				transaction.rollback();
 			}
 			hibernateException.printStackTrace();
+
+			session.close();
+
+            responseBuilder.add("status", hibernateException.getMessage());
 		}catch(NullPointerException nullPointerException) {
 			if(transaction != null) {
 				transaction.rollback();
@@ -268,7 +276,7 @@ public class RequestHandler {
 
 			session.close();
 
-			responseBuilder.add("status", "false");
+			responseBuilder.add("status", nullPointerException.getMessage());
 		}
 		
 		return responseBuilder.build().toString();
