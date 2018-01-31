@@ -27,10 +27,10 @@ public class GeneratedCode implements Serializable {
 	@SequenceGenerator(name="gen_code_generator", sequenceName = "gen_code_seq", allocationSize=50)
 	private int id;
 
-	@Column(updatable = false, name = "status", nullable = false, unique = true)
+	@Column(updatable = false, name = "status", nullable = false)
 	private int status;
 
-	@Column(updatable = false, name = "code", nullable = false, unique = true, length = 500)
+	@Column(updatable = false, name = "code", nullable = false, length = 500)
 	private String code;
 
 	@OneToOne(cascade = CascadeType.ALL)

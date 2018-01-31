@@ -19,6 +19,8 @@ import org.hibernate.Transaction;
 
 import tosad.com.generator.Generator;
 import tosad.com.generator.GeneratorInterface;
+import tosad.com.generator.exception.GenerationException;
+import tosad.com.generator.exception.TemplateNotFoundException;
 import tosad.com.model.BusinessRule;
 import tosad.com.model.GeneratedCode;
 import tosad.com.model.TargetDatabase;
@@ -143,7 +145,7 @@ public class RequestHandler {
 	
 	/**
 	 * Returns JSON with true or false, this represents if the code has been generated based on the BusinessRule object.
-	 * Creates a GeneratedCode object with the same ID as businessRuleId, with code generated at Generator.java class.
+	 * Creates a GeneratedCode object with a foreign key businessRuleId, with code generated at Generator.java class.
 	 * It then gets status = 0 due to the generated code not yet being inserted into the target database.
 	 * 
 	 * JSON Format is: {status: "false"/"true"}
@@ -172,15 +174,17 @@ public class RequestHandler {
 
             String code = "hallo ik ben atilla";
 
+            System.out.println(businessRule.toString());
+
 			GeneratedCode generatedCode = new GeneratedCode();
 			generatedCode.setCode(code);
 			generatedCode.setBusinessRule(businessRule);
-			generatedCode.setId(businessRule.getId());
 			generatedCode.setStatus(0);
 
-			session.save(generatedCode);
+			session.persist(generatedCode);
+			transaction.commit();
 
-			if(session.get(GeneratedCode.class, businessRule.getId()) != null) {
+			if(session.get(GeneratedCode.class, generatedCode.getId()) != null) {
 				responseBuilder.add("status", "true");
 				session.close();
 			}else{
@@ -195,23 +199,32 @@ public class RequestHandler {
 			session.close();
 
             responseBuilder.add("status", hibernateException.getMessage());
-		}catch(NullPointerException nullPointerException){
-			if(transaction != null) {
-				transaction.rollback();
-			}
-			nullPointerException.printStackTrace();
-			session.close();
-
-			responseBuilder.add("status", nullPointerException.getMessage());
-		}catch(Exception exception){
-            if(transaction != null) {
+		}catch(NullPointerException nullPointerException) {
+            if (transaction != null) {
                 transaction.rollback();
             }
-            exception.printStackTrace();
+            nullPointerException.printStackTrace();
             session.close();
 
-            responseBuilder.add("status", exception.getMessage());
+            responseBuilder.add("status", nullPointerException.getMessage());
         }
+//		}catch(GenerationException generationException){
+//            if(transaction != null) {
+//                transaction.rollback();
+//            }
+//            generationException.printStackTrace();
+//            session.close();
+//
+//            responseBuilder.add("status", generationException.getMessage());
+//        }catch(TemplateNotFoundException templateNotFoundException){
+//		    if(transaction != null){
+//		        transaction.rollback();
+//            }
+//            templateNotFoundException.printStackTrace();
+//		    session.close();
+//
+//		    responseBuilder.add("status", templateNotFoundException.getMessage());
+//        }
 
 		return responseBuilder.build().toString();
 	}
