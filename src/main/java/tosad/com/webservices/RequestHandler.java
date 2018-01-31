@@ -199,7 +199,15 @@ public class RequestHandler {
 			session.close();
 
 			responseBuilder.add("status", "false");
-		}
+		}catch(Exception exception){
+            if(transaction != null) {
+                transaction.rollback();
+            }
+            exception.printStackTrace();
+            session.close();
+
+            responseBuilder.add("status", "false");
+        }
 
 		return responseBuilder.build().toString();
 	}
