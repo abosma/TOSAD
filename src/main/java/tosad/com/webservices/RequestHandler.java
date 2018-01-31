@@ -168,7 +168,9 @@ public class RequestHandler {
 
 			businessRule = session.get(BusinessRule.class, businessRuleId);
 
-			String code = generatorInterface.generateSQL(businessRule);
+			String code = "code";
+
+			//String code = generatorInterface.generateSQL(businessRule);
 
 			GeneratedCode generatedCode = new GeneratedCode();
 			generatedCode.setCode(code);
@@ -179,13 +181,13 @@ public class RequestHandler {
 			transaction.commit();
 
 			if(session.get(GeneratedCode.class, generatedCode.getId()) != null) {
-				responseBuilder.add("status", "true");
+				responseBuilder.add("code", code);
 				session.close();
 			}else{
 				responseBuilder.add("status", "Business Rule is null");
 				session.close();
 			}
-		}catch(HibernateException|NullPointerException|GenerationException|TemplateNotFoundException multiException) {
+		}catch(HibernateException|NullPointerException multiException) {
 			if(transaction != null) {
 				transaction.rollback();
 			}
