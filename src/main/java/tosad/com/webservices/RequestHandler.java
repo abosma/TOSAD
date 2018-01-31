@@ -1,22 +1,8 @@
 package tosad.com.webservices;
 
-import java.sql.SQLException;
-import java.util.List;
-
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
 import tosad.com.generator.Generator;
 import tosad.com.generator.GeneratorInterface;
 import tosad.com.generator.exception.GenerationException;
@@ -27,6 +13,17 @@ import tosad.com.model.TargetDatabase;
 import tosad.com.model.util.HibernateUtil;
 import tosad.com.targetdbconnectionservices.ConnectionController;
 import tosad.com.targetdbconnectionservices.ConnectionInterface;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import java.sql.SQLException;
+import java.util.List;
 
 @Path("/get")
 public class RequestHandler {
@@ -57,7 +54,7 @@ public class RequestHandler {
 		
 		try {
 			transaction = session.beginTransaction();
-			targetDatabase = (TargetDatabase)session.get(TargetDatabase.class, targetDatabaseId);
+			targetDatabase = session.get(TargetDatabase.class, targetDatabaseId);
 		}catch(HibernateException hibernateException) {
 			if(transaction != null) {
 				transaction.rollback();
@@ -115,7 +112,7 @@ public class RequestHandler {
 		
 		try {
 			transaction = session.beginTransaction();
-			targetDatabase = (TargetDatabase)session.get(TargetDatabase.class, targetDatabaseId);
+			targetDatabase = session.get(TargetDatabase.class, targetDatabaseId);
 		}catch(HibernateException hibernateException) {
 			if(transaction != null) {
 				transaction.rollback();
@@ -159,22 +156,19 @@ public class RequestHandler {
 	@GET
 	@Path("/generatecode/{businessrule_id}")
 	@Produces("application/json")
-	public String generateCode(@PathParam("businessrule_id") int businessRuleId) throws SQLException {
+	public String generateCode(@PathParam("businessrule_id") int businessRuleId) {
 		JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
 		GeneratorInterface generatorInterface = new Generator();
 		Session session = HibernateUtil.getSession();
 		Transaction transaction = null;
-		BusinessRule businessRule = null;
+		BusinessRule businessRule;
 		
 		try {
 			transaction = session.beginTransaction();
-			businessRule = (BusinessRule)session.get(BusinessRule.class, businessRuleId);
 
-			//String code = generatorInterface.generateSQL(businessRule);
+			businessRule = session.get(BusinessRule.class, businessRuleId);
 
-            String code = "hallo ik ben atilla";
-
-            System.out.println(businessRule.toString());
+			String code = generatorInterface.generateSQL(businessRule);
 
 			GeneratedCode generatedCode = new GeneratedCode();
 			generatedCode.setCode(code);
@@ -191,40 +185,15 @@ public class RequestHandler {
 				responseBuilder.add("status", "Business Rule is null");
 				session.close();
 			}
-		}catch(HibernateException hibernateException) {
+		}catch(HibernateException|NullPointerException|GenerationException|TemplateNotFoundException multiException) {
 			if(transaction != null) {
 				transaction.rollback();
 			}
-			hibernateException.printStackTrace();
+			multiException.printStackTrace();
 			session.close();
 
-            responseBuilder.add("status", hibernateException.getMessage());
-		}catch(NullPointerException nullPointerException) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            nullPointerException.printStackTrace();
-            session.close();
-
-            responseBuilder.add("status", nullPointerException.getMessage());
-        }
-//		}catch(GenerationException generationException){
-//            if(transaction != null) {
-//                transaction.rollback();
-//            }
-//            generationException.printStackTrace();
-//            session.close();
-//
-//            responseBuilder.add("status", generationException.getMessage());
-//        }catch(TemplateNotFoundException templateNotFoundException){
-//		    if(transaction != null){
-//		        transaction.rollback();
-//            }
-//            templateNotFoundException.printStackTrace();
-//		    session.close();
-//
-//		    responseBuilder.add("status", templateNotFoundException.getMessage());
-//        }
+            responseBuilder.add("status", multiException.getMessage());
+		}
 
 		return responseBuilder.build().toString();
 	}
@@ -235,7 +204,7 @@ public class RequestHandler {
 	 * Inserts the GeneratedCode object with the given ID into the target database using ConnectionController.insertCode.
 	 * The GeneratedCode object then gets status = 1 due to the generated code being inserted into the target database.
 	 * 
-	 * JSON Format is: {status: "false"/"true"}
+	 * JSON Format is: {status: "true"/"{errormessage}"}
 	 * 
 	 * generatedcode_id is based on the path parameter after /restservices/insertcode/
 	 * 
@@ -251,13 +220,13 @@ public class RequestHandler {
 		JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
 		Session session = HibernateUtil.getSession();
 		Transaction transaction = null;
-		GeneratedCode generatedCode = null;
-		BusinessRule businessRule = null;
-		TargetDatabase targetDatabase = null;
+		GeneratedCode generatedCode;
+		BusinessRule businessRule;
+		TargetDatabase targetDatabase;
 		
 		try {
 			transaction = session.beginTransaction();
-			generatedCode = (GeneratedCode)session.get(GeneratedCode.class, generatedCodeId);
+			generatedCode = session.get(GeneratedCode.class, generatedCodeId);
 			businessRule = generatedCode.getBusinessRule();
 			targetDatabase = businessRule.getTargetDatabase();
 
@@ -272,24 +241,15 @@ public class RequestHandler {
 				responseBuilder.add("status", "Code was not inserted due to error.");
 				session.close();
 			}
-		}catch(HibernateException hibernateException) {
+		}catch(HibernateException|NullPointerException multiException) {
 			if(transaction != null) {
 				transaction.rollback();
 			}
-			hibernateException.printStackTrace();
+			multiException.printStackTrace();
 
 			session.close();
 
-            responseBuilder.add("status", hibernateException.getMessage());
-		}catch(NullPointerException nullPointerException) {
-			if(transaction != null) {
-				transaction.rollback();
-			}
-			nullPointerException.printStackTrace();
-
-			session.close();
-
-			responseBuilder.add("status", nullPointerException.getMessage());
+            responseBuilder.add("status", multiException.getMessage());
 		}
 		
 		return responseBuilder.build().toString();
