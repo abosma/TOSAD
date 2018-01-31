@@ -18,11 +18,13 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
+import org.hibernate.query.*;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.List;
 
 @Path("/get")
@@ -168,9 +170,7 @@ public class RequestHandler {
 
 			businessRule = session.get(BusinessRule.class, businessRuleId);
 
-			String code = "code";
-
-			//String code = generatorInterface.generateSQL(businessRule);
+			String code = generatorInterface.generateSQL(businessRule);
 
 			GeneratedCode generatedCode = new GeneratedCode();
 			generatedCode.setCode(code);
@@ -187,7 +187,7 @@ public class RequestHandler {
 				responseBuilder.add("status", "Business Rule is null");
 				session.close();
 			}
-		}catch(HibernateException|NullPointerException multiException) {
+		}catch(HibernateException|NullPointerException|GenerationException|TemplateNotFoundException multiException) {
 			if(transaction != null) {
 				transaction.rollback();
 			}
@@ -228,21 +228,26 @@ public class RequestHandler {
 		
 		try {
 			transaction = session.beginTransaction();
+
 			generatedCode = session.get(GeneratedCode.class, generatedCodeId);
 			businessRule = generatedCode.getBusinessRule();
 			targetDatabase = businessRule.getTargetDatabase();
 
-			boolean hasInserted = connectionInterface.insertCode(targetDatabase, generatedCode);
+            System.out.println(generatedCode.toString());
+            System.out.println(businessRule.toString());
+            System.out.println(targetDatabase.toString());
 
-			if(hasInserted) {
-				generatedCode.setStatus(1);
-				session.save(generatedCode);
-				responseBuilder.add("status", "true");
-				session.close();
-			}else {
-				responseBuilder.add("status", "Code was not inserted due to error.");
-				session.close();
-			}
+//			boolean hasInserted = connectionInterface.insertCode(targetDatabase, generatedCode);
+//
+//			if(hasInserted) {
+//				generatedCode.setStatus(1);
+//				session.save(generatedCode);
+//				responseBuilder.add("status", "true");
+//				session.close();
+//			}else {
+//				responseBuilder.add("status", "Code was not inserted due to error.");
+//				session.close();
+//			}
 		}catch(HibernateException|NullPointerException multiException) {
 			if(transaction != null) {
 				transaction.rollback();
