@@ -21,12 +21,12 @@ import tosad.com.model.Trigger;
 import tosad.com.model.util.HibernateUtil;
 
 public class GeneratorTestSite {
-
+/*
 	public static final boolean LOCAL_TESTING = true;
 
 	private static Session entityManager;
 
-	/**
+	*//**
 	 * getExistingOrPersistNew
 	 * 
 	 * checks if the given databseObject exists in the database. If the given
@@ -41,7 +41,7 @@ public class GeneratorTestSite {
 	 *            the entitymanager
 	 * @return tObject if no replicas are found in the database, the repliace if
 	 *         one object is found, null if multiple objects are gound
-	 */
+	 *//*
 	public static <T> T getExistingOrPersistNew(T tObject) {
 		if (LOCAL_TESTING)
 			return tObject;
@@ -67,13 +67,13 @@ public class GeneratorTestSite {
 		return results.get(0);
 	}
 
-	/**
+	*//**
 	 * Retrieves the contents of a given file
 	 * 
 	 * @param templateFile
 	 *            the file to scan
 	 * @return file contents if the file was readable, else null
-	 */
+	 *//*
 	public static String retrieveFileContent(File templateFile) {
 		if (!(templateFile.exists() && templateFile.isFile()))
 			return null;
@@ -107,9 +107,9 @@ public class GeneratorTestSite {
 	}
 
 	public static void main(String[] args) {
-		/*
+		
 		 * Name definitions
-		 */
+		 
 		final String ATTR_RANGE_RULE = "attribute_range_rule";
 		final String ATTR_COMPARE_RULE = "attribute_compare_rule";
 
@@ -117,33 +117,33 @@ public class GeneratorTestSite {
 //		if (!LOCAL_TESTING)
 //			entityManager = HibernateUtil.getSession();
 
-		/*
+		
 		 * TARGET DASTABASE TYPES
-		 */
+		 
 		TargetDatabaseType targetDatabaseTypeOracle = new TargetDatabaseType();
 		targetDatabaseTypeOracle.setName("Oracle");
 
 		getExistingOrPersistNew(targetDatabaseTypeOracle);
 
-		/*
+		
 		 * BusinessRuleType
-		 */
+		 
 		BusinessRuleType businessRuleTypeARNG = new BusinessRuleType();
 		businessRuleTypeARNG.setName(ATTR_COMPARE_RULE);
 
 		businessRuleTypeARNG = getExistingOrPersistNew(businessRuleTypeARNG);
 
-		/*
+		
 		 * BusinessRuleType
-		 */
+		 
 		BusinessRuleType businessRuleTypeCMP = new BusinessRuleType();
 		businessRuleTypeCMP.setName(ATTR_COMPARE_RULE);
 
 		businessRuleTypeCMP = getExistingOrPersistNew(businessRuleTypeCMP);
 
-		/*
+		
 		 * TargetDatabase
-		 */
+		 
 
 		TargetDatabase targetDatabase = new TargetDatabase();
 		targetDatabase.setConnection("ondora02.hu.nl:8521/cursus02.hu.nl");
@@ -154,9 +154,9 @@ public class GeneratorTestSite {
 
 		targetDatabase = getExistingOrPersistNew(targetDatabase);
 
-		/*
+		
 		 * Operator
-		 */
+		 
 
 		Operator oracleOperatorBetween = new Operator();
 		oracleOperatorBetween.setName("operator_between");
@@ -165,9 +165,9 @@ public class GeneratorTestSite {
 
 		oracleOperatorBetween = getExistingOrPersistNew(oracleOperatorBetween);
 
-		/*
+		
 		 * Operator
-		 */
+		 
 
 		Operator oracleOperatorLte = new Operator();
 		oracleOperatorLte.setName("operator_lte");
@@ -176,9 +176,9 @@ public class GeneratorTestSite {
 
 		oracleOperatorLte = getExistingOrPersistNew(oracleOperatorLte);
 
-		/*
+		
 		 * Trigger
-		 */
+		 
 
 		Trigger trigger = new Trigger();
 		trigger.setExecutionLevel("BEFORE");
@@ -192,9 +192,9 @@ public class GeneratorTestSite {
 
 		trigger = getExistingOrPersistNew(trigger);
 
-		/*
+		
 		 * Compare values
-		 */
+		 
 
 		CompareValue compareValue1 = new CompareValue();
 		compareValue1.setValue("1");
@@ -202,9 +202,9 @@ public class GeneratorTestSite {
 		CompareValue compareValue2 = new CompareValue();
 		compareValue2.setValue("10");
 
-		/*
+		
 		 * BusinessRule
-		 */
+		 
 
 		BusinessRule businessRuleARNG = new BusinessRule();
 		businessRuleARNG.setBusinessRuleType(businessRuleTypeCMP);
@@ -222,9 +222,9 @@ public class GeneratorTestSite {
 
 		businessRuleARNG = getExistingOrPersistNew(businessRuleARNG);
 
-		/*
+		
 		 * BusinessRule
-		 */
+		 
 
 		BusinessRule businessRuleCMP = new BusinessRule();
 		businessRuleCMP.setBusinessRuleType(businessRuleTypeCMP);
@@ -241,9 +241,9 @@ public class GeneratorTestSite {
 
 		businessRuleCMP = getExistingOrPersistNew(businessRuleCMP);
 
-		/*
+		
 		 * ORACLE TEMPLATES
-		 */
+		 
 		
 		RuleTemplate ruleTemplateOracleTrigger = 
 				registerTemplate(new File("templates/oracle/trigger.template"), 							"trigger", 						targetDatabaseTypeOracle);
@@ -266,9 +266,9 @@ public class GeneratorTestSite {
 		RuleTemplate ruleTemplateOracleOperatorLTE = 
 				registerTemplate(new File("templates/oracle/operator_lte.template"), 						"operator_lte", 				targetDatabaseTypeOracle);
 
-		/*
+		
 		 * *** *** *** TEST CODE BELOW *** *** ***
-		 */
+		 
 
 		targetDatabaseTypeOracle.addTemplate(ruleTemplateOracleAttributeRangeRule);
 		targetDatabaseTypeOracle.addTemplate(ruleTemplateOracleAttributeCompareRule);
@@ -295,11 +295,11 @@ public class GeneratorTestSite {
 			e.printStackTrace();
 		}
 
-		/*
+		
 		 * *** *** *** END OF TEST CODE *** *** ***
-		 */
+		 
 
 //		if (!LOCAL_TESTING)
 //			entityManager.close();
 	}
-}
+*/}
