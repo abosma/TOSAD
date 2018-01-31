@@ -33,7 +33,7 @@ import tosad.com.model.util.HibernateUtil;
 
 public class FillToolDatabase {
 
-	private final static boolean ONLINE = false;
+	private final static boolean ONLINE = true;
 	
 	private static Session entityManager;
 
@@ -111,7 +111,7 @@ public class FillToolDatabase {
 			return null;
 		}
 		
-		//if( result.trim().equals(new String()))return null;
+		if( result.trim().equals(new String()))return null;
 		
 		return result;
 	}
@@ -119,9 +119,9 @@ public class FillToolDatabase {
 	private static RuleTemplate registerTemplate(File sourceFile, String name, TargetDatabaseType databaseType){
 		String templateBody = retrieveFileContent(sourceFile);
 
-		if( templateBody == null)
+		/*if( templateBody == null)
 			return null;
-		
+		*/
 		RuleTemplate ruleTemplate = new RuleTemplate();
 		ruleTemplate.setName(name);
 		ruleTemplate.setTargetDatabaseType(databaseType);
@@ -184,11 +184,13 @@ public class FillToolDatabase {
 			CompareValue compareValue = new CompareValue();
 			compareValue.setBusinessRule(businessRule);
 			compareValue.setOrder(i+1);
-			if( ValueType.LITERAL == valueType ){
+			if( ValueType.STATIC_STRING == valueType ){
 				compareValue.setValue(String.format("literal_%d", i));
+			} else if(ValueType.STATIC_NUMBER == valueType ){
+				compareValue.setValue(""+i*3);
 			} else {
-				compareValue.setTable(ValueType.COLUMN == valueType ? businessRule.getReferencedTable() : "OTHER_TABLE");
-				compareValue.setColumn(ValueType.TABLE == valueType ? "EXTERNAL_COLUMN" : "OTHER_COLUMN");
+				compareValue.setTable(ValueType.TUPLE == valueType ? businessRule.getReferencedTable() : "OTHER_TABLE");
+				compareValue.setColumn(ValueType.ENTITY == valueType ? "EXTERNAL_COLUMN" : "OTHER_COLUMN");
 			}
 			compareValues.add(compareValue);
 		}
@@ -239,15 +241,15 @@ public class FillToolDatabase {
 		Operator[] opersOTH = new Operator[] {};
 		
 		//BusinessRuleType 
-		BusinessRuleType attr_rng_rule		= newBusinessRuleType("Attribute Range Rule",		"attribute_range_rule",			opersRNG,			new HashSet<ValueType>(Arrays.asList(ValueType.LITERAL)));
-		BusinessRuleType attr_cmp_rule		= newBusinessRuleType("Attribute Compare Rule",		"attribute_compare_rule",		opersCMP,			new HashSet<ValueType>(Arrays.asList(ValueType.LITERAL)));
-		BusinessRuleType attr_lst_rul		= newBusinessRuleType("Attribute List Rule",		"attribute_list_rule",			opersLST,			new HashSet<ValueType>(Arrays.asList(ValueType.LITERAL)));
-		BusinessRuleType attr_oth_rule		= newBusinessRuleType("Attribute Other Rule",		"attribute_other_rule",			opersOTH,			new HashSet<ValueType>(Arrays.asList(ValueType.LITERAL)));
-		BusinessRuleType tuple_cmp_rule 	= newBusinessRuleType("Tuple Compare Rule",			"tuple_compare_rule",			opersCMP,			new HashSet<ValueType>(Arrays.asList(ValueType.COLUMN)));
-		BusinessRuleType tuple_oth_rule 	= newBusinessRuleType("Tuple Compare Rule",			"tuple_other_rule",				opersOTH,			new HashSet<ValueType>(Arrays.asList(ValueType.COLUMN)));
-		BusinessRuleType int_ent_cmp_rule	= newBusinessRuleType("Inter Entity Compare Rule",	"inter_entity_compare_rule"	,	opersCMP,			new HashSet<ValueType>(Arrays.asList(ValueType.TABLE)));
-		BusinessRuleType ent_oth_rule 		= newBusinessRuleType("Entity Other Rule",			"entity_other_rule", 			opersOTH,			new HashSet<ValueType>(Arrays.asList(ValueType.TABLE)));
-		BusinessRuleType modif_rule 		= newBusinessRuleType("Modify Rule", 				"modify_rule", 					new Operator[]{},	new HashSet<ValueType>(Arrays.asList(ValueType.LITERAL, ValueType.COLUMN, ValueType.TABLE)));
+		BusinessRuleType attr_rng_rule		= newBusinessRuleType("Attribute Range Rule",		"attribute_range_rule",			opersRNG,			new HashSet<ValueType>(Arrays.asList(ValueType.STATIC_NUMBER)));
+		BusinessRuleType attr_cmp_rule		= newBusinessRuleType("Attribute Compare Rule",		"attribute_compare_rule",		opersCMP,			new HashSet<ValueType>(Arrays.asList(ValueType.STATIC_NUMBER)));
+		BusinessRuleType attr_lst_rul		= newBusinessRuleType("Attribute List Rule",		"attribute_list_rule",			opersLST,			new HashSet<ValueType>(Arrays.asList(ValueType.STATIC_NUMBER, ValueType.STATIC_STRING)));
+		BusinessRuleType attr_oth_rule		= newBusinessRuleType("Attribute Other Rule",		"attribute_other_rule",			opersOTH,			new HashSet<ValueType>(Arrays.asList(ValueType.STATIC_NUMBER, ValueType.STATIC_STRING)));
+		BusinessRuleType tuple_cmp_rule 	= newBusinessRuleType("Tuple Compare Rule",			"tuple_compare_rule",			opersCMP,			new HashSet<ValueType>(Arrays.asList(ValueType.TUPLE)));
+		BusinessRuleType tuple_oth_rule 	= newBusinessRuleType("Tuple Compare Rule",			"tuple_other_rule",				opersOTH,			new HashSet<ValueType>(Arrays.asList(ValueType.TUPLE)));
+		BusinessRuleType int_ent_cmp_rule	= newBusinessRuleType("Inter Entity Compare Rule",	"inter_entity_compare_rule"	,	opersCMP,			new HashSet<ValueType>(Arrays.asList(ValueType.ENTITY)));
+		BusinessRuleType ent_oth_rule 		= newBusinessRuleType("Entity Other Rule",			"entity_other_rule", 			opersOTH,			new HashSet<ValueType>(Arrays.asList(ValueType.ENTITY)));
+		BusinessRuleType modif_rule 		= newBusinessRuleType("Modify Rule", 				"modify_rule", 					new Operator[]{},	new HashSet<ValueType>(Arrays.asList(ValueType.ENTITY)));
 		
 		attr_rng_rule		= getExistingOrPersistNew(attr_rng_rule);
 		attr_cmp_rule		= getExistingOrPersistNew(attr_cmp_rule);
@@ -352,7 +354,8 @@ public class FillToolDatabase {
 		}
 
 		/* register formats */
-		for(String s : new String[]{"string","number","table","column"}){
+		String[] formats = new String[]{"string","number","table","column"};
+		for(String s : formats){
 			RuleTemplate ruleTemplateOracleString = registerTemplate( new File(String.format("templates/oracle/%s.template", s)), String.format("%s_format", s), targetDatabaseTypeOracle);
 			
 			if(ruleTemplateOracleString == null)
@@ -365,6 +368,10 @@ public class FillToolDatabase {
 		for (RuleTemplate ruleTemplate : ruleTemplates) {
 			targetDatabaseTypeOracle.addTemplate(ruleTemplate);
 		}
+		
+		entityManager.beginTransaction();
+		entityManager.persist(targetDatabaseTypeOracle);
+		entityManager.getTransaction().commit();
 		
 		Constraint nullConstraint = new Constraint();
 		nullConstraint.setId(0);
@@ -413,8 +420,10 @@ public class FillToolDatabase {
 		
 		GeneratorInterface generator = new Generator();
 		for (BusinessRule businessRule : businessRules) {
+			//if (  )
+			
 			System.out.println(String.format("\n\n----- GENERATING FOR %s ------", businessRule.getName()));
-			System.out.println(String.format("%s\n%s", businessRule.getBusinessRuleType().getName(), businessRule.getOperator().getName()));
+			System.out.println(String.format("%s | %s", businessRule.getBusinessRuleType().getName(), businessRule.getOperator().getName()));
 			for (CompareValue compareValue : businessRule.getCompareValues()) 
 				System.out.println(compareValue.toString());
 			System.out.println();

@@ -23,7 +23,7 @@ public class SQLFormatter {
 		for (RuleTemplate ruleTemplate : ruleTemplates) {
 			String templateName = ruleTemplate.getName().toLowerCase();
 			String formatName = templateName.substring(0, templateName.length() - trimLength);
-			String template = ruleTemplate.getTemplate().trim();
+			String template = ruleTemplate.getTemplate() != null ? ruleTemplate.getTemplate().trim() : "";
 			String formatSpecifier = template.length() > 0 ? ""+template.charAt(0) : "";
 			this.formats.put(formatName, formatSpecifier);
 		}

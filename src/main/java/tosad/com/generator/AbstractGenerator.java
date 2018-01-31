@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import tosad.com.generator.exception.GenerationException;
 import tosad.com.generator.exception.SQLFormatException;
 import tosad.com.generator.exception.TemplateNotFoundException;
@@ -37,17 +36,21 @@ public abstract class AbstractGenerator  {
 	protected String generateRuleIdentifier() {
 		String tableName = businessRule.getReferencedTable().toUpperCase();
 		String ruleType = businessRule.getBusinessRuleType().getName().toUpperCase().replace(' ', '_');
+		int base = 9;
+		base += tableName.length();
+		
+		ruleType = ruleType.substring(0, 30 - base);		
 		
 		//TODO change the hardcoded rulenumber
 		return String.format("BRG_%S_%S_%d", tableName, ruleType, 0);
 	}
 	
 	protected String getReferencedTableName() throws SQLFormatException {
-		return sqlFormatter.format("table",businessRule.getReferencedTable().toLowerCase());
+		return sqlFormatter.format("table", businessRule.getReferencedTable().toLowerCase());
 	}
 	
 	protected String getReferencedColumnName() throws SQLFormatException {
-		return sqlFormatter.format("column", businessRule.getReferencedColumn());
+		return sqlFormatter.format("column", businessRule.getReferencedColumn().toLowerCase());
 	}
 	
 	protected String operatorValue() throws TemplateNotFoundException{

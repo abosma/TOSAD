@@ -1,7 +1,7 @@
 package tosad.com.model.enums;
 
 public enum ValueType {
-	LITERAL("LITERAL"), COLUMN("COLUMN"), TABLE("TABLE");
+	STATIC_NUMBER("STATIC_NUMBER"), STATIC_STRING("STATIC_STRING"), TUPLE("TUPLE"), ENTITY("ENTITY");
 
 	private final String text;
 

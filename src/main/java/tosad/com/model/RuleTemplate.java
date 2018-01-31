@@ -28,7 +28,7 @@ public class RuleTemplate implements Serializable {
 	@SequenceGenerator(name="rule_template_generator", sequenceName = "rule_template_seq", allocationSize=50)
 	private int id;
 
-	@Column(name = "template", nullable = false, length = 4000)
+	@Column(name = "template", nullable = true, length = 4000)
 	private String template;
 
 	@Column(name = "name", nullable = false, length = 255)

@@ -35,33 +35,6 @@ public class BusinessRuleType implements Serializable {
 	@Column(name = "allowed_value_types", nullable = false, length = 250)
 	private String allowedValueTypes;
 
-	public Set<ValueType> getAllowedValueTypes() {
-		String[] sValues = allowedValueTypes.split(";");
-		Set<ValueType> values = new HashSet<ValueType>();
-		
-		for (int i = 0; i < sValues.length; i++) 
-			values.add( ValueType.valueOf(sValues[i]) );
-		
-		return values;
-	}
-
-	public void setAllowedValueTypes(Set<ValueType> valueTypes) {
-		String[] tmp = new String[valueTypes.size()];
-		int iterationCount = 0;
-		for(ValueType type : valueTypes)
-			tmp[iterationCount++] = type.toString();
-		
-		this.allowedValueTypes = String.join(";", tmp);
-	}
-
-	public String getCode() {
-		return this.code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
 	@Column(name = "code", nullable = false, length = 255)
 	private String code;
 	
@@ -97,6 +70,34 @@ public class BusinessRuleType implements Serializable {
 	public void addOperator(Operator operator) {
 		this.operators.add(operator);
 	}
+
+	public Set<ValueType> getAllowedValueTypes() {
+		String[] sValues = allowedValueTypes.split(";");
+		Set<ValueType> values = new HashSet<ValueType>();
+		
+		for (int i = 0; i < sValues.length; i++) 
+			values.add( ValueType.valueOf(sValues[i]) );
+		
+		return values;
+	}
+
+	public void setAllowedValueTypes(Set<ValueType> valueTypes) {
+		String[] tmp = new String[valueTypes.size()];
+		int iterationCount = 0;
+		for(ValueType type : valueTypes)
+			tmp[iterationCount++] = type.toString();
+		
+		this.allowedValueTypes = String.join(";", tmp);
+	}
+
+	public String getCode() {
+		return this.code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+	
 	
 	@Override
 	public String toString() {

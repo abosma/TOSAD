@@ -41,12 +41,15 @@ public class TriggerGenerator extends AbstractGenerator{
 	}
 
 	public String generateCode() throws GenerationException, TemplateNotFoundException, SQLFormatException {
+		//System.err.println(businessRule.toString());
 		String baseTemplate = templateFinder.findTemplate("trigger");
 		String evaluatedTemplate = evaluateTemplate(baseTemplate);
 		return evaluatedTemplate;
 	}
 	
 	public String evaluateTemplate(String template) throws GenerationException, TemplateNotFoundException, SQLFormatException {
+		
+		//System.out.println("\n\nIN:\n"+template);
 		
 		// retrieve keywords from template
 		String[] keywords = this.retrieveTemplateKeywords(template);
@@ -62,7 +65,7 @@ public class TriggerGenerator extends AbstractGenerator{
 			// replace the keyword with it's generated content
 			template = template.replaceFirst(String.format("\\{%s\\}", keyword), keywordContent);
 		}		
-		
+		//System.out.println("\n\nOUT:\n"+template);
 		return template;
 	}
 	
