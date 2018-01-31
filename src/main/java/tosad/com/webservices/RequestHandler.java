@@ -145,7 +145,7 @@ public class RequestHandler {
 	
 	/**
 	 * Returns JSON with true or false, this represents if the code has been generated based on the BusinessRule object.
-	 * Creates a GeneratedCode object with the same ID as businessRuleId, with code generated at Generator.java class.
+	 * Creates a GeneratedCode object with a foreign key businessRuleId, with code generated at Generator.java class.
 	 * It then gets status = 0 due to the generated code not yet being inserted into the target database.
 	 * 
 	 * JSON Format is: {status: "false"/"true"}
@@ -173,6 +173,8 @@ public class RequestHandler {
 			//String code = generatorInterface.generateSQL(businessRule);
 
             String code = "hallo ik ben atilla";
+
+            System.out.println(businessRule.toString());
 
 			GeneratedCode generatedCode = new GeneratedCode();
 			generatedCode.setCode(code);
