@@ -8,4 +8,5 @@ BEGIN
 	{condition}
 IF NOT l_passed THEN
 	RAISE_APPLICAITON_ERROR(-20000, {error_text});
+END IF;
 END;

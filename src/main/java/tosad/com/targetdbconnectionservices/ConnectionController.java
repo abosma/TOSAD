@@ -1,15 +1,11 @@
 package tosad.com.targetdbconnectionservices;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
 import tosad.com.model.GeneratedCode;
 import tosad.com.model.TargetDatabase;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConnectionController implements ConnectionInterface{
 
@@ -98,7 +94,9 @@ public class ConnectionController implements ConnectionInterface{
 		String query = generatedCode.getCode();
 		try {
 			statement = connection.createStatement();
-			int insertedCode = statement.executeUpdate(query);
+			CallableStatement cstmt = null;
+            cstmt = connection.prepareCall(query);
+            int insertedCode = cstmt.executeUpdate();
 
 			return insertedCode > 0;
 		} finally {
