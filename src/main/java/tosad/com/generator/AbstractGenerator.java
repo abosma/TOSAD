@@ -131,4 +131,15 @@ public abstract class AbstractGenerator  {
 		
 		return resultSet.toArray(new String[resultSet.size()]);
 	}
+
+	protected String getCompareValueList() throws GenerationException, SQLFormatException {
+		Set<CompareValue> cValues = businessRule.getCompareValues();
+		String[] values = new String[cValues.size()];
+
+		int count = 0;
+		for (CompareValue compareValue : cValues) {
+			values[count++] = compileCompareValue(compareValue);
+		}
+		return String.join(",", values);
+	}
 }

@@ -29,6 +29,8 @@ public class TriggerGenerator extends AbstractGenerator{
 			return getReferencedColumnName();
 		case "value":
 			return getCompareValue();
+		case "values":
+			return getCompareValueList();
 		case "operator":
 			return operatorValue();
 		case "error_text":
