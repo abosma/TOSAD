@@ -11,12 +11,15 @@ public class SQLFormatter {
 	
 	private final String FORMAT_SUFFIX = "_format";
 	
-	private Map<String, String> formats;
+	/**
+	 * 
+	 */
+	private Map<String, char[]> formats;
 	
 	public SQLFormatter(TemplateFinder finder) {
 		Set<RuleTemplate> ruleTemplates = finder.findTemplatesByPartial(FORMAT_SUFFIX);
 		
-		this.formats = new HashMap<String, String>();
+		this.formats = new HashMap<String, char[]>();
 		
 		int trimLength = FORMAT_SUFFIX.length();
 		
@@ -24,8 +27,12 @@ public class SQLFormatter {
 			String templateName = ruleTemplate.getName().toLowerCase();
 			String formatName = templateName.substring(0, templateName.length() - trimLength);
 			String template = ruleTemplate.getTemplate() != null ? ruleTemplate.getTemplate().trim() : "";
-			String formatSpecifier = template.length() > 0 ? ""+template.charAt(0) : "";
-			this.formats.put(formatName, formatSpecifier);
+			
+			char[] chars = new char[2];
+			
+			chars[0] = template.length() > 0 ? template.charAt(0) : ' ';
+			chars[1] = template.length() > 1 ? template.charAt(1) : chars[0];
+			this.formats.put(formatName, chars);
 		}
 	}
 	
@@ -34,7 +41,7 @@ public class SQLFormatter {
 		if( !this.formats.containsKey(key) ){
 			throw new SQLFormatException(String.format("Format '%s' was not found", key));
 		}
-		String theFormat = this.formats.get(key);
-		return theFormat + subject + theFormat;
+		char[] theFormat = this.formats.get(key);
+		return (theFormat[0] + subject + theFormat[1]).trim();
 	}
 }

@@ -342,7 +342,7 @@ public class FillToolDatabase {
 		}
 
 		/* register formats */
-		String[] formats = new String[]{"string","number","table","column"};
+		String[] formats = new String[]{"string","number","table","column","list"};
 		for(String s : formats){
 			RuleTemplate ruleTemplateOracleString = registerTemplate( new File(String.format("templates/oracle/%s.template", s)), String.format("%s_format", s), targetDatabaseTypeOracle);
 			
