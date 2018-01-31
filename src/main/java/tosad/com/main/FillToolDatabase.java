@@ -123,11 +123,11 @@ public class FillToolDatabase {
 		return businessRuleType;
 	}
 	
-	public static Operator newOperator(String name, String value, int no){
+	public static Operator newOperator(String name, String code, String amountOfValues){
 		Operator operator = new Operator();
 		operator.setName(name);
-		operator.setValue(value);
-		operator.setNumberOfValues(no);
+		operator.setCode(code);
+		operator.setAmountOfValues(amountOfValues);
 		
 		return operator;
 	}
@@ -146,16 +146,16 @@ public class FillToolDatabase {
 
 		//targetDatabase = getExistingOrPersistNew(targetDatabase);
 		//* Operator
-		Operator operatorBT		 = newOperator("Between",				"operator_between",					2);
-		Operator operatorNBT	 = newOperator("Not Between",			"operator_not_between",				2);
-		Operator operatorIN		 = newOperator("In",					"operator_in",						3);
-		Operator operatorNIN	 = newOperator("Not In",				"operator_not_in",					3);
-		Operator operatorEQ		 = newOperator("Equals",				"operator_equals",					1);
-		Operator operatorNEQ	 = newOperator("Not Equals",			"operator_not_equals",				1);
-		Operator operatorLT		 = newOperator("Less Than",				"operator_less_than",				1);
-		Operator operatorGT		 = newOperator("Greater Than",			"operator_greater_than",			1);
-		Operator operatorLTE	 = newOperator("Less Than Or Equal",	"operator_less_than_or_equal",		1);
-		Operator operatorGTE	 = newOperator("Greater Than Or Equal",	"operator_greater_than_or_equal",	1);
+		Operator operatorBT		 = newOperator("Between",				"operator_between",					"double");
+		Operator operatorNBT	 = newOperator("Not Between",			"operator_not_between",				"double");
+		Operator operatorIN		 = newOperator("In",					"operator_in",						"multiple");
+		Operator operatorNIN	 = newOperator("Not In",				"operator_not_in",					"multiple");
+		Operator operatorEQ		 = newOperator("Equals",				"operator_equals",					"single");
+		Operator operatorNEQ	 = newOperator("Not Equals",			"operator_not_equals",				"single");
+		Operator operatorLT		 = newOperator("Less Than",				"operator_less_than",				"single");
+		Operator operatorGT		 = newOperator("Greater Than",			"operator_greater_than",			"single");
+		Operator operatorLTE	 = newOperator("Less Than Or Equal",	"operator_less_than_or_equal",		"single");
+		Operator operatorGTE	 = newOperator("Greater Than Or Equal",	"operator_greater_than_or_equal",	"single");
 		
 		operatorBT	= getExistingOrPersistNew(operatorBT);
 		operatorNBT	= getExistingOrPersistNew(operatorNBT);
@@ -273,7 +273,7 @@ public class FillToolDatabase {
 
 		// ALL OPERATORS
 		for( Operator o : operALL){
-			String v = o.getValue();
+			String v = o.getCode();
 			RuleTemplate ruleTemplate = registerTemplate(new File(String.format("templates/oracle/%s.template", v)), v, targetDatabaseType);
 			if(ruleTemplate == null)
 				continue;
