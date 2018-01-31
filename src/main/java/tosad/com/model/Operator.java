@@ -33,11 +33,11 @@ public class Operator implements Serializable {
 	@Column(name = "name", nullable = false, length = 255)
 	private String name;
 
-	@Column(name = "value", nullable = false, length = 255)
-	private String value;
+	@Column(name = "code", nullable = false, length = 255)
+	private String code;
 
 	@Column(name = "number_of_values", nullable = false)
-	private int numberOfValues;
+	private String amountOfValues;
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "business_rule_type_operator", joinColumns = { @JoinColumn(name = "operator_type_id", insertable = true, updatable = false) }, inverseJoinColumns = {
@@ -63,21 +63,21 @@ public class Operator implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public String getValue() {
-		return value;
+	
+	public String getCode() {
+		return this.code;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public void setCode(String code) {
+		this.code = code;
 	}
 
-	public int getNumberOfValues() {
-		return numberOfValues;
+	public String getAmountOfValues() {
+		return this.amountOfValues;
 	}
 
-	public void setNumberOfValues(int numberOfValues) {
-		this.numberOfValues = numberOfValues;
+	public void setAmountOfValues(String amountOfValues) {
+		this.amountOfValues = amountOfValues;
 	}
 
 	public Set<BusinessRuleType> getBusinessRuleTypes() {
@@ -90,9 +90,7 @@ public class Operator implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Operator [id=" + this.id + ", name=" + this.name + ", value=" + this.value + ", numberOfValues="
-				+ this.numberOfValues + "]";
-	}
-
-	
+		return "Operator [id=" + this.id + ", name=" + this.name + ", code=" + this.code + ", amountOfValues="
+				+ this.amountOfValues + ", businessRuleTypes=" + this.businessRuleTypes + "]";
+	}	
 }
