@@ -1,7 +1,16 @@
 package tosad.com.webservices;
 
-import java.sql.SQLException;
-import java.util.List;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import tosad.com.generator.Generator;
+import tosad.com.generator.GeneratorInterface;
+import tosad.com.model.BusinessRule;
+import tosad.com.model.GeneratedCode;
+import tosad.com.model.TargetDatabase;
+import tosad.com.model.util.HibernateUtil;
+import tosad.com.targetdbconnectionservices.ConnectionController;
+import tosad.com.targetdbconnectionservices.ConnectionInterface;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -11,19 +20,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
-import tosad.com.generator.Generator;
-import tosad.com.generator.GeneratorInterface;
-import tosad.com.model.BusinessRule;
-import tosad.com.model.GeneratedCode;
-import tosad.com.model.TargetDatabase;
-import tosad.com.model.util.HibernateUtil;
-import tosad.com.targetdbconnectionservices.ConnectionController;
-import tosad.com.targetdbconnectionservices.ConnectionInterface;
+import java.sql.SQLException;
+import java.util.List;
 
 @Path("/get")
 public class RequestHandler {
@@ -231,10 +229,6 @@ public class RequestHandler {
 			generatedCode = session.get(GeneratedCode.class, generatedCodeId);
 			businessRule = generatedCode.getBusinessRule();
 			targetDatabase = businessRule.getTargetDatabase();
-
-            System.out.println(generatedCode.toString());
-            System.out.println(businessRule.toString());
-            System.out.println(targetDatabase.toString());
 
 			boolean hasInserted = connectionInterface.insertCode(targetDatabase, generatedCode);
 

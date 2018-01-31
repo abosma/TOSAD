@@ -1,22 +1,11 @@
 package tosad.com.model;
 
+import tosad.com.model.enums.ValueType;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
-import tosad.com.model.enums.ValueType;
 
 @Entity
 @Table(name = "business_rule_types")
@@ -101,6 +90,6 @@ public class BusinessRuleType implements Serializable {
 	
 	@Override
 	public String toString() {
-		return "BusinessRuleType [id=" + this.id + ", name=" + this.name + ", operators=" + this.operators + "]";
+		return "BusinessRuleType [id=" + this.id + ", name=" + this.name + "]";
 	}	
 }

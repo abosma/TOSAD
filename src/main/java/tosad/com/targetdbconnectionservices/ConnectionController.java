@@ -88,20 +88,17 @@ public class ConnectionController implements ConnectionInterface{
 	 */
 	@Override
 	public boolean insertCode(TargetDatabase targetDatabase, GeneratedCode generatedCode) throws SQLException{
-		Statement statement = null;
-		
+        Statement stmt = null;
+
 		Connection connection = getTargetConnection(targetDatabase.getTargetDatabaseType().getName(), targetDatabase.getConnection(), targetDatabase.getPassword(), targetDatabase.getUsername());
 		String query = generatedCode.getCode();
 		try {
-			statement = connection.createStatement();
-			CallableStatement cstmt = null;
-            cstmt = connection.prepareCall(query);
-            int insertedCode = cstmt.executeUpdate();
-
-			return insertedCode > 0;
+            stmt = connection.createStatement();
+            int insertedCode = stmt.executeUpdate(query);;
+			return true;
 		} finally {
-			if(statement != null) {
-				statement.close();
+			if(stmt != null) {
+                stmt.close();
 			}
 		}
 	}
