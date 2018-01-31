@@ -174,6 +174,6 @@ public abstract class AbstractGenerator  {
 		for (CompareValue compareValue : cValues) {
 			values[count++] = compileCompareValue(compareValue);
 		}
-		return String.join(",", values);
+		return sqlFormatter.format("list", String.join(",", values));
 	}
 }
