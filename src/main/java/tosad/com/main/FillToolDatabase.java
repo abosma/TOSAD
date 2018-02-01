@@ -425,11 +425,10 @@ public class FillToolDatabase {
 				
 		GeneratorInterface generator = new Generator();
 		for (BusinessRule businessRule : businessRules) {
-			System.out.println(String.format("\n\n----- GENERATING FOR %s ------", businessRule.getName()));
+			System.out.println(String.format("----- GENERATING FOR %s ------", businessRule.getName()));
 			System.out.println(String.format("%s | %s", businessRule.getBusinessRuleType().getName(), businessRule.getOperator().getName()));
-			for (CompareValue compareValue : businessRule.getCompareValues()) 
-				System.out.println(compareValue.toString());
-			System.out.println();
+			// for (CompareValue compareValue : businessRule.getCompareValues()) System.out.println(compareValue.toString());
+			
 			
 			try {
 				String OSql = generator.generateSQL(businessRule);
@@ -441,6 +440,7 @@ public class FillToolDatabase {
 			} catch (SQLFormatException e1) {
 				e1.printStackTrace();
 			}
+			System.out.println("\n\n\n");
 		}
 		
 		if(ONLINE)
