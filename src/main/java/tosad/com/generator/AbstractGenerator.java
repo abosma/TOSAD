@@ -18,7 +18,7 @@ import tosad.com.model.TargetDatabaseType;
 import tosad.com.model.enums.ValueType;
 
 public abstract class AbstractGenerator  {
-	
+	private static int nr = 0;
 	private final Pattern KeyfinderPattern;
 	private Map<String, CompareValue> compareValues;
 	
@@ -65,7 +65,7 @@ public abstract class AbstractGenerator  {
 		ruleType = ruleType.substring(0, 30 - base);		
 		
 		//TODO change the hardcoded rulenumber
-		return String.format("BRG_%S_%S_%d", tableName, ruleType, 0);
+		return String.format("BRG_%S_%S_%d", tableName, ruleType, nr++);
 	}
 	
 	protected String getReferencedTableName() throws SQLFormatException {
