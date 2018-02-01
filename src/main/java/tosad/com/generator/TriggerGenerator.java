@@ -69,7 +69,7 @@ public class TriggerGenerator extends AbstractGenerator{
 	}
 	
 	private String generateTriggerTypes() {
-		return String.join(" OR ", businessRule.getTrigger().getExecutionType().split(";")); 
+		return String.join(" OR ", businessRule.getTrigger().getExecutionType().split("[:;]")); 
 	}
 
 	private String generateTriggerExecution() {
