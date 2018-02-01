@@ -168,23 +168,32 @@ public class FillToolDatabase {
 		
 		int iterations = amount == Amount.SINGLE  ? 1 : amount == Amount.DOUBLE ? 2 : 3;
 		for(int i = 0; i < iterations; i++){
-			CompareValue compareValue = new CompareValue();
-			compareValue.setBusinessRule(businessRule);
+			CompareValue compareValue = getCompareValueFor(businessRule, valueType);
 			compareValue.setOrder(i+1);
-			if( ValueType.STATIC_STRING == valueType ){
-				compareValue.setValue(String.format("literal_%d", i));
-			} else if(ValueType.STATIC_NUMBER == valueType ){
-				compareValue.setValue(""+i*3);
-			} else {
-				compareValue.setTable(ValueType.TUPLE == valueType ? businessRule.getReferencedTable() : "OTHER_TABLE");
-				compareValue.setColumn(ValueType.ENTITY == valueType ? "EXTERNAL_COLUMN" : "OTHER_COLUMN");
-			}
 			compareValues.add(compareValue);
 			//System.out.println(compareValue);
 		}
 		return compareValues;
 	}
 
+	private static CompareValue getCompareValueFor(BusinessRule businessRule, ValueType valueType){
+		CompareValue compareValue = new CompareValue();
+		compareValue.setBusinessRule(businessRule);
+		compareValue.setAllowedValueType(valueType);
+		
+		if( ValueType.STATIC_STRING == valueType ){
+			compareValue.setValue(String.format("literal_%d", (int)(Math.random()*10)));
+		} else if(ValueType.STATIC_NUMBER == valueType ){
+			compareValue.setValue(""+(int)(Math.random()*10));
+		} else if(ValueType.CUSTOM_SQL == valueType) {
+			compareValue.setValue("(CUSTOM_SQL)");
+		} else {
+			compareValue.setTable(ValueType.TUPLE == valueType ? businessRule.getReferencedTable() : "OTHER_TABLE");
+			compareValue.setColumn(ValueType.ENTITY == valueType ? "EXTERNAL_COLUMN" : "OTHER_COLUMN");
+		}
+		return compareValue;
+	}
+	
 	public static void main(String[] args) {
 				
 		// create session
@@ -226,17 +235,17 @@ public class FillToolDatabase {
 		Operator[] opersRNG = new Operator[] {operatorBT, operatorNBT};
 		Operator[] opersCMP = new Operator[] {operatorEQ, operatorNEQ, operatorGT, operatorGTE, operatorLT, operatorLTE};
 		Operator[] opersLST = new Operator[] {operatorIN, operatorNIN};
-		Operator[] opersOTH = new Operator[] {};
+		Operator[] opersOTH = operALL;
 		
 		//BusinessRuleType 
 		BusinessRuleType attr_rng_rule		= newBusinessRuleType("Attribute Range Rule",		"attribute_range_rule",			opersRNG,			new HashSet<ValueType>(Arrays.asList(ValueType.STATIC_NUMBER)));
 		BusinessRuleType attr_cmp_rule		= newBusinessRuleType("Attribute Compare Rule",		"attribute_compare_rule",		opersCMP,			new HashSet<ValueType>(Arrays.asList(ValueType.STATIC_NUMBER)));
 		BusinessRuleType attr_lst_rul		= newBusinessRuleType("Attribute List Rule",		"attribute_list_rule",			opersLST,			new HashSet<ValueType>(Arrays.asList(ValueType.STATIC_NUMBER, ValueType.STATIC_STRING)));
-		BusinessRuleType attr_oth_rule		= newBusinessRuleType("Attribute Other Rule",		"attribute_other_rule",			opersOTH,			new HashSet<ValueType>(Arrays.asList(ValueType.STATIC_NUMBER, ValueType.STATIC_STRING)));
+		BusinessRuleType attr_oth_rule		= newBusinessRuleType("Attribute Other Rule",		"attribute_other_rule",			opersOTH,			new HashSet<ValueType>(Arrays.asList(ValueType.STATIC_NUMBER, ValueType.STATIC_STRING, ValueType.CUSTOM_SQL)));
 		BusinessRuleType tuple_cmp_rule 	= newBusinessRuleType("Tuple Compare Rule",			"tuple_compare_rule",			opersCMP,			new HashSet<ValueType>(Arrays.asList(ValueType.TUPLE)));
-		BusinessRuleType tuple_oth_rule 	= newBusinessRuleType("Tuple Compare Rule",			"tuple_other_rule",				opersOTH,			new HashSet<ValueType>(Arrays.asList(ValueType.TUPLE)));
+		BusinessRuleType tuple_oth_rule 	= newBusinessRuleType("Tuple Compare Rule",			"tuple_other_rule",				opersOTH,			new HashSet<ValueType>(Arrays.asList(ValueType.TUPLE, ValueType.CUSTOM_SQL)));
 		BusinessRuleType int_ent_cmp_rule	= newBusinessRuleType("Inter Entity Compare Rule",	"inter_entity_compare_rule"	,	opersCMP,			new HashSet<ValueType>(Arrays.asList(ValueType.ENTITY)));
-		BusinessRuleType ent_oth_rule 		= newBusinessRuleType("Entity Other Rule",			"entity_other_rule", 			opersOTH,			new HashSet<ValueType>(Arrays.asList(ValueType.ENTITY)));
+		BusinessRuleType ent_oth_rule 		= newBusinessRuleType("Entity Other Rule",			"entity_other_rule", 			opersOTH,			new HashSet<ValueType>(Arrays.asList(ValueType.ENTITY, ValueType.CUSTOM_SQL)));
 		BusinessRuleType modif_rule 		= newBusinessRuleType("Modify Rule", 				"modify_rule", 					new Operator[]{},	new HashSet<ValueType>(Arrays.asList(ValueType.ENTITY)));
 		
 		attr_rng_rule		= getExistingOrPersistNew(attr_rng_rule);
@@ -379,7 +388,11 @@ public class FillToolDatabase {
 		for(BusinessRuleType businessRuleType : allBusinessRuleTypes){
 			
 			Set<ValueType> allowedTypes = businessRuleType.getAllowedValueTypes();
-			
+			CompareValue sql = null;
+			if(allowedTypes.contains(ValueType.CUSTOM_SQL)){
+				allowedTypes.remove(ValueType.CUSTOM_SQL);
+				sql = getCompareValueFor(null, ValueType.CUSTOM_SQL);
+			}
 			for(ValueType valueType : allowedTypes){
 			
 				Set<Operator> operators = businessRuleType.getOperators();
@@ -397,6 +410,10 @@ public class FillToolDatabase {
 					businessRule = getExistingOrPersistNew(businessRule);
 
 					Set<CompareValue> compareValues = getCompareValuesFor(businessRule, valueType, operator.getAmountOfValues());
+					if(sql != null){
+						sql.setBusinessRule(businessRule);
+						compareValues.add(sql);
+					}
 					for (CompareValue compareValue : compareValues) {
 						compareValue = getExistingOrPersistNew(compareValue);
 						businessRule.addCompareValue(compareValue);

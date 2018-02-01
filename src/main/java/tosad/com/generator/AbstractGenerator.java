@@ -1,20 +1,26 @@
 package tosad.com.generator;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import tosad.com.generator.exception.GenerationException;
 import tosad.com.generator.exception.SQLFormatException;
 import tosad.com.generator.exception.TemplateNotFoundException;
 import tosad.com.model.BusinessRule;
 import tosad.com.model.CompareValue;
 import tosad.com.model.TargetDatabaseType;
+import tosad.com.model.enums.ValueType;
 
 public abstract class AbstractGenerator  {
 	
 	private final Pattern KeyfinderPattern;
+	private Map<String, CompareValue> compareValues;
 	
 	protected BusinessRule businessRule;
 	protected TemplateFinder templateFinder;
@@ -30,6 +36,24 @@ public abstract class AbstractGenerator  {
 		
 		this.templateFinder = new TemplateFinder(databaseType);
 		this.sqlFormatter = new SQLFormatter(this.templateFinder);
+		
+		this.compareValues = new HashMap<String, CompareValue>();
+		mapValues();
+	}
+	
+	private void mapValues(){
+		List<CompareValue> listCompareValues = new ArrayList<CompareValue>();
+		for (CompareValue compareValue : businessRule.getCompareValues()) {
+			if( compareValue.getAllowedValueType() == ValueType.CUSTOM_SQL ){
+				this.compareValues.put("sql", compareValue);
+			} else {
+				listCompareValues.add(compareValue);
+			}
+		}
+		Collections.sort(listCompareValues);
+		int i = 0;
+		for (CompareValue compareValue : listCompareValues) 
+			this.compareValues.put(""+(++i), compareValue);
 	}
 
 	protected String generateRuleIdentifier() {
@@ -63,24 +87,17 @@ public abstract class AbstractGenerator  {
 			return getCompareValueList();
 		
 		String[] parts = keyword.split("_");
-		String base = parts[0];
+		String prefix = parts[0];
 		
-		if( ! base.equals("value"))
-			throw new GenerationException(String.format("Cannot compile CompareValue starting with key '%s'.", base));
+		if( ! prefix.equals("value"))
+			throw new GenerationException(String.format("Invalid template keyword format; keyword should start with 'value_', found: '%s'.", prefix));
 		
 		if(parts.length < 2)
 			throw new GenerationException(String.format("Cannot compile CompareValue with key '%s', missings identifier (int)", keyword));
 		
-		String sOrder = parts[1];
-		int order;
-		try {
-			order = Integer.parseInt(sOrder);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new GenerationException(String.format("Cannot compile CompareValue starting with key '%s' and order '%s'.", base, sOrder));
-		}
+		String subject = parts[1];
 		
-		CompareValue compareValue = getCompareValue(order);
+		CompareValue compareValue = getCompareValueObject(subject);
 		
 		if( ! ( parts.length > 2))
 			return compileCompareValue(compareValue);
@@ -95,46 +112,36 @@ public abstract class AbstractGenerator  {
 		}
 	}
 
-	protected CompareValue getCompareValue(int order) throws GenerationException, SQLFormatException{
-		Set<CompareValue> values = businessRule.getCompareValues();
-		for(CompareValue value : values){
-			if(value.getOrder() == order){
-				return value;
-			}
-		}
-		throw new GenerationException(String.format("No CompareValue was found for order '%d'. Please check the businessrule", order));
+	protected CompareValue getCompareValueObject(String subject) throws GenerationException, SQLFormatException{
+		CompareValue compareValue = this.compareValues.get(subject);
+		if( compareValue == null)
+			throw new GenerationException(String.format("No CompareValue was found for subject '%s'. Please check the businessrule", subject));
+		return compareValue;
 	}
 	
-	private String compileCompareValue(CompareValue compareValue) throws GenerationException, SQLFormatException {
-		String empty	= new String();
-		String literal	= compareValue.getValue() != null ? compareValue.getValue().trim().toLowerCase() : new String();
-		String table	= compareValue.getTable() != null ? compareValue.getTable().trim().toLowerCase() : new String();
-		String column	= compareValue.getColumn() != null ? compareValue.getColumn().trim().toLowerCase() : new String();
-				
-		if( literal.equals(empty)){
-			if( column.equals(empty)){
-				throw new GenerationException(String.format("Error while evaluating CompareValue with id '%d': No value defined.", compareValue.getId()));
-			} 
-			// check whether reference is to external table, or own table
-			
-			if( table.equals(empty)){
-				table = businessRule.getReferencedTable();
-			}
-			
-			column	= sqlFormatter.format("column", column);
-			table	= sqlFormatter.format("table", table);
-			return String.format("%s.%s", table, column);
-		} else {
-			if( table.equals(empty) && column.equals(empty)){
-				// only the literal value is set, so return it
-				if( literal.matches("\\d+") ){
-					return sqlFormatter.format("number", literal);
-				} 
-				return sqlFormatter.format("string", literal);
-			}
-			// both literal value and referenced table are set
-			throw new GenerationException(String.format("Error while evaluating CompareValue with id '%d': Both a literal value and a reference are defined"));
-		}
+	private String compileCompareValue(CompareValue compareValue) throws GenerationException, SQLFormatException {		
+		ValueType valueType = compareValue.getAllowedValueType();
+		
+		if( ValueType.STATIC_NUMBER == valueType )
+			return sqlFormatter.format("number", compareValue.getValue());
+		
+		if( ValueType.STATIC_STRING == valueType )
+			return sqlFormatter.format("string", compareValue.getValue());
+		
+		if( ValueType.CUSTOM_SQL == valueType )
+			return compareValue.getValue(); // SQL into SQL requires no formatting
+		
+		if( ValueType.TUPLE == valueType )
+			return String.format("%s.%s", 
+					sqlFormatter.format("column", compareValue.getColumn()), 
+					sqlFormatter.format("table", compareValue.getBusinessRule().getReferencedTable()));
+		
+		if( ValueType.ENTITY == valueType )
+			return String.format("%s.%s", 
+					sqlFormatter.format("column", compareValue.getColumn()), 
+					sqlFormatter.format("table", compareValue.getTable()));
+		
+		throw new GenerationException("Unsupported CompareValue ValueType: " + valueType.toString());
 	}
 	
 	/**

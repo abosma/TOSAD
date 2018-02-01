@@ -1,1 +1,1 @@
-l_passed := {condition};
+{value_sql};

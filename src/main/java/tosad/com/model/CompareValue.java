@@ -12,9 +12,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import tosad.com.model.enums.ValueType;
+
 @Entity
 @Table(name = "compare_values")
-public class CompareValue implements Serializable {
+public class CompareValue implements Serializable, Comparable<CompareValue> {
 
 	private static final long serialVersionUID = -3559038127062256567L;	
 
@@ -35,8 +37,11 @@ public class CompareValue implements Serializable {
 	@Column(name= "ordertype", nullable = true )
 	private int order;
 	
+	@Column(name = "allowed_value_type", nullable = false, length = 250)
+	private String allowedValueType;
+	
 	@ManyToOne
-	@JoinColumn(name = "businessrule_id", insertable = true, updatable=false)
+	@JoinColumn(name = "businessrule_id", insertable = true, updatable = false)
 	private BusinessRule businessRule;
 
 	public int getId() {
@@ -86,10 +91,23 @@ public class CompareValue implements Serializable {
 	public void setOrder(int order) {
 		this.order = order;
 	}
+	
+	public ValueType getAllowedValueType() {
+		return ValueType.valueOf(this.allowedValueType);
+	}
+
+	public void setAllowedValueType(ValueType valueType) {
+		this.allowedValueType = valueType.toString();
+	}
 
 	@Override
 	public String toString() {
 		return "CompareValue [id=" + this.id + ", table=" + this.table + ", column=" + this.column + ", value="
 				+ this.value + ", order=" + this.order + "]";
+	}
+
+	@Override
+	public int compareTo(CompareValue compareValue) {
+		return this.getOrder() - compareValue.getOrder();
 	}
 }
