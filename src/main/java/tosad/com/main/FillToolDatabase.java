@@ -433,6 +433,7 @@ public class FillToolDatabase {
 			try {
 				String OSql = generator.generateSQL(businessRule);
 				System.out.println(OSql);
+				System.out.println("\n\n\n");
 			} catch (GenerationException e1) {
 				e1.printStackTrace();
 			} catch (TemplateNotFoundException e1) {
@@ -440,7 +441,7 @@ public class FillToolDatabase {
 			} catch (SQLFormatException e1) {
 				e1.printStackTrace();
 			}
-			System.out.println("\n\n\n");
+			
 		}
 		
 		if(ONLINE)
